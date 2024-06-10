@@ -11,8 +11,6 @@ import {authRouter} from "./routes/auth-router";
 import {commentRouter} from "./routes/comment-router";
 import {securityRouter} from "./routes/security-router";
 
-
-
 export const configApp = () => {
     const app = express()
 
@@ -31,7 +29,6 @@ export const configApp = () => {
     app.use('/comments', commentRouter)
     app.use('/security', securityRouter)
     app.use('/testing', testingRouter)
-
 
     return app;
 }

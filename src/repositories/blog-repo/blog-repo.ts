@@ -1,12 +1,19 @@
 import {CreateBlogData, UpdateBlogData} from "../../types/blog/input";
 import {BlogType} from "../../types/blog/output";
-import {blogCollection} from "../../db";
+// import {blogCollection} from "../../db";
 import {ObjectId} from "mongodb";
+import mongoose from "mongoose";
+import {blogSchema} from "../../mongoose_schemas/blog/output";
 
 
 export class BlogRepo {
     static async createBlog(data: BlogType) : Promise<string> {
-        const result = await blogCollection.insertOne(data);
+
+       //const result = await blogCollection.insertOne(data);
+        const result =
+            mongoose.model("blogs", blogSchema)
+        
+
         return result.insertedId.toString();
     }
 
