@@ -1,39 +1,22 @@
-import {BlogType} from "./types/blog/output";
-import {MongoClient} from 'mongodb';
 import dotenv from 'dotenv'
-import {PostType} from "./types/post/output";
-import {UserType} from "./types/user/output";
-import {CommentType} from "./types/comment/output";
-import {ipUrlType} from "./types/security/output";
-import {SessionType} from "./types/token/output";
-import mongoose from "mongoose";
 
+import mongoose from "mongoose";
 
 dotenv.config()
 
-const dbName = 'home_works'
-const mongoURI = process.env.MONGO_URL|| `mongodb://0.0.0.0:27017/${dbName}`
+const dbName = process.env.MONGO_DBName;
+const mongoURI = process.env.MONGO_URI || `mongodb://0.0.0.0:27017/${dbName}`;
+
+const fullMongoURI = `${mongoURI}/${dbName}?retryWrites=true&w=majority`;
 
 // HW 10
 export async function runDb() {
     try {
-        await mongoose.connect(mongoURI)
-        console.log('it is ok')
+        await mongoose.connect(fullMongoURI);
+        console.log('Connected successfully to MongoDB');
     } catch (e) {
-        console.log('no connection')
+        console.log('Failed to connect to MongoDB');
+        console.log(e);
         await mongoose.disconnect()
     }
 }
-
-// before HW 10
-
-// export const runDb = async () => {
-//     try {
-//         await client.config("admin").command({ping: 1})
-//         console.log('Connected successfully to server');
-//     } catch (e) {
-//         console.log('! Don\'t connected successfully to server');
-//         console.log(e)
-//         await client.close();
-//     }
-// };
