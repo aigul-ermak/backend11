@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
-import {jwtService} from "../../application/jwt-sevice";
+import {jwtService} from "../../services/jwt-sevice";
 import {ObjectId} from "mongodb";
-import {UserService} from "../../domain/user-service";
+import {UserService} from "../../services/user-service";
 import {OutputUserItemType} from "../../types/user/output";
 
 

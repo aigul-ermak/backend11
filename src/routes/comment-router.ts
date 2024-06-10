@@ -1,6 +1,6 @@
 import {Router, Request, Response} from "express";
 import {commentValidation} from "../validators/comment-validator";
-import {CommentService} from "../domain/comment-service";
+import {CommentService} from "../services/comment-service";
 import {CommentRepo} from "../repositories/comment-repo/comment-repo";
 import {QueryCommentRepo} from "../repositories/comment-repo/query-comment-repo";
 import {mongoIdInParamValidation} from "../validators/blog-validator";

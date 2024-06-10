@@ -2,7 +2,7 @@ import {Router, Response} from "express";
 import {RequestTypeWithQuery, RequestWithBody, RequestWithParams} from "../types/common";
 import {authMiddleware} from "../middleware/auth/auth-middleware";
 import {QueryUserRepo} from "../repositories/user-repo/query-user-repo";
-import {UserService} from "../domain/user-service";
+import {UserService} from "../services/user-service";
 import {userValidation} from "../validators/user-validator";
 import {OutputUserItemType, OutputUsersType, SortUserType} from "../types/user/output";
 import {CreateUserData} from "../types/user/input";

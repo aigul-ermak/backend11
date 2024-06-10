@@ -8,7 +8,7 @@ type DbType = {
     posts: PostType[]
 }
 
-console.log("db.ts")
+console.log("config.ts")
 export const db: DbType = {
     videos: [{
         id: 1,

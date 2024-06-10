@@ -27,7 +27,7 @@ exports.blogCollection = db.collection('blogs');
 exports.postCollection = db.collection('post');
 exports.userCollection = db.collection('user');
 exports.commentCollection = db.collection('comment');
-//export const usedTokenCollection = db.collection<TokenType>('token');
+//export const usedTokenCollection = config.collection<TokenType>('token');
 exports.sessionCollection = db.collection('session');
 exports.requestCollection = db.collection("apirequest");
 const runDb = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -42,4 +42,4 @@ const runDb = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.runDb = runDb;
-//# sourceMappingURL=db.js.map
+//# sourceMappingURL=config.js.map

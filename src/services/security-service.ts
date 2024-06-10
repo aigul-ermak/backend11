@@ -1,4 +1,4 @@
-import {jwtService} from "../application/jwt-sevice";
+import {jwtService} from "./jwt-sevice";
 import {RefreshedToken, RefreshToken, SessionType} from "../types/token/output";
 import {SecurityRepo} from "../repositories/security-repo/security-repo";
 import {uuid} from "uuidv4";

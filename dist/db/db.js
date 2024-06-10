@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.db = void 0;
-console.log("db.ts");
+console.log("config.ts");
 exports.db = {
     videos: [{
             id: 1,
@@ -34,4 +34,4 @@ exports.db = {
     // }
     ]
 };
-//# sourceMappingURL=db.js.map
+//# sourceMappingURL=config.js.map

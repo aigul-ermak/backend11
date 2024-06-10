@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {SecurityService} from "../domain/security-service";
+import {SecurityService} from "../services/security-service";
 import {deviceCheckMiddleware, refreshTokenMiddleware} from "../middleware/auth/refreshTokenMiddleware";
 import {cookieMiddleware} from "../middleware/auth/cookie_middleware";
 

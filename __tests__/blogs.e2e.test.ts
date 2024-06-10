@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import {BlogType} from "../src/types/blog/output";
 
-// import {client} from "../src/db";
+// import {client} from "../src/config";
 import {response} from "express";
 import exp = require("constants");
 

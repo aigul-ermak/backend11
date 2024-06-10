@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import jwt from "jsonwebtoken";
-import {settings} from "../../application/settings";
+import {settings} from "../../services/settings";
 import {QuerySecurityRepo} from "../../repositories/security-repo/query-security-repo";
-import {jwtService} from "../../application/jwt-sevice";
+import {jwtService} from "../../services/jwt-sevice";
 import {RefreshToken, SessionType} from "../../types/token/output";
 import {SecurityRepo} from "../../repositories/security-repo/security-repo";
 

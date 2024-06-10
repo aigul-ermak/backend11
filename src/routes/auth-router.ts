@@ -1,16 +1,16 @@
 import {Router, Request, Response} from "express";
-import {UserService} from "../domain/user-service";
+import {UserService} from "../services/user-service";
 import {userAuthValidation} from "../validators/login-validator";
 import {QueryUserRepo} from "../repositories/user-repo/query-user-repo";
 import {OutputUserItemType} from "../types/user/output";
 import {authBearerMiddleware} from "../middleware/auth/auth-bearer-middleware";
 import {userCodeValidation, userEmailValidation, userValidation} from "../validators/user-validator";
-import {authService} from "../domain/auth-service";
+import {authService} from "../services/auth-service";
 import {RefreshedToken} from "../types/token/output";
 import {uuid} from "uuidv4";
-import {SecurityService} from "../domain/security-service";
+import {SecurityService} from "../services/security-service";
 import {cookieMiddleware, countMiddleware, sessionRefreshTokeMiddleware} from "../middleware/auth/cookie_middleware";
-import {jwtService} from "../application/jwt-sevice";
+import {jwtService} from "../services/jwt-sevice";
 
 
 export const authRouter: Router = Router({})

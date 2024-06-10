@@ -1,5 +1,5 @@
-import {emailAdapter} from "../adapters/email-adapter";
-import {emailManager} from "../managers/email-manager";
+import {emailAdapter} from "./email-adapter";
+import {emailManager} from "./email-manager";
 
 export const businessService = {
     async doOperation() {

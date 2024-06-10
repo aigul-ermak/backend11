@@ -5,12 +5,12 @@ import {RequestBodyAndParams, RequestTypeWithQueryAndParams, RequestWithBody, Re
 import {Params} from "./videos-router";
 import {postValidation} from "../validators/post-validator";
 import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
-import {PostService} from "../domain/post-service";
+import {PostService} from "../services/post-service";
 import {PostRepo} from "../repositories/post-repo/post-repo";
 import {SortPostType} from "../types/post/input";
 import {mongoIdInParamValidation} from "../validators/blog-validator";
 import {QueryCommentRepo} from "../repositories/comment-repo/query-comment-repo";
-import {CommentService} from "../domain/comment-service";
+import {CommentService} from "../services/comment-service";
 import {commentValidation} from "../validators/comment-validator";
 import { OutputCommentType, OutputItemCommentType, SortCommentType} from "../types/comment/output";
 import {postExistsMiddleware} from "../middleware/comment/post-middleware";

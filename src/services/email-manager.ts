@@ -1,4 +1,4 @@
-import {emailAdapter} from "../adapters/email-adapter";
+import {emailAdapter} from "./email-adapter";
 import {OutputUserItemType, UserType} from "../types/user/output";
 import {v4 as uuid4} from "uuid";
 

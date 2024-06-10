@@ -15,7 +15,7 @@ import {
 import {BlogType, OutputBlogType, OutputItemBlogType} from "../types/blog/output";
 import {Params} from "./videos-router";
 import {CreateBlogData, SortDataType, UpdateBlogData} from "../types/blog/input";
-import {BlogService} from "../domain/blog-service";
+import {BlogService} from "../services/blog-service";
 import {QueryBlogRepo} from "../repositories/blog-repo/query-blog-repo";
 import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
 import {SortPostType} from "../types/post/input";

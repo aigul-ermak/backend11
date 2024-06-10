@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {jwtService} from "../../application/jwt-sevice";
+import {jwtService} from "../../services/jwt-sevice";
 import {RefreshToken, RefreshTokenType} from "../../types/token/output";
 
 

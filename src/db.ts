@@ -21,14 +21,14 @@ const mongoURI = process.env.MONGO_URL|| `mongodb://0.0.0.0:27017/${dbName}`
 //     throw new Error('! Url doesn\'t found');
 // }
 // export const client = new MongoClient(url);
-// const db = client.db();
-// export const blogCollection = db.collection<BlogType>('blogs');
-// export const postCollection = db.collection<PostType>('post');
-// export const userCollection = db.collection<UserType>('user');
-// export const commentCollection = db.collection<CommentType>('comment');
-// //export const usedTokenCollection = db.collection<TokenType>('token');
-// export const sessionCollection = db.collection<SessionType>('session');
-// export const requestCollection = db.collection<ipUrlType>("apirequest")
+// const config = client.config();
+// export const blogCollection = config.collection<BlogType>('blogs');
+// export const postCollection = config.collection<PostType>('post');
+// export const userCollection = config.collection<UserType>('user');
+// export const commentCollection = config.collection<CommentType>('comment');
+// //export const usedTokenCollection = config.collection<TokenType>('token');
+// export const sessionCollection = config.collection<SessionType>('session');
+// export const requestCollection = config.collection<ipUrlType>("apirequest")
 
 // HW 10
 export async function runDb() {
@@ -45,7 +45,7 @@ export async function runDb() {
 
 // export const runDb = async () => {
 //     try {
-//         await client.db("admin").command({ping: 1})
+//         await client.config("admin").command({ping: 1})
 //         console.log('Connected successfully to server');
 //     } catch (e) {
 //         console.log('! Don\'t connected successfully to server');

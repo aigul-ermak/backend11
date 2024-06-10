@@ -1,6 +1,6 @@
 import {CreateBlogData, UpdateBlogData} from "../../types/blog/input";
 import {BlogType} from "../../types/blog/output";
-// import {blogCollection} from "../../db";
+// import {blogCollection} from "../../config";
 import {ObjectId} from "mongodb";
 import mongoose from "mongoose";
 import {blogSchema} from "../../mongoose_schemas/blog/output";
