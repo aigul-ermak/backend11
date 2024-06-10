@@ -24,8 +24,8 @@ exports.blogRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, func
         pageNumber: req.query.pageNumber,
         pageSize: req.query.pageSize
     };
-    // const blogs: OutputBlogType = await QueryBlogRepo.getAllBlogs(sortData)
-    // res.status(200).send(blogs)
+    const blogs = yield query_blog_repo_1.QueryBlogRepo.getAllBlogs(sortData);
+    res.status(200).send(blogs);
 }));
 exports.blogRouter.get('/:id', (0, blog_validator_1.mongoIdInParamValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const blogId = req.params.id;

@@ -34,8 +34,8 @@ blogRouter.get('/', async (req: RequestTypeWithQuery<SortDataType>, res: Respons
         pageSize: req.query.pageSize
     }
 
-    // const blogs: OutputBlogType = await QueryBlogRepo.getAllBlogs(sortData)
-    // res.status(200).send(blogs)
+    const blogs: OutputBlogType = await QueryBlogRepo.getAllBlogs(sortData)
+    res.status(200).send(blogs)
 
 })
 

@@ -12,7 +12,7 @@ const fullMongoURI = `${mongoURI}/${dbName}?retryWrites=true&w=majority`;
 // HW 10
 export async function runDb() {
     try {
-        await mongoose.connect(fullMongoURI);
+        await mongoose.connect(fullMongoURI, {});
         console.log('Connected successfully to MongoDB');
     } catch (e) {
         console.log('Failed to connect to MongoDB');

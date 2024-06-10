@@ -13,7 +13,6 @@ exports.QueryBlogRepo = void 0;
 const mapper_1 = require("../../types/blog/mapper");
 const blog_1 = require("../../models/blog");
 class QueryBlogRepo {
-    //static async getAllBlogs(sortData: SortDataType) : Promise<OutputBlogType> {
     static getAllBlogs(sortData) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c, _d, _e;
@@ -31,29 +30,29 @@ class QueryBlogRepo {
                     }
                 };
             }
-            // const blogs: WithId<BlogType>[] = await blogSchema
-            //     .find(filter)
-            //     .sort({[sortBy]: sortDirection === 'desc' ? -1: 1})
-            //     .skip((pageNumber - 1) * +pageSize)
-            //     .limit(+pageSize)
-            //     .toArray();
-            //
-            // const totalCount: number = await blogCollection.countDocuments(filter);
-            //
-            // const pageCount: number = Math.ceil(totalCount / +pageSize);
-            //
-            // return {
-            //     pagesCount: pageCount,
-            //     page: +pageNumber,
-            //     pageSize: +pageSize,
-            //     totalCount: totalCount,
-            //     items: blogs.map(blogMapper)
-            // }
+            //TODO type?
+            //const blogs: WithId<BlogType>[] = await BlogModel.find(filter)
+            const blogs = yield blog_1.BlogModel.find(filter)
+                .sort({ [sortBy]: sortDirection === 'desc' ? -1 : 1 })
+                .skip((pageNumber - 1) * +pageSize)
+                .limit(+pageSize)
+                .exec();
+            //.toArray();
+            const totalCount = yield blog_1.BlogModel.countDocuments(filter);
+            const pageCount = Math.ceil(totalCount / +pageSize);
+            return {
+                pagesCount: pageCount,
+                page: +pageNumber,
+                pageSize: +pageSize,
+                totalCount: totalCount,
+                items: blogs.map(mapper_1.blogMapper)
+            };
         });
     }
     static getBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blog = yield blog_1.BlogModel.findOne({ id: id });
+            //TODO return type?
+            const blog = yield blog_1.BlogModel.findById(id);
             if (!blog) {
                 return null;
             }
