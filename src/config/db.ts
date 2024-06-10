@@ -1,44 +1,39 @@
-import {VideoType} from "../types/video/output";
-import {BlogType} from "../types/blog/output";
-import {PostType} from "../types/post/output";
+import {BlogType} from "./types/blog/output";
+import {MongoClient} from 'mongodb';
+import dotenv from 'dotenv'
+import {PostType} from "./types/post/output";
+import {UserType} from "./types/user/output";
+import {CommentType} from "./types/comment/output";
+import {ipUrlType} from "./types/security/output";
+import {SessionType} from "./types/token/output";
+import mongoose from "mongoose";
 
-type DbType = {
-    videos: VideoType[],
-    blogs: BlogType[],
-    posts: PostType[]
+
+dotenv.config()
+
+const dbName = 'home_works'
+const mongoURI = process.env.MONGO_URL|| `mongodb://0.0.0.0:27017/${dbName}`
+
+// HW 10
+export async function runDb() {
+    try {
+        await mongoose.connect(mongoURI)
+        console.log('it is ok')
+    } catch (e) {
+        console.log('no connection')
+        await mongoose.disconnect()
+    }
 }
 
-console.log("config.ts")
-export const db: DbType = {
-    videos: [{
-        id: 1,
-        title: "string",
-        author: "string",
-        canBeDownloaded: true,
-        minAgeRestriction: null,
-        createdAt: "2023-11-11T18:01:12.021Z",
-        publicationDate: "2023-11-11T18:01:12.021Z",
-        availableResolutions: [
-            "P144"
-        ]
-    }],
-    blogs: [
-        // {
-        //     id: "1",
-        //     name: "Blog # 1",
-        //     description: "About something",
-        //     websiteUrl: "www.blog.som"
-        // }
-    ],
+// before HW 10
 
-    posts: [
-        // {
-        //     id: "1",
-        //     title: "post # 1",
-        //     shortDescription: "short description",
-        //     content: "content",
-        //     blogId: "2",
-        //     blogName: "my blog name"
-        // }
-    ]
-}
+// export const runDb = async () => {
+//     try {
+//         await client.config("admin").command({ping: 1})
+//         console.log('Connected successfully to server');
+//     } catch (e) {
+//         console.log('! Don\'t connected successfully to server');
+//         console.log(e)
+//         await client.close();
+//     }
+// };

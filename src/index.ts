@@ -1,5 +1,5 @@
-import {configApp} from "./settings";
-import {runDb} from "./db";
+import {configApp} from "./config/settings";
+import {runDb} from "./config/db";
 
 const port = 3000;
 

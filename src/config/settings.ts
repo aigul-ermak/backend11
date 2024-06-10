@@ -1,15 +1,15 @@
 import express from "express";
 
-import {videosRouter} from "./routes/videos-router";
-import {blogRouter} from "./routes/blog-router";
-import {postRouter} from "./routes/post-router";
-import {testingRouter} from "./routes/testing-router";
+import {videosRouter} from "../routes/videos-router";
+import {blogRouter} from "../routes/blog-router";
+import {postRouter} from "../routes/post-router";
+import {testingRouter} from "../routes/testing-router";
 import morganBody from "morgan-body";
 import bodyParser  from "body-parser";
-import {userRouter} from "./routes/user-router";
-import {authRouter} from "./routes/auth-router";
-import {commentRouter} from "./routes/comment-router";
-import {securityRouter} from "./routes/security-router";
+import {userRouter} from "../routes/user-router";
+import {authRouter} from "../routes/auth-router";
+import {commentRouter} from "../routes/comment-router";
+import {securityRouter} from "../routes/security-router";
 
 export const configApp = () => {
     const app = express()
