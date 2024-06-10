@@ -6,6 +6,7 @@ import {PostRepo} from "../repositories/post-repo/post-repo";
 import {OutputItemPostType,  PostType} from "../types/post/output";
 import {BlogType, OutputItemBlogType} from "../types/blog/output";
 import {BlogModel} from "../models/blog";
+import {ObjectId} from "mongodb";
 
 
 export class BlogService {
@@ -58,28 +59,28 @@ export class BlogService {
     //     return post;
     // }
 
-    // static async updateBlog(blogId: string, updateData: UpdateBlogData): Promise<boolean> {
-    //
-    //     const blog: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId);
-    //
-    //     if (!blog) {
-    //         return false;
-    //     }
-    //
-    //     return await BlogModel.updateBlog(blogId, updateData)
-    // }
+    static async updateBlog(blogId: string, updateData: UpdateBlogData): Promise<boolean> {
 
-    // static async deleteBlog(blogId: string): Promise<true | null> {
-    //
-    //     const blogExists: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId)
-    //
-    //     if (!blogExists) {
-    //         return null;
-    //     }
-    //
-    //     await BlogModel.deleteBlog(blogId)
-    //     return true
-    // }
+        const blog: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId);
+
+        if (!blog) {
+            return false;
+        }
+
+        return await BlogRepo.updateBlog(blogId, updateData)
+    }
+
+    static async deleteBlog(blogId: string): Promise<true | null> {
+
+        const blogExists: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId)
+
+        if (!blogExists) {
+            return null;
+        }
+
+        await BlogRepo.deleteBlog(blogId);
+        return true
+    }
 }
 
 

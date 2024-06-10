@@ -2,6 +2,7 @@ import {CreateBlogData, UpdateBlogData} from "../../types/blog/input";
 import {BlogType} from "../../types/blog/output";
 import mongoose from "mongoose";
 import {BlogModel, blogSchema} from "../../models/blog";
+import {ObjectId} from "mongodb";
 
 
 export class BlogRepo {
@@ -17,20 +18,20 @@ export class BlogRepo {
 
     }
 
-    // static async updateBlog(id: string, updateData: UpdateBlogData): Promise<boolean> {
-        // const res = await blogSchema.updateOne({_id: new ObjectId(id)}, {
-        //     $set: {
-        //         name: updateData.name,
-        //         description: updateData.description,
-        //         websiteUrl: updateData.websiteUrl
-        //     }
-        // })
-        // return !!res.matchedCount;
-    // }
+    static async updateBlog(id: string, updateData: UpdateBlogData): Promise<boolean> {
+        const res = await BlogModel.updateOne({_id: new ObjectId(id)}, {
+            $set: {
+                name: updateData.name,
+                description: updateData.description,
+                websiteUrl: updateData.websiteUrl
+            }
+        })
+        return !!res.matchedCount;
+    }
 
-    // static async deleteBlog(id: string): Promise<boolean> {
-        // const res = await blogCollection.deleteOne({_id: new ObjectId(id)});
+    static async deleteBlog(id: string): Promise<boolean> {
+        const res = await BlogModel.deleteOne({_id: new ObjectId(id)});
 
-        // return !!res.deletedCount;
-    // }
+        return !!res.deletedCount;
+    }
 }
