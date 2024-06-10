@@ -1,29 +1,30 @@
 import {SortDataType} from "../../types/blog/input";
 import {blogMapper} from "../../types/blog/mapper";
 import {BlogType, OutputBlogType, OutputItemBlogType} from "../../types/blog/output";
-import {ObjectId, WithId} from "mongodb";
+import {BlogModel, blogSchema} from "../../models/blog";
 
-// export class QueryBlogRepo {
-    // static async getAllBlogs(sortData: SortDataType) : Promise<OutputBlogType> {
-    //
-    //     const sortDirection = sortData.sortDirection ?? 'desc'
-    //     const sortBy = sortData.sortBy ?? 'createdAt'
-    //     const searchNameTerm = sortData.searchNameTerm ?? null
-    //     const pageSize = sortData.pageSize ?? 10
-    //     const pageNumber = sortData.pageNumber ?? 1
-    //
-    //     let filter = {}
-    //
-    //     if(searchNameTerm) {
-    //         filter = {
-    //             name: {
-    //                 $regex: searchNameTerm,
-    //                 $options: 'i'
-    //             }
-    //         }
-    //     }
+export class QueryBlogRepo {
+    //static async getAllBlogs(sortData: SortDataType) : Promise<OutputBlogType> {
+    static async getAllBlogs(sortData: SortDataType)  {
 
-        // const blogs: WithId<BlogType>[] = await blogCollection
+        const sortDirection = sortData.sortDirection ?? 'desc'
+        const sortBy = sortData.sortBy ?? 'createdAt'
+        const searchNameTerm = sortData.searchNameTerm ?? null
+        const pageSize = sortData.pageSize ?? 10
+        const pageNumber = sortData.pageNumber ?? 1
+
+        let filter = {}
+
+        if(searchNameTerm) {
+            filter = {
+                name: {
+                    $regex: searchNameTerm,
+                    $options: 'i'
+                }
+            }
+        }
+
+        // const blogs: WithId<BlogType>[] = await blogSchema
         //     .find(filter)
         //     .sort({[sortBy]: sortDirection === 'desc' ? -1: 1})
         //     .skip((pageNumber - 1) * +pageSize)
@@ -31,7 +32,7 @@ import {ObjectId, WithId} from "mongodb";
         //     .toArray();
         //
         // const totalCount: number = await blogCollection.countDocuments(filter);
-
+        //
         // const pageCount: number = Math.ceil(totalCount / +pageSize);
         //
         // return {
@@ -41,15 +42,16 @@ import {ObjectId, WithId} from "mongodb";
         //     totalCount: totalCount,
         //     items: blogs.map(blogMapper)
         // }
-    // }
+    }
 
-    // static async getBlogById(id: string): Promise<OutputItemBlogType | null> {
-    //
-    //     const blog: WithId<BlogType> | null = await blogCollection.findOne({_id: new ObjectId(id)})
-    //
-    //     if (!blog) {
-    //         return null
-    //     }
-    //     return blogMapper(blog)
-    // }
-// }
+    static async getBlogById(id: string): Promise<OutputItemBlogType | null> {
+
+        const blog: any | null = await BlogModel.findOne({id: id});
+
+        if (!blog) {
+            return null;
+        }
+        return blogMapper(blog)
+
+    }
+}

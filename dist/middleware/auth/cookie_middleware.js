@@ -12,12 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.countMiddleware = exports.sessionRefreshTokeMiddleware = exports.cookieMiddleware = void 0;
+exports.cookieMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const settings_1 = require("../../application/settings");
-const query_security_repo_1 = require("../../repositories/security-repo/query-security-repo");
-const jwt_sevice_1 = require("../../application/jwt-sevice");
-const security_repo_1 = require("../../repositories/security-repo/security-repo");
+const settings_1 = require("../../services/settings");
 const cookieMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
@@ -39,43 +36,55 @@ const cookieMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.cookieMiddleware = cookieMiddleware;
-const sessionRefreshTokeMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const token = (_c = req.cookies) === null || _c === void 0 ? void 0 : _c.refreshToken;
-    const payload = yield jwt_sevice_1.jwtService.getPayloadFromToken(token);
-    console.log(payload);
-    if (!payload) {
-        res.sendStatus(401);
-        return;
-    }
-    const sessionExists = yield query_security_repo_1.QuerySecurityRepo.checkRefreshTokenInList(payload.userId, payload.deviceId);
-    if (!sessionExists) {
-        res.sendStatus(401);
-        return;
-    }
-    if (sessionExists.iatDate != payload.iatDate) {
-        res.sendStatus(401);
-        return;
-    }
-    next();
-});
-exports.sessionRefreshTokeMiddleware = sessionRefreshTokeMiddleware;
-const countMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const ipUser = req.ip;
-    const urlUser = req.originalUrl; // /login/regi
-    const currentTime = new Date();
-    yield security_repo_1.SecurityRepo.insertRequestFromUser({
-        ip: ipUser,
-        url: urlUser,
-        date: currentTime,
-    });
-    const tenSecondsAgo = new Date(currentTime.getTime() - 10000);
-    const count = yield security_repo_1.SecurityRepo.countRequests(ipUser, urlUser, tenSecondsAgo);
-    if (count > 5) {
-        res.sendStatus(429);
-        return;
-    }
-    next();
-});
-exports.countMiddleware = countMiddleware;
+// export const sessionRefreshTokeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+//
+//     const token = req.cookies?.refreshToken;
+//
+//     const payload: RefreshToken | null = await jwtService.getPayloadFromToken(token);
+//     console.log(payload)
+//
+//     if (!payload) {
+//
+//         res.sendStatus(401);
+//         return;
+//     }
+//
+//     const sessionExists: SessionType | null = await QuerySecurityRepo.checkRefreshTokenInList(payload.userId, payload.deviceId);
+//
+//     if (!sessionExists) {
+//         res.sendStatus(401);
+//         return;
+//     }
+//
+//     if (sessionExists.iatDate != payload.iatDate) {
+//         res.sendStatus(401);
+//         return;
+//     }
+//
+//     next();
+//
+// }
+// export const countMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+//     const ipUser: any = req.ip;
+//     const urlUser: string = req.originalUrl; // /login/regi
+//     const currentTime = new Date();
+//
+//
+//     await SecurityRepo.insertRequestFromUser({
+//         ip: ipUser,
+//         url: urlUser,
+//         date: currentTime,
+//     });
+//
+//     const tenSecondsAgo = new Date(currentTime.getTime() - 10000);
+//
+//     const count = await SecurityRepo.countRequests(ipUser, urlUser, tenSecondsAgo);
+//
+//     if (count > 5) {
+//         res.sendStatus(429);
+//         return
+//     }
+//
+//     next();
+// };
 //# sourceMappingURL=cookie_middleware.js.map

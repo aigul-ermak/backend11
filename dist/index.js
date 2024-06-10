@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
-const settings_1 = require("./settings");
-const db_1 = require("./db");
+const settings_1 = require("./config/settings");
+const db_1 = require("./config/db");
 const port = 3000;
 exports.app = (0, settings_1.configApp)();
 console.log("index.ts");

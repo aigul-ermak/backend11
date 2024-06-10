@@ -11,14 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.testingRouter = void 0;
 const express_1 = require("express");
-const db_1 = require("../db");
+const blog_1 = require("../models/blog");
 exports.testingRouter = (0, express_1.Router)({});
 exports.testingRouter.delete('/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield db_1.blogCollection.deleteMany({});
-    yield db_1.postCollection.deleteMany({});
-    yield db_1.userCollection.deleteMany({});
-    yield db_1.sessionCollection.deleteMany({});
-    yield db_1.requestCollection.deleteMany({});
+    yield blog_1.BlogModel.deleteMany({});
+    // await postCollection.deleteMany({});
+    // await userCollection.deleteMany({});
+    // await sessionCollection.deleteMany({});
+    // await requestCollection.deleteMany({});
     res.sendStatus(204);
 }));
 //# sourceMappingURL=testing-router.js.map

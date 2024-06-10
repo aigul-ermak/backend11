@@ -1,8 +1,8 @@
 import {BlogType, OutputItemBlogType} from "../types/blog/output";
-import {blogCollection} from "../db";
 import {InsertOneResult, ObjectId, UpdateResult, WithId} from "mongodb";
 import {blogMapper} from "../types/blog/mapper";
 import {CreateBlogData, SortDataType, UpdateBlogData} from "../types/blog/input";
+import {BlogModel} from "../models/blog";
 
 export class BlogRepository {
     static async getAllBlogs(sortData: SortDataType) {
@@ -23,29 +23,29 @@ export class BlogRepository {
             }
         }
 
-        const blogs = await blogCollection
+        const blogs = await BlogModel
             .find(filter)
             .sort({[sortBy]: sortDirection === 'desc' ? -1: 1})
             .skip((pageNumber - 1) * +pageSize)
-            .limit(+pageSize)
-            .toArray();
+            .limit(+pageSize);
+            // .toArray();
 
-        const totalCount : number = await blogCollection.countDocuments(filter);
+        // const totalCount : number = await blogCollection.countDocuments(filter);
+        //
+        // const pageCount: number = Math.ceil(totalCount / +pageSize);
 
-        const pageCount: number = Math.ceil(totalCount / +pageSize);
-
-        return {
-            pageCount: pageCount,
-            page: +pageSize,
-            pageSize: +pageSize,
-            totalCount: totalCount,
-            items: blogs.map(blogMapper)
-        }
+        // return {
+        //     pageCount: pageCount,
+        //     page: +pageSize,
+        //     pageSize: +pageSize,
+        //     totalCount: totalCount,
+        //     items: blogs.map(blogMapper)
+        // }
     }
 
     static async getBlogById(id: string): Promise<OutputItemBlogType | null> {
 
-        const blog: WithId<BlogType> | null = await blogCollection.findOne({_id: new ObjectId(id)})
+        const blog: any| null = await BlogModel.findOne({id: id});
 
         if (!blog) {
             return null
@@ -53,7 +53,8 @@ export class BlogRepository {
         return blogMapper(blog)
     }
 
-    static async createBlog(data: CreateBlogData) : Promise<String> {
+    //tatic async createBlog(data: CreateBlogData) : Promise<String> {
+    static async createBlog(data: CreateBlogData)  {
 
         const newBlog: BlogType = {
             ...data,
@@ -61,13 +62,13 @@ export class BlogRepository {
             isMembership: false
         }
 
-        const res: InsertOneResult<BlogType> = await blogCollection.insertOne(newBlog);
-        return res.insertedId.toString();
+        // const res: InsertOneResult<BlogType> = await BlogModel.insertMany(newBlog);
+        // return res.insertedId.toString();
     }
 
 
     static async updateBlog(id: string, updateData: UpdateBlogData): Promise<boolean> {
-        const res: UpdateResult<BlogType> = await blogCollection.updateOne({_id: new ObjectId(id)}, {
+        const res: UpdateResult<BlogType> = await BlogModel.updateOne({_id: new ObjectId(id)}, {
             $set: {
                 name: updateData.name,
                 description: updateData.description,
@@ -78,7 +79,7 @@ export class BlogRepository {
     }
 
     static async deleteBlog(id: string): Promise<boolean> {
-        const res = await blogCollection.deleteOne({_id: new ObjectId(id)});
+        const res = await BlogModel.deleteOne({_id: new ObjectId(id)});
 
         return !!res.deletedCount;
     }

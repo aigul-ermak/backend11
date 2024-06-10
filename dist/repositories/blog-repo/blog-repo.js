@@ -10,31 +10,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlogRepo = void 0;
-const db_1 = require("../../db");
-const mongodb_1 = require("mongodb");
+const blog_1 = require("../../models/blog");
 class BlogRepo {
+    //static async createBlog(data: BlogType): Promise<string | null> {
     static createBlog(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.blogCollection.insertOne(data);
-            return result.insertedId.toString();
-        });
-    }
-    static updateBlog(id, updateData) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const res = yield db_1.blogCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, {
-                $set: {
-                    name: updateData.name,
-                    description: updateData.description,
-                    websiteUrl: updateData.websiteUrl
-                }
-            });
-            return !!res.matchedCount;
-        });
-    }
-    static deleteBlog(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const res = yield db_1.blogCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
-            return !!res.deletedCount;
+            try {
+                const res = yield blog_1.BlogModel.create(data);
+                return res._id.toString();
+            }
+            catch (e) {
+                console.log(e);
+                return null;
+            }
         });
     }
 }

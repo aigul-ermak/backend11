@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkTokenMiddleware = void 0;
-const jwt_sevice_1 = require("../../application/jwt-sevice");
+const jwt_sevice_1 = require("../../services/jwt-sevice");
 const checkTokenMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     const user = req.user;

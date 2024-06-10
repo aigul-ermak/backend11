@@ -5,6 +5,7 @@ import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
 import {PostRepo} from "../repositories/post-repo/post-repo";
 import {OutputItemPostType,  PostType} from "../types/post/output";
 import {BlogType, OutputItemBlogType} from "../types/blog/output";
+import {BlogModel} from "../models/blog";
 
 
 export class BlogService {
@@ -15,7 +16,12 @@ export class BlogService {
             createdAt: new Date().toISOString(),
             isMembership: false
         }
-        const blogId: string | null = await BlogRepo.createBlog(newBlog)
+
+        const blogId: string | null = await BlogRepo.createBlog(newBlog);
+        if (!blogId) {
+            return null;
+        }
+
         const blog: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId)
 
         if (!blog) {
@@ -24,56 +30,56 @@ export class BlogService {
         return blog;
     }
 
-    static async createPostToBlog(blogId: string, postData: {
-        title: string,
-        shortDescription: string,
-        content: string
-    }): Promise<OutputItemPostType | null> {
-        const blog: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId)
+    // static async createPostToBlog(blogId: string, postData: {
+    //     title: string,
+    //     shortDescription: string,
+    //     content: string
+    // }): Promise<OutputItemPostType | null> {
+    //     const blog: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId)
+    //
+    //     if (!blog) {
+    //         return null;
+    //     }
+    //
+    //     const newPost: PostType = {
+    //         ...postData,
+    //         blogId: blogId,
+    //         blogName: blog.name,
+    //         createdAt: new Date().toISOString()
+    //     }
+    //
+    //     const postId: string = await PostRepo.createPostToBlog(newPost)
+    //
+    //     if (!postId) {
+    //         return null;
+    //     }
+    //
+    //     const post: OutputItemPostType | null = await QueryPostRepo.getPostById(postId);
+    //     return post;
+    // }
 
-        if (!blog) {
-            return null;
-        }
+    // static async updateBlog(blogId: string, updateData: UpdateBlogData): Promise<boolean> {
+    //
+    //     const blog: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId);
+    //
+    //     if (!blog) {
+    //         return false;
+    //     }
+    //
+    //     return await BlogModel.updateBlog(blogId, updateData)
+    // }
 
-        const newPost: PostType = {
-            ...postData,
-            blogId: blogId,
-            blogName: blog.name,
-            createdAt: new Date().toISOString()
-        }
-
-        const postId: string = await PostRepo.createPostToBlog(newPost)
-
-        if (!postId) {
-            return null;
-        }
-
-        const post: OutputItemPostType | null = await QueryPostRepo.getPostById(postId);
-        return post;
-    }
-
-    static async updateBlog(blogId: string, updateData: UpdateBlogData): Promise<boolean> {
-
-        const blog: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId);
-
-        if (!blog) {
-            return false;
-        }
-
-        return await BlogRepo.updateBlog(blogId, updateData)
-    }
-
-    static async deleteBlog(blogId: string): Promise<true | null> {
-
-        const blogExists: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId)
-
-        if (!blogExists) {
-            return null;
-        }
-
-        await BlogRepo.deleteBlog(blogId)
-        return true
-    }
+    // static async deleteBlog(blogId: string): Promise<true | null> {
+    //
+    //     const blogExists: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId)
+    //
+    //     if (!blogExists) {
+    //         return null;
+    //     }
+    //
+    //     await BlogModel.deleteBlog(blogId)
+    //     return true
+    // }
 }
 
 

@@ -10,28 +10,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostRepo = void 0;
-const db_1 = require("../../db");
 const mongodb_1 = require("mongodb");
 const query_blog_repo_1 = require("../blog-repo/query-blog-repo");
+const post_1 = require("../../models/post");
 class PostRepo {
     static createPostToBlog(newData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield db_1.postCollection.insertOne(newData);
-            return res.insertedId.toString();
+            // const res = await postCollection.insertOne(newData);
+            // return res.insertedId.toString();
         });
     }
     static createPost(newData, blog) {
         return __awaiter(this, void 0, void 0, function* () {
-            const createdAt = new Date();
-            const newPost = Object.assign(Object.assign({}, newData), { blogName: blog.name, createdAt: createdAt.toISOString() });
-            const res = yield db_1.postCollection.insertOne(newPost);
-            return res.insertedId.toString();
+            const newPost = Object.assign(Object.assign({}, newData), { blogName: blog.name, createdAt: new Date().toISOString() });
+            const post = new post_1.PostModel(newPost);
+            const res = yield post.save();
+            return res._id.toString();
         });
     }
     static updatePost(id, updateData) {
         return __awaiter(this, void 0, void 0, function* () {
             const blog = yield query_blog_repo_1.QueryBlogRepo.getBlogById(updateData.blogId);
-            const res = yield db_1.postCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, {
+            const res = yield post_1.PostModel.updateOne({ _id: new mongodb_1.ObjectId(id) }, {
                 $set: {
                     title: updateData.title,
                     shortDescription: updateData.shortDescription,
@@ -45,7 +45,7 @@ class PostRepo {
     }
     static deletePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield db_1.postCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
+            const res = yield post_1.PostModel.deleteOne({ _id: new mongodb_1.ObjectId(id) });
             return !!res.deletedCount;
         });
     }

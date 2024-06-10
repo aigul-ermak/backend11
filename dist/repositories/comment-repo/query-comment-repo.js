@@ -10,42 +10,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryCommentRepo = void 0;
-const db_1 = require("../../db");
-const mongodb_1 = require("mongodb");
-const mapper_1 = require("../../types/comment/mapper");
 class QueryCommentRepo {
-    static getCommentById(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield db_1.commentCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
-            if (!comment) {
-                return null;
-            }
-            return (0, mapper_1.commentMapper)(comment);
-        });
-    }
+    // static async getCommentById(id: string): Promise<OutputItemCommentType | null> {
+    // const comment: WithId<CommentType> | null = await commentCollection.findOne({_id: new ObjectId(id)})
+    //
+    // if (!comment) {
+    //     return null
+    // }
+    // return commentMapper(comment)
+    // }
     static getCommentByPostId(postId, sortData) {
-        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c, _d;
             const sortDirection = (_a = sortData.sortDirection) !== null && _a !== void 0 ? _a : 'desc';
             const sortBy = (_b = sortData.sortBy) !== null && _b !== void 0 ? _b : 'createdAt';
             const pageSize = (_c = sortData.pageSize) !== null && _c !== void 0 ? _c : 10;
             const pageNumber = (_d = sortData.pageNumber) !== null && _d !== void 0 ? _d : 1;
             let filter = { postId: postId };
-            const comment = yield db_1.commentCollection
-                .find(filter)
-                .sort({ [sortBy]: sortDirection === 'desc' ? -1 : 1 })
-                .skip((pageNumber - 1) * +pageSize)
-                .limit(+pageSize)
-                .toArray();
-            const totalCount = yield db_1.commentCollection.countDocuments(filter);
-            const pageCount = Math.ceil(totalCount / +pageSize);
-            return {
-                pagesCount: pageCount,
-                page: +pageNumber,
-                pageSize: +pageSize,
-                totalCount: totalCount,
-                items: comment.map(mapper_1.commentMapper)
-            };
+            // const comment: WithId<CommentType>[] = await commentCollection
+            //     .find(filter)
+            //     .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
+            //     .skip((pageNumber - 1) * +pageSize)
+            //     .limit(+pageSize)
+            //     .toArray();
+            //
+            // const totalCount: number = await commentCollection.countDocuments(filter);
+            //
+            // const pageCount: number = Math.ceil(totalCount / +pageSize);
+            // return {
+            //     pagesCount: pageCount,
+            //     page: +pageNumber,
+            //     pageSize: +pageSize,
+            //     totalCount: totalCount,
+            //     items: comment.map(commentMapper)
+            // }
         });
     }
 }

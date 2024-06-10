@@ -4,7 +4,7 @@ import {PostRepo} from "../repositories/post-repo/post-repo";
 import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
 
 export class PostService {
-    static async createPost(newData: CreatePostData) {
+    static async createPost(newData: CreatePostData): Promise<string | null> {
 
         const blog = await QueryBlogRepo.getBlogById(newData.blogId)
 
@@ -30,11 +30,11 @@ export class PostService {
         return await PostRepo.updatePost(postId, updateData);
     }
 
-    static async deleteBlog(postId: string) {
-        const postExists = await QueryPostRepo.getPostById(postId)
-        if (!postExists) {
-            throw new Error('Post not found');
-        }
-        await PostRepo.deletePost(postId)
-    }
+    // static async deleteBlog(postId: string) {
+    //     const postExists = await QueryPostRepo.getPostById(postId)
+    //     if (!postExists) {
+    //         throw new Error('Post not found');
+    //     }
+    //     await PostRepo.deletePost(postId)
+    // }
 }
