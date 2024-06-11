@@ -1,4 +1,4 @@
-import {BlogType, OutputItemBlogType} from "../types/blog/output";
+import {BlogDBType, OutputItemBlogType} from "../types/blog/output";
 import {InsertOneResult, ObjectId, UpdateResult, WithId} from "mongodb";
 import {blogMapper} from "../types/blog/mapper";
 import {CreateBlogData, SortDataType, UpdateBlogData} from "../types/blog/input";
@@ -56,7 +56,7 @@ export class BlogRepository {
     //tatic async createBlog(data: CreateBlogData) : Promise<String> {
     static async createBlog(data: CreateBlogData)  {
 
-        const newBlog: BlogType = {
+        const newBlog: BlogDBType = {
             ...data,
             createdAt: new Date().toISOString(),
             isMembership: false
@@ -68,7 +68,7 @@ export class BlogRepository {
 
 
     static async updateBlog(id: string, updateData: UpdateBlogData): Promise<boolean> {
-        const res: UpdateResult<BlogType> = await BlogModel.updateOne({_id: new ObjectId(id)}, {
+        const res: UpdateResult<BlogDBType> = await BlogModel.updateOne({_id: new ObjectId(id)}, {
             $set: {
                 name: updateData.name,
                 description: updateData.description,

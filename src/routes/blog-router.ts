@@ -12,7 +12,7 @@ import {
     blogValidation,
     mongoIdInParamValidation
 } from "../validators/blog-validator";
-import {BlogType, OutputBlogType, OutputItemBlogType} from "../types/blog/output";
+import {BlogDBType, OutputBlogType, OutputItemBlogType} from "../types/blog/output";
 import {Params} from "./videos-router";
 import {CreateBlogData, SortDataType, UpdateBlogData} from "../types/blog/input";
 import {BlogService} from "../services/blog-service";

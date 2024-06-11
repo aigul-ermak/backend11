@@ -3,7 +3,7 @@ import {app} from "../src";
 import dotenv from 'dotenv'
 
 dotenv.config()
-import {BlogType} from "../src/types/blog/output";
+import {BlogDBType} from "../src/types/blog/output";
 
 // import {client} from "../src/config";
 import {response} from "express";
@@ -14,7 +14,7 @@ const dbName = 'blogCollection'
 const clientTest = client;
 
 describe('/blogs', () => {
-    let newBlog: BlogType | null = null
+    let newBlog: BlogDBType | null = null
 
     beforeAll(async () => {
         await clientTest.connect()

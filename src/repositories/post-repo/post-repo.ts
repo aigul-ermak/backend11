@@ -1,7 +1,7 @@
 import {CreatePostData, UpdatePostData} from "../../types/post/input";
 import {PostType} from "../../types/post/output";
 import {ObjectId} from "mongodb";
-import {BlogType} from "../../types/blog/output";
+import {BlogDBType} from "../../types/blog/output";
 import {QueryBlogRepo} from "../blog-repo/query-blog-repo";
 import {PostModel} from "../../models/post";
 import {PostService} from "../../services/post-service";
@@ -14,7 +14,7 @@ export class PostRepo {
 
     }
 
-    static async createPost(newData: CreatePostData, blog: BlogType): Promise<string> {
+    static async createPost(newData: CreatePostData, blog: BlogDBType): Promise<string> {
         const newPost: PostType = {
             ...newData,
             blogName: blog.name,

@@ -1,6 +1,6 @@
 import {SortDataType} from "../../types/blog/input";
 import {blogMapper} from "../../types/blog/mapper";
-import {BlogType, OutputBlogType, OutputItemBlogType} from "../../types/blog/output";
+import {BlogDBType, OutputBlogType, OutputItemBlogType} from "../../types/blog/output";
 import {BlogModel, blogSchema} from "../../models/blog";
 import {WithId} from "mongodb";
 

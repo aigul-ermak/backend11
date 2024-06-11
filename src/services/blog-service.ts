@@ -4,7 +4,7 @@ import {QueryBlogRepo} from "../repositories/blog-repo/query-blog-repo";
 import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
 import {PostRepo} from "../repositories/post-repo/post-repo";
 import {OutputItemPostType,  PostType} from "../types/post/output";
-import {BlogType, OutputItemBlogType} from "../types/blog/output";
+import {BlogDBType, OutputItemBlogType} from "../types/blog/output";
 import {BlogModel} from "../models/blog";
 import {ObjectId} from "mongodb";
 
@@ -12,7 +12,7 @@ import {ObjectId} from "mongodb";
 export class BlogService {
     static async createBlog(newData: CreateBlogData): Promise<OutputItemBlogType | null> {
 
-        const newBlog: BlogType = {
+        const newBlog: BlogDBType = {
             ...newData,
             createdAt: new Date().toISOString(),
             isMembership: false

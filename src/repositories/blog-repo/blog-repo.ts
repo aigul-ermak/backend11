@@ -1,5 +1,5 @@
 import {CreateBlogData, UpdateBlogData} from "../../types/blog/input";
-import {BlogType} from "../../types/blog/output";
+import {BlogDBType} from "../../types/blog/output";
 import mongoose from "mongoose";
 import {BlogModel, blogSchema} from "../../models/blog";
 import {ObjectId} from "mongodb";
@@ -7,7 +7,7 @@ import {ObjectId} from "mongodb";
 
 export class BlogRepo {
     //static async createBlog(data: BlogType): Promise<string | null> {
-    static async createBlog(data: BlogType){
+    static async createBlog(data: BlogDBType){
         try {
             const res = await BlogModel.create(data);
             return res._id.toString();

@@ -1,5 +1,5 @@
 import {WithId} from "mongodb";
-import {BlogType, OutputItemBlogType} from "../blog/output";
+import {BlogDBType, OutputItemBlogType} from "../blog/output";
 import {OutputItemPostType, PostType} from "./output";
 import {shortDescriptionValidation} from "../../validators/post-validator";
 

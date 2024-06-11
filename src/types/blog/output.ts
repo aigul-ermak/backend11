@@ -16,7 +16,7 @@ export type OutputBlogType = {
 }
 
 
-export type BlogType = {
+export type BlogDBType = {
     name: string,
     description: string,
     websiteUrl: string,
