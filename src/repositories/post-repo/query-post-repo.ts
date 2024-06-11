@@ -1,7 +1,8 @@
-import {OutputItemPostType, OutputPostType, PostType} from "../../types/post/output";
+import {OutputItemPostType, OutputPostType, PostDBType} from "../../types/post/output";
 import {postMapper} from "../../types/post/mapper";
 import {ObjectId, WithId} from "mongodb";
 import {SortPostType} from "../../types/post/input";
+import {PostModel} from "../../models/post";
 
 export class QueryPostRepo {
     // static async getAllPosts(sortData: SortPostType): Promise<OutputPostType> {
@@ -33,14 +34,14 @@ export class QueryPostRepo {
     //     }
     // }
 
-    // static async getPostById(id: string): Promise<OutputItemPostType | null> {
-    //     const post: WithId<PostType> | null = await postCollection.findOne({_id: new ObjectId(id)})
-    //
-    //     if (!post) {
-    //         return null
-    //     }
-    //     return postMapper(post)
-    // }
+    static async getPostById(id: string): Promise<OutputItemPostType | null> {
+        const post: WithId<PostDBType> | null = await PostModel.findOne({_id: new ObjectId(id)})
+
+        if (!post) {
+            return null
+        }
+        return postMapper(post)
+    }
 
     // static async getPostsByBlogId(blogId: string, sortData:SortPostType ) {
     //

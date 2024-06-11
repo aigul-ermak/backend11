@@ -3,7 +3,7 @@ import {CreateBlogData, UpdateBlogData} from "../types/blog/input";
 import {QueryBlogRepo} from "../repositories/blog-repo/query-blog-repo";
 import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
 import {PostRepo} from "../repositories/post-repo/post-repo";
-import {OutputItemPostType,  PostType} from "../types/post/output";
+import {OutputItemPostType,  PostDBType} from "../types/post/output";
 import {BlogDBType, OutputItemBlogType} from "../types/blog/output";
 import {BlogModel} from "../models/blog";
 import {ObjectId} from "mongodb";

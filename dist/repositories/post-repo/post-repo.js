@@ -20,12 +20,16 @@ class PostRepo {
             // return res.insertedId.toString();
         });
     }
-    static createPost(newData, blog) {
+    static createPost(data, blog) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newPost = Object.assign(Object.assign({}, newData), { blogName: blog.name, createdAt: new Date().toISOString() });
-            const post = new post_1.PostModel(newPost);
-            const res = yield post.save();
-            return res._id.toString();
+            try {
+                const res = yield post_1.PostModel.create(data);
+                return res._id.toString();
+            }
+            catch (e) {
+                console.log(e);
+                return null;
+            }
         });
     }
     static updatePost(id, updateData) {

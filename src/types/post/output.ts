@@ -18,7 +18,7 @@ export type OutputPostType = {
 }
 
 
-export type PostType = {
+export type PostDBType = {
     title: string,
     shortDescription: string,
     content: string,

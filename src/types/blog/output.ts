@@ -1,3 +1,5 @@
+import {WithId} from "mongodb";
+
 export type OutputItemBlogType = {
     id: string,
     name: string,
@@ -16,7 +18,7 @@ export type OutputBlogType = {
 }
 
 
-export type BlogDBType = {
+export type BlogDBType =  {
     name: string,
     description: string,
     websiteUrl: string,

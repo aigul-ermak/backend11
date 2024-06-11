@@ -13,11 +13,10 @@ exports.postRouter = void 0;
 const express_1 = require("express");
 const auth_middleware_1 = require("../middleware/auth/auth-middleware");
 const post_validator_1 = require("../validators/post-validator");
+const query_post_repo_1 = require("../repositories/post-repo/query-post-repo");
 const post_service_1 = require("../services/post-service");
 const post_repo_1 = require("../repositories/post-repo/post-repo");
 const blog_validator_1 = require("../validators/blog-validator");
-// import {postExistsMiddleware} from "../middleware/comment/post-middleware";
-// import {authBearerMiddleware} from "../middleware/auth/auth-bearer-middleware";
 exports.postRouter = (0, express_1.Router)({});
 exports.postRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sortData = {
@@ -75,28 +74,22 @@ exports.postRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, func
 // // //         }
 // // //     })
 // //
-// // postRouter.post('/',
-// //     authMiddleware,
-// //     postValidation(),
-// //     async (req: RequestWithBody<PostType>, res: Response) => {
-// //
-// //         const newData: PostType = req.body;
-// //         const postId: string | null = await PostService.createPost(newData);
-// //
-// //         if (!postId) {
-// //             res.sendStatus(404);
-// //             return;
-// //         }
-// //
-// //         const newPost: PostType | null = await QueryPostRepo.getPostById(postId);
-// //         if (newPost) {
-// //             res.status(201).send(newPost);
-// //         } else {
-// //             res.sendStatus(404);
-// //             return
-// //         }
-// //     });
-//
+exports.postRouter.post('/', auth_middleware_1.authMiddleware, (0, post_validator_1.postValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const newData = req.body;
+    const postId = yield post_service_1.PostService.createPost(newData);
+    if (!postId) {
+        res.sendStatus(404);
+        return;
+    }
+    const newPost = yield query_post_repo_1.QueryPostRepo.getPostById(postId);
+    if (newPost) {
+        res.status(201).send(newPost);
+    }
+    else {
+        res.sendStatus(404);
+        return;
+    }
+}));
 // /**
 //  * hw 6 create new comment
 //  */

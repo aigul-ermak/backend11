@@ -1,10 +1,11 @@
 import {CreatePostData, UpdatePostData} from "../../types/post/input";
-import {PostType} from "../../types/post/output";
+import {PostDBType} from "../../types/post/output";
 import {ObjectId} from "mongodb";
 import {BlogDBType} from "../../types/blog/output";
 import {QueryBlogRepo} from "../blog-repo/query-blog-repo";
 import {PostModel} from "../../models/post";
 import {PostService} from "../../services/post-service";
+import {BlogModel} from "../../models/blog";
 
 export class PostRepo {
     static async createPostToBlog(newData: any) {
@@ -14,18 +15,14 @@ export class PostRepo {
 
     }
 
-    static async createPost(newData: CreatePostData, blog: BlogDBType): Promise<string> {
-        const newPost: PostType = {
-            ...newData,
-            blogName: blog.name,
-            createdAt: new Date().toISOString()
+    static async createPost(data: CreatePostData, blog: BlogDBType): Promise<string | null> {
+        try {
+            const res = await PostModel.create(data);
+            return res._id.toString();
+        } catch(e) {
+            console.log(e);
+            return null;
         }
-
-        const post = new PostModel(newPost);
-
-        const res = await post.save();
-        return res._id.toString();
-
     }
 
     static async updatePost(id: string, updateData: UpdatePostData): Promise<boolean> {

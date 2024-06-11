@@ -1,5 +1,5 @@
 import {Router, Request, Response} from "express";
-import {OutputPostType, PostType} from "../types/post/output";
+import {OutputPostType, PostDBType} from "../types/post/output";
 import {authMiddleware} from "../middleware/auth/auth-middleware";
 import {RequestBodyAndParams, RequestTypeWithQueryAndParams, RequestWithBody, RequestWithParams} from "../types/common";
 import {Params} from "./videos-router";
@@ -13,8 +13,7 @@ import {QueryCommentRepo} from "../repositories/comment-repo/query-comment-repo"
 import {CommentService} from "../services/comment-service";
 import {commentValidation} from "../validators/comment-validator";
 import { OutputCommentType, OutputItemCommentType, SortCommentType} from "../types/comment/output";
-// import {postExistsMiddleware} from "../middleware/comment/post-middleware";
-// import {authBearerMiddleware} from "../middleware/auth/auth-bearer-middleware";
+
 
 export const postRouter = Router({})
 
@@ -81,28 +80,29 @@ postRouter.get('/', async (req: RequestTypeWithQuery<SortPostType>, res: Respons
 // // //         }
 // // //     })
 // //
-// // postRouter.post('/',
-// //     authMiddleware,
-// //     postValidation(),
-// //     async (req: RequestWithBody<PostType>, res: Response) => {
-// //
-// //         const newData: PostType = req.body;
-// //         const postId: string | null = await PostService.createPost(newData);
-// //
-// //         if (!postId) {
-// //             res.sendStatus(404);
-// //             return;
-// //         }
-// //
-// //         const newPost: PostType | null = await QueryPostRepo.getPostById(postId);
-// //         if (newPost) {
-// //             res.status(201).send(newPost);
-// //         } else {
-// //             res.sendStatus(404);
-// //             return
-// //         }
-// //     });
-//
+postRouter.post('/',
+    authMiddleware,
+    postValidation(),
+    async (req: RequestWithBody<PostDBType>, res: Response) => {
+
+        const newData: PostDBType = req.body;
+
+        const postId: string | null = await PostService.createPost(newData);
+
+        if (!postId) {
+            res.sendStatus(404);
+            return;
+        }
+
+        const newPost: PostDBType | null = await QueryPostRepo.getPostById(postId);
+        if (newPost) {
+            res.status(201).send(newPost);
+        } else {
+            res.sendStatus(404);
+            return
+        }
+    });
+
 // /**
 //  * hw 6 create new comment
 //  */
@@ -135,9 +135,9 @@ postRouter.get('/', async (req: RequestTypeWithQuery<SortPostType>, res: Respons
 postRouter.put('/:id',
     authMiddleware,
     postValidation(),
-    async (req: RequestBodyAndParams<Params, PostType>, res: Response) => {
+    async (req: RequestBodyAndParams<Params, PostDBType>, res: Response) => {
         const id: string = req.params.id;
-        const updateData: PostType = req.body;
+        const updateData: PostDBType = req.body;
         const isUpdated: boolean = await PostService.updatePost(id, updateData);
 
         if (isUpdated) {

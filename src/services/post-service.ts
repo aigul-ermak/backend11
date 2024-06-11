@@ -2,6 +2,7 @@ import {QueryBlogRepo} from "../repositories/blog-repo/query-blog-repo";
 import {CreatePostData, UpdatePostData} from "../types/post/input";
 import {PostRepo} from "../repositories/post-repo/post-repo";
 import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
+import {PostDBType} from "../types/post/output";
 
 export class PostService {
     static async createPost(newData: CreatePostData): Promise<string | null> {
@@ -10,6 +11,12 @@ export class PostService {
 
         if (!blog) {
             throw new Error('Blog not found');
+        }
+
+        const newPost: PostDBType = {
+            ...newData,
+            blogName: blog.name,
+            createdAt: new Date().toISOString()
         }
 
         const postId = await PostRepo.createPost(newData, blog);

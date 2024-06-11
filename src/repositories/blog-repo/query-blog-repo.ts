@@ -25,6 +25,7 @@ export class QueryBlogRepo {
         }
 //TODO type?
         //const blogs: WithId<BlogType>[] = await BlogModel.find(filter)
+        //const blogs: BlogDBType[] = await BlogModel.find(filter)
         const blogs: any = await BlogModel.find(filter)
             .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
             .skip((pageNumber - 1) * +pageSize)
