@@ -1,6 +1,6 @@
 import {ObjectId, WithId} from "mongodb";
 import {commentMapper} from "../../types/comment/mapper";
-import {CommentType, OutputItemCommentType, SortCommentType} from "../../types/comment/output";
+import {CommentDBType, OutputItemCommentType, SortCommentType} from "../../types/comment/output";
 
 
 export class QueryCommentRepo {

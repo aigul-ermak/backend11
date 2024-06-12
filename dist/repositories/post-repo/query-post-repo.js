@@ -14,34 +14,32 @@ const mapper_1 = require("../../types/post/mapper");
 const mongodb_1 = require("mongodb");
 const post_1 = require("../../models/post");
 class QueryPostRepo {
-    // static async getAllPosts(sortData: SortPostType): Promise<OutputPostType> {
-    //
-    //     const sortDirection = sortData.sortDirection ?? 'desc'
-    //     const sortBy = sortData.sortBy ?? 'createdAt'
-    //     const pageSize = sortData.pageSize ?? 10
-    //     const pageNumber = sortData.pageNumber ?? 1
-    //
-    //     let filter = {}
-    //
-    //     const posts = await postCollection
-    //         .find(filter)
-    //         .sort({[sortBy]: sortDirection === 'desc' ? -1: 1})
-    //         .skip((pageNumber - 1) * +pageSize)
-    //         .limit(+pageSize)
-    //         .toArray();
-    //
-    //     const totalCount = await postCollection.countDocuments(filter);
-    //
-    //     const pageCount = Math.ceil(totalCount / +pageSize);
-    //
-    //     return {
-    //         pagesCount: pageCount,
-    //         page: +pageNumber,
-    //         pageSize: +pageSize,
-    //         totalCount: totalCount,
-    //         items: posts.map(postMapper)
-    //     }
-    // }
+    static getAllPosts(sortData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c, _d;
+            const sortDirection = (_a = sortData.sortDirection) !== null && _a !== void 0 ? _a : 'desc';
+            const sortBy = (_b = sortData.sortBy) !== null && _b !== void 0 ? _b : 'createdAt';
+            const pageSize = (_c = sortData.pageSize) !== null && _c !== void 0 ? _c : 10;
+            const pageNumber = (_d = sortData.pageNumber) !== null && _d !== void 0 ? _d : 1;
+            let filter = {};
+            const posts = yield post_1.PostModel
+                .find(filter)
+                .sort({ [sortBy]: sortDirection === 'desc' ? -1 : 1 })
+                .skip((pageNumber - 1) * +pageSize)
+                .limit(+pageSize)
+                .exec();
+            //.toArray();
+            const totalCount = yield post_1.PostModel.countDocuments(filter);
+            const pageCount = Math.ceil(totalCount / +pageSize);
+            return {
+                pagesCount: pageCount,
+                page: +pageNumber,
+                pageSize: +pageSize,
+                totalCount: totalCount,
+                items: posts.map(mapper_1.postMapper)
+            };
+        });
+    }
     static getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const post = yield post_1.PostModel.findOne({ _id: new mongodb_1.ObjectId(id) });
@@ -49,6 +47,31 @@ class QueryPostRepo {
                 return null;
             }
             return (0, mapper_1.postMapper)(post);
+        });
+    }
+    static getPostsByBlogId(blogId, sortData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c, _d;
+            const sortDirection = (_a = sortData.sortDirection) !== null && _a !== void 0 ? _a : 'desc';
+            const sortBy = (_b = sortData.sortBy) !== null && _b !== void 0 ? _b : 'createdAt';
+            const pageSize = (_c = sortData.pageSize) !== null && _c !== void 0 ? _c : 10;
+            const pageNumber = (_d = sortData.pageNumber) !== null && _d !== void 0 ? _d : 1;
+            const posts = yield post_1.PostModel
+                .find({ blogId: blogId })
+                .sort({ [sortBy]: sortDirection === 'desc' ? -1 : 1 })
+                .skip((pageNumber - 1) * +pageSize)
+                .limit(+pageSize)
+                .exec();
+            //.toArray();
+            const totalCount = yield post_1.PostModel.countDocuments({ blogId: blogId });
+            const pageCount = Math.ceil(totalCount / +pageSize);
+            return {
+                pagesCount: pageCount,
+                page: +pageNumber,
+                pageSize: +pageSize,
+                totalCount: totalCount,
+                items: posts.map(mapper_1.postMapper)
+            };
         });
     }
 }

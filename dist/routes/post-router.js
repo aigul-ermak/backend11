@@ -25,8 +25,8 @@ exports.postRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, func
         pageNumber: req.query.pageNumber,
         pageSize: req.query.pageSize
     };
-    // const posts: OutputPostType = await QueryPostRepo.getAllPosts(sortData)
-    // res.status(200).send(posts)
+    const posts = yield query_post_repo_1.QueryPostRepo.getAllPosts(sortData);
+    res.status(200).send(posts);
 }));
 // postRouter.get('/:id', mongoIdInParamValidation(),
 //     async (req: RequestWithParams<Params>, res: Response<PostType>) => {

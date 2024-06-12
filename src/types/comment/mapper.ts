@@ -1,7 +1,7 @@
 import {WithId} from "mongodb";
-import {CommentType, OutputItemCommentType} from "./output";
+import {CommentDBType, OutputItemCommentType} from "./output";
 
-export const commentMapper = (comment: WithId<CommentType>): OutputItemCommentType => {
+export const commentMapper = (comment: WithId<CommentDBType>): OutputItemCommentType => {
     let CommentatorInfo;
     return {
         id: comment._id.toString(),

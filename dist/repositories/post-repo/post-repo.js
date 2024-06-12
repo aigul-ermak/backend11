@@ -14,10 +14,13 @@ const mongodb_1 = require("mongodb");
 const query_blog_repo_1 = require("../blog-repo/query-blog-repo");
 const post_1 = require("../../models/post");
 class PostRepo {
+    //TODO any here
     static createPostToBlog(newData) {
         return __awaiter(this, void 0, void 0, function* () {
-            // const res = await postCollection.insertOne(newData);
-            // return res.insertedId.toString();
+            const res = yield post_1.PostModel.create(newData);
+            return res._id.toString();
+            //TODO delete
+            //return res.insertedId.toString();
         });
     }
     static createPost(data) {

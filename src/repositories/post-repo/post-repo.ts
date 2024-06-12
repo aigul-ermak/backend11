@@ -8,11 +8,13 @@ import {PostService} from "../../services/post-service";
 import {BlogModel} from "../../models/blog";
 
 export class PostRepo {
+    //TODO any here
     static async createPostToBlog(newData: any) {
 
-        // const res = await postCollection.insertOne(newData);
-        // return res.insertedId.toString();
-
+        const res = await PostModel.create(newData);
+        return res._id.toString();
+        //TODO delete
+        //return res.insertedId.toString();
     }
 
     static async createPost(data: CreatePostData): Promise<string | null> {

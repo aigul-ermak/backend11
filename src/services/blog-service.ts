@@ -31,33 +31,33 @@ export class BlogService {
         return blog;
     }
 
-    // static async createPostToBlog(blogId: string, postData: {
-    //     title: string,
-    //     shortDescription: string,
-    //     content: string
-    // }): Promise<OutputItemPostType | null> {
-    //     const blog: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId)
-    //
-    //     if (!blog) {
-    //         return null;
-    //     }
-    //
-    //     const newPost: PostType = {
-    //         ...postData,
-    //         blogId: blogId,
-    //         blogName: blog.name,
-    //         createdAt: new Date().toISOString()
-    //     }
-    //
-    //     const postId: string = await PostRepo.createPostToBlog(newPost)
-    //
-    //     if (!postId) {
-    //         return null;
-    //     }
-    //
-    //     const post: OutputItemPostType | null = await QueryPostRepo.getPostById(postId);
-    //     return post;
-    // }
+    static async createPostToBlog(blogId: string, postData: {
+        title: string,
+        shortDescription: string,
+        content: string
+    }): Promise<OutputItemPostType | null> {
+        const blog: OutputItemBlogType | null = await QueryBlogRepo.getBlogById(blogId)
+
+        if (!blog) {
+            return null;
+        }
+
+        const newPost: PostDBType = {
+            ...postData,
+            blogId: blogId,
+            blogName: blog.name,
+            createdAt: new Date().toISOString()
+        }
+
+        const postId: string = await PostRepo.createPostToBlog(newPost)
+
+        if (!postId) {
+            return null;
+        }
+
+        const post: OutputItemPostType | null = await QueryPostRepo.getPostById(postId);
+        return post;
+    }
 
     static async updateBlog(blogId: string, updateData: UpdateBlogData): Promise<boolean> {
 

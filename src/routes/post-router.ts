@@ -29,8 +29,8 @@ postRouter.get('/', async (req: RequestTypeWithQuery<SortPostType>, res: Respons
         pageSize: req.query.pageSize
     }
 
-    // const posts: OutputPostType = await QueryPostRepo.getAllPosts(sortData)
-    // res.status(200).send(posts)
+    const posts: OutputPostType = await QueryPostRepo.getAllPosts(sortData)
+    res.status(200).send(posts)
 
 })
 

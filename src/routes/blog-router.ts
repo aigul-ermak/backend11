@@ -17,6 +17,9 @@ import {Params} from "./videos-router";
 import {CreateBlogData, SortDataType, UpdateBlogData} from "../types/blog/input";
 import {BlogService} from "../services/blog-service";
 import {QueryBlogRepo} from "../repositories/blog-repo/query-blog-repo";
+import {SortPostType} from "../types/post/input";
+import {OutputItemPostType, OutputPostType} from "../types/post/output";
+import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
 
 
 export const blogRouter: Router = Router({})
@@ -49,33 +52,33 @@ blogRouter.get('/:id', mongoIdInParamValidation(),
         }
     })
 
-// blogRouter.get('/:id/posts',
-//     mongoIdInParamValidation(),
-//     async (req: RequestTypeWithQueryAndParams<{ id: string }, SortPostType>, res: Response<OutputPostType>) => {
-//         const id: string = req.params.id
-//
-//         const sortData: SortPostType = {
-//             sortBy: req.query.sortBy,
-//             sortDirection: req.query.sortDirection,
-//             pageNumber: req.query.pageNumber,
-//             pageSize: req.query.pageSize
-//         }
-//
-//         const blog: null | BlogType = await QueryBlogRepo.getBlogById(id)
-//
-//         if (!blog) {
-//             res.sendStatus(404)
-//             return
-//         }
-//
-//         const posts: OutputPostType = await QueryPostRepo.getPostsByBlogId(id, sortData);
-//
-//         if (!posts) {
-//             res.sendStatus(204)
-//             return
-//         }
-//         res.status(200).send(posts)
-//     })
+blogRouter.get('/:id/posts',
+    mongoIdInParamValidation(),
+    async (req: RequestTypeWithQueryAndParams<{ id: string }, SortPostType>, res: Response<OutputPostType>) => {
+        const id: string = req.params.id
+
+        const sortData: SortPostType = {
+            sortBy: req.query.sortBy,
+            sortDirection: req.query.sortDirection,
+            pageNumber: req.query.pageNumber,
+            pageSize: req.query.pageSize
+        }
+
+        const blog: null | BlogDBType = await QueryBlogRepo.getBlogById(id)
+
+        if (!blog) {
+            res.sendStatus(404)
+            return
+        }
+
+        const posts: OutputPostType = await QueryPostRepo.getPostsByBlogId(id, sortData);
+
+        if (!posts) {
+            res.sendStatus(204)
+            return
+        }
+        res.status(200).send(posts)
+    })
 
 blogRouter.post('/',
     authMiddleware,
@@ -93,29 +96,29 @@ blogRouter.post('/',
         res.status(201).send(blog)
     });
 
-// blogRouter.post('/:id/posts',
-    // authMiddleware,
-    // blogPostValidation(),
-    // async (req: RequestBodyAndParams<{ id: string }, {
-    //     title: string,
-    //     shortDescription: string,
-    //     content: string
-    // }>, res: Response<OutputItemPostType>) => {
-    //
-    //     const id: string = req.params.id
-    //
-    //     const {title, shortDescription , content} = req.body;
-    //
-    //     const post : OutputItemPostType | null  = await BlogService.createPostToBlog(id, {title, shortDescription, content})
-    //
-    //     if (!post) {
-    //         res.sendStatus(404)
-    //         return
-    //     }
-    //
-    //     res.status(201).send(post)
+blogRouter.post('/:id/posts',
+    authMiddleware,
+    blogPostValidation(),
+    async (req: RequestBodyAndParams<{ id: string }, {
+        title: string,
+        shortDescription: string,
+        content: string
+    }>, res: Response<OutputItemPostType>) => {
 
-    // });
+        const id: string = req.params.id
+
+        const {title, shortDescription , content} = req.body;
+
+        const post : OutputItemPostType | null  = await BlogService.createPostToBlog(id, {title, shortDescription, content})
+
+        if (!post) {
+            res.sendStatus(404)
+            return
+        }
+
+        res.status(201).send(post)
+
+    });
 
 blogRouter.put('/:id',
     authMiddleware,

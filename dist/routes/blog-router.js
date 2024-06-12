@@ -15,6 +15,7 @@ const auth_middleware_1 = require("../middleware/auth/auth-middleware");
 const blog_validator_1 = require("../validators/blog-validator");
 const blog_service_1 = require("../services/blog-service");
 const query_blog_repo_1 = require("../repositories/blog-repo/query-blog-repo");
+const query_post_repo_1 = require("../repositories/post-repo/query-post-repo");
 exports.blogRouter = (0, express_1.Router)({});
 exports.blogRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sortData = {
@@ -37,33 +38,26 @@ exports.blogRouter.get('/:id', (0, blog_validator_1.mongoIdInParamValidation)(),
         res.send(blog);
     }
 }));
-// blogRouter.get('/:id/posts',
-//     mongoIdInParamValidation(),
-//     async (req: RequestTypeWithQueryAndParams<{ id: string }, SortPostType>, res: Response<OutputPostType>) => {
-//         const id: string = req.params.id
-//
-//         const sortData: SortPostType = {
-//             sortBy: req.query.sortBy,
-//             sortDirection: req.query.sortDirection,
-//             pageNumber: req.query.pageNumber,
-//             pageSize: req.query.pageSize
-//         }
-//
-//         const blog: null | BlogType = await QueryBlogRepo.getBlogById(id)
-//
-//         if (!blog) {
-//             res.sendStatus(404)
-//             return
-//         }
-//
-//         const posts: OutputPostType = await QueryPostRepo.getPostsByBlogId(id, sortData);
-//
-//         if (!posts) {
-//             res.sendStatus(204)
-//             return
-//         }
-//         res.status(200).send(posts)
-//     })
+exports.blogRouter.get('/:id/posts', (0, blog_validator_1.mongoIdInParamValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const sortData = {
+        sortBy: req.query.sortBy,
+        sortDirection: req.query.sortDirection,
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize
+    };
+    const blog = yield query_blog_repo_1.QueryBlogRepo.getBlogById(id);
+    if (!blog) {
+        res.sendStatus(404);
+        return;
+    }
+    const posts = yield query_post_repo_1.QueryPostRepo.getPostsByBlogId(id, sortData);
+    if (!posts) {
+        res.sendStatus(204);
+        return;
+    }
+    res.status(200).send(posts);
+}));
 exports.blogRouter.post('/', auth_middleware_1.authMiddleware, (0, blog_validator_1.blogValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newData = req.body;
     const blog = yield blog_service_1.BlogService.createBlog(newData);
@@ -73,28 +67,16 @@ exports.blogRouter.post('/', auth_middleware_1.authMiddleware, (0, blog_validato
     }
     res.status(201).send(blog);
 }));
-// blogRouter.post('/:id/posts',
-// authMiddleware,
-// blogPostValidation(),
-// async (req: RequestBodyAndParams<{ id: string }, {
-//     title: string,
-//     shortDescription: string,
-//     content: string
-// }>, res: Response<OutputItemPostType>) => {
-//
-//     const id: string = req.params.id
-//
-//     const {title, shortDescription , content} = req.body;
-//
-//     const post : OutputItemPostType | null  = await BlogService.createPostToBlog(id, {title, shortDescription, content})
-//
-//     if (!post) {
-//         res.sendStatus(404)
-//         return
-//     }
-//
-//     res.status(201).send(post)
-// });
+exports.blogRouter.post('/:id/posts', auth_middleware_1.authMiddleware, (0, blog_validator_1.blogPostValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const { title, shortDescription, content } = req.body;
+    const post = yield blog_service_1.BlogService.createPostToBlog(id, { title, shortDescription, content });
+    if (!post) {
+        res.sendStatus(404);
+        return;
+    }
+    res.status(201).send(post);
+}));
 exports.blogRouter.put('/:id', auth_middleware_1.authMiddleware, (0, blog_validator_1.blogValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const updateData = req.body;
     const id = req.params.id;
