@@ -20,7 +20,7 @@ class PostRepo {
             // return res.insertedId.toString();
         });
     }
-    static createPost(data, blog) {
+    static createPost(data) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const res = yield post_1.PostModel.create(data);

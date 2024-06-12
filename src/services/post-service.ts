@@ -3,6 +3,7 @@ import {CreatePostData, UpdatePostData} from "../types/post/input";
 import {PostRepo} from "../repositories/post-repo/post-repo";
 import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
 import {PostDBType} from "../types/post/output";
+import {PostModel} from "../models/post";
 
 export class PostService {
     static async createPost(newData: CreatePostData): Promise<string | null> {
@@ -19,7 +20,7 @@ export class PostService {
             createdAt: new Date().toISOString()
         }
 
-        const postId = await PostRepo.createPost(newData, blog);
+        const postId = await PostRepo.createPost(newPost);
 
         return postId;
     }

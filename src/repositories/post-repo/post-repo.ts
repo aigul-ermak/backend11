@@ -15,7 +15,7 @@ export class PostRepo {
 
     }
 
-    static async createPost(data: CreatePostData, blog: BlogDBType): Promise<string | null> {
+    static async createPost(data: CreatePostData): Promise<string | null> {
         try {
             const res = await PostModel.create(data);
             return res._id.toString();
@@ -23,6 +23,7 @@ export class PostRepo {
             console.log(e);
             return null;
         }
+
     }
 
     static async updatePost(id: string, updateData: UpdatePostData): Promise<boolean> {
