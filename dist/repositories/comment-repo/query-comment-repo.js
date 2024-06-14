@@ -10,15 +10,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryCommentRepo = void 0;
+const mongodb_1 = require("mongodb");
+const mapper_1 = require("../../types/comment/mapper");
+const comment_1 = require("../../models/comment");
 class QueryCommentRepo {
-    // static async getCommentById(id: string): Promise<OutputItemCommentType | null> {
-    // const comment: WithId<CommentType> | null = await commentCollection.findOne({_id: new ObjectId(id)})
-    //
-    // if (!comment) {
-    //     return null
-    // }
-    // return commentMapper(comment)
-    // }
+    static getCommentById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //TODO type
+            const comment = yield comment_1.CommentModel.findOne({ _id: new mongodb_1.ObjectId(id) });
+            if (!comment) {
+                return null;
+            }
+            return (0, mapper_1.commentMapper)(comment);
+        });
+    }
     static getCommentByPostId(postId, sortData) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c, _d;

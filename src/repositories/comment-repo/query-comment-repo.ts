@@ -1,18 +1,19 @@
 import {ObjectId, WithId} from "mongodb";
 import {commentMapper} from "../../types/comment/mapper";
 import {CommentDBType, OutputItemCommentType, SortCommentType} from "../../types/comment/output";
+import {CommentModel} from "../../models/comment";
 
 
 export class QueryCommentRepo {
-    // static async getCommentById(id: string): Promise<OutputItemCommentType | null> {
+    static async getCommentById(id: string): Promise<OutputItemCommentType | null> {
+//TODO type
+        const comment: any | null = await CommentModel.findOne({_id: new ObjectId(id)})
 
-        // const comment: WithId<CommentType> | null = await commentCollection.findOne({_id: new ObjectId(id)})
-        //
-        // if (!comment) {
-        //     return null
-        // }
-        // return commentMapper(comment)
-    // }
+        if (!comment) {
+            return null
+        }
+        return commentMapper(comment)
+    }
 
     static async getCommentByPostId(postId: string, sortData: SortCommentType) {
 

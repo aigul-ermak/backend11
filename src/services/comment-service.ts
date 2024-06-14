@@ -1,19 +1,19 @@
 import {QueryCommentRepo} from "../repositories/comment-repo/query-comment-repo";
-import {CommentRepo} from "../repositories/comment-repo/comment-repo";
 import {OutputUserItemType} from "../types/user/output";
 import {CommentDBType, OutputItemCommentType} from "../types/comment/output";
+import {CommentRepo} from "../repositories/comment-repo/comment-repo";
 
 export class CommentService {
-    // static async updateComment(commentId: string, contentData: CommentType) {
-    //
-    //     const comment: OutputItemCommentType | null = await QueryCommentRepo.getCommentById(commentId)
-    //
-    //     if (!comment) {
-    //         return false
-    //     }
-    //     // return await CommentRepo.updateComment(commentId, contentData)
-    //     return null;
-    // }
+    static async updateComment(commentId: string, contentData: CommentDBType) {
+
+        const comment: OutputItemCommentType | null = await QueryCommentRepo.getCommentById(commentId)
+
+        if (!comment) {
+            return false
+        }
+        // return await CommentRepo.updateComment(commentId, contentData)
+        return null;
+    }
 
     static async createComment(contentData: CommentDBType, user: OutputUserItemType, postId: string) {
 
@@ -27,8 +27,8 @@ export class CommentService {
             createdAt: new Date().toISOString()
         }
 
-        // const commentId: string = await CommentRepo.createComment(newComment)
-        // return commentId
+        const commentId: string = await CommentRepo.createComment(newComment)
+        return commentId
     }
 
 
