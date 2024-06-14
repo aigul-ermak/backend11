@@ -13,6 +13,7 @@ exports.QueryUserRepo = void 0;
 const mongodb_1 = require("mongodb");
 const mapper_1 = require("../../types/user/mapper");
 const user_1 = require("../../models/user");
+const security_1 = require("../../models/security");
 class QueryUserRepo {
     static getAllUsers(sortData) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -67,17 +68,13 @@ class QueryUserRepo {
                 return null;
             }
             return (0, mapper_1.userMapper)(user);
-            // {
-            //     id: user.id,
-            //         login: newUser.accountData.login,
-            //     email: newUser.accountData.email,
-            //     createdAt: newUser.accountData.createdAt
-            // };
         });
     }
     static findByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield user_1.UserModel.findOne({ $or: [{ 'accountData.email': loginOrEmail }, { 'accountData.login': loginOrEmail }] });
+            const user = yield user_1.UserModel.findOne({
+                $or: [{ 'accountData.email': loginOrEmail }, { 'accountData.login': loginOrEmail }]
+            });
             if (!user) {
                 return null;
             }
@@ -91,6 +88,23 @@ class QueryUserRepo {
                 return null;
             }
             return (0, mapper_1.userMapper)(user);
+        });
+    }
+    static isEmailRegistered(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield security_1.SessionModel.findOne({ 'accountData.email': email });
+            return user !== null && user.emailConfirmation.isConfirmed;
+        });
+    }
+    static findUserByRecoveryCode(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield security_1.SessionModel.findOne({ 'emailConfirmation.confirmationCode': data.recoveryCode });
+        });
+    }
+    //TODO type??
+    static updatePassword(password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return user_1.UserModel.updateOne(password);
         });
     }
 }

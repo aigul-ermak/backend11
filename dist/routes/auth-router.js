@@ -53,6 +53,20 @@ exports.authRouter.post('/login', cookie_middleware_1.countMiddleware, (0, login
         return res.sendStatus(401);
     }
 }));
+exports.authRouter.post('/password-recovery', cookie_middleware_1.countMiddleware, (0, user_validator_1.userEmailValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = req.body;
+    const result = user_service_1.UserService.isEmailRegistered(email);
+    if (!result)
+        return res.sendStatus(400);
+    return res.sendStatus(204);
+}));
+exports.authRouter.post('/new-password', cookie_middleware_1.countMiddleware, (0, user_validator_1.userCodeValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = req.body;
+    const result = user_service_1.UserService.newPassword(data);
+    if (!result)
+        return res.sendStatus(400);
+    return res.sendStatus(204);
+}));
 exports.authRouter.post('/refresh-token', cookie_middleware_1.sessionRefreshTokeMiddleware, cookie_middleware_1.cookieMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const oldtoken = req.cookies.refreshToken;
     const tokens = yield auth_service_1.authService.refreshTokens(oldtoken);

@@ -32,8 +32,6 @@ class QueryCommentRepo {
             const pageSize = (_c = sortData.pageSize) !== null && _c !== void 0 ? _c : 10;
             const pageNumber = (_d = sortData.pageNumber) !== null && _d !== void 0 ? _d : 1;
             let filter = { postId: postId };
-            //TODO type?
-            //const comment: WithId<CommentDBType>[] = await CommentModel
             const comment = yield comment_1.CommentModel
                 .find(filter)
                 .sort({ [sortBy]: sortDirection === 'desc' ? -1 : 1 })

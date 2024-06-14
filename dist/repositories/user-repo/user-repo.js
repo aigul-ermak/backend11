@@ -18,8 +18,6 @@ class UserRepo {
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield user_1.UserModel.create(user);
             return res._id.toString();
-            // TODO delete
-            // return result.insertedId.toString();
         });
     }
     static deleteUser(userId) {

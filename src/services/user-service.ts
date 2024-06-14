@@ -4,6 +4,9 @@ import {QueryUserRepo} from "../repositories/user-repo/query-user-repo";
 import {UserRepo} from "../repositories/user-repo/user-repo";
 import {add} from "date-fns/add";
 import {ObjectId} from "mongodb";
+import {UserModel} from "../models/user";
+import {QuerySecurityRepo} from "../repositories/security-repo/query-security-repo";
+import {uuid} from "uuidv4";
 
 export class UserService {
     static async createUser(login: string, password: string, email: string) {
@@ -77,6 +80,26 @@ export class UserService {
 
         await UserRepo.deleteUser(userId)
         return true
+
+    }
+
+    static async isEmailRegistered(email: string) {
+        return await QueryUserRepo.isEmailRegistered(email);
+    }
+//TODO type??
+    static async newPassword(data: { newPassword: string, recoveryCode: string }) {
+        const user = await QueryUserRepo.findUserByRecoveryCode(data);
+
+        if (user) {
+            if (user.emailConfirmation.expirationDate > new Date() && !user.emailConfirmation.isConfirmed) {
+                const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+                user.accountData.passwordHash = hashedPassword;
+                user.emailConfirmation.isConfirmed = true;
+                await QueryUserRepo.updatePassword(user.accountData.passwordHash);
+                return true;
+            }
+        }
+        return false;
 
     }
 

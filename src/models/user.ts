@@ -5,7 +5,7 @@ import {UserDBType} from "../types/user/output";
 
 const userSchema = new mongoose.Schema<UserDBType>({
     accountData: {
-        login: { type: String, required: true},
+        login: { type: String, required: true, unique:true, sparse: true },
         email: { type: String, required: true},
         passwordHash: { type: String, required: true },
         createdAt: { type: Date, required: true }

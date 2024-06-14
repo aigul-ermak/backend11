@@ -2,6 +2,9 @@ import {OutputUserItemType, OutputUsersType, SortUserType, UserDBType} from "../
 import {ObjectId, WithId} from "mongodb";
 import {userMapper, userMapper1} from "../../types/user/mapper";
 import {UserModel} from "../../models/user";
+import {QuerySecurityRepo} from "../security-repo/query-security-repo";
+import bcrypt from "bcrypt";
+import {SessionModel} from "../../models/security";
 
 
 export class QueryUserRepo {
@@ -14,7 +17,7 @@ export class QueryUserRepo {
         const searchLoginTerm = sortData.searchLoginTerm ?? null
         const searchEmailTerm = sortData.searchEmailTerm ?? null
 
-         type FilterType = {
+        type FilterType = {
             $or?: ({
                 $regex: string;
                 $options: string;
@@ -48,7 +51,7 @@ export class QueryUserRepo {
             .skip((pageNumber - 1) * +pageSize)
             .limit(+pageSize)
             .exec();
-            //.toArray()
+        //.toArray()
 
         const totalCount: number = await UserModel.countDocuments(filter);
 
@@ -72,17 +75,13 @@ export class QueryUserRepo {
         }
 
         return userMapper(user)
-        // {
-        //     id: user.id,
-        //         login: newUser.accountData.login,
-        //     email: newUser.accountData.email,
-        //     createdAt: newUser.accountData.createdAt
-        // };
     }
 
     static async findByLoginOrEmail(loginOrEmail: string): Promise<OutputUserItemType | null> {
-        const user: WithId<UserDBType> | null = await UserModel.findOne({$or:
-                [{'accountData.email': loginOrEmail}, {'accountData.login': loginOrEmail}]})
+        const user: WithId<UserDBType> | null = await UserModel.findOne({
+            $or:
+                [{'accountData.email': loginOrEmail}, {'accountData.login': loginOrEmail}]
+        })
 
         if (!user) {
             return null
@@ -92,12 +91,28 @@ export class QueryUserRepo {
     }
 
 
-
-    static async findUserByConfirmationCode(code : string){
-        const user: WithId<UserDBType> | null = await UserModel.findOne({ "emailConfirmation.confirmationCode": code})
+    static async findUserByConfirmationCode(code: string) {
+        const user: WithId<UserDBType> | null = await UserModel.findOne({"emailConfirmation.confirmationCode": code})
         if (!user) {
             return null
         }
         return userMapper(user)
+    }
+
+
+    static async isEmailRegistered(email: string) {
+
+        const user: UserDBType | null = await SessionModel.findOne({'accountData.email': email});
+        return user !== null && user.emailConfirmation.isConfirmed;
+
+    }
+
+    static async findUserByRecoveryCode(data: { recoveryCode: string }): Promise<UserDBType | null> {
+        return await SessionModel.findOne({'emailConfirmation.confirmationCode': data.recoveryCode});
+    }
+
+//TODO type??
+    static async updatePassword(password: any) {
+        return UserModel.updateOne(password)
     }
 }

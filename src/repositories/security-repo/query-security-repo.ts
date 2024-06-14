@@ -1,6 +1,8 @@
 import {SessionDBType} from "../../types/token/output";
 import {SessionModel} from "../../models/security";
 import {BlogModel} from "../../models/blog";
+import {UserDBType} from "../../types/user/output";
+import bcrypt from "bcrypt";
 
 
 export class QuerySecurityRepo {

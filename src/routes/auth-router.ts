@@ -26,7 +26,7 @@ authRouter.post('/registration', countMiddleware, userValidation(), async (req: 
 
 })
 
-authRouter.post('/login', countMiddleware, userAuthValidation(),  async (req: Request, res: Response) => {
+authRouter.post('/login', countMiddleware, userAuthValidation(), async (req: Request, res: Response) => {
     const user: OutputUserItemType | null = await UserService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
     const userIP: string = req.ip!;
@@ -58,6 +58,32 @@ authRouter.post('/login', countMiddleware, userAuthValidation(),  async (req: Re
     }
 })
 
+authRouter.post('/password-recovery', countMiddleware, userEmailValidation(), async (req: Request, res: Response) => {
+
+    const email = req.body;
+
+    const result = UserService.isEmailRegistered(email);
+
+    if (!result)
+        return res.sendStatus(400)
+
+    return res.sendStatus(204);
+
+})
+
+authRouter.post('/new-password', countMiddleware, userCodeValidation(), async (req: Request, res: Response) => {
+
+    const data = req.body;
+
+    const result = UserService.newPassword(data);
+
+    if (!result)
+        return res.sendStatus(400)
+
+    return res.sendStatus(204);
+
+})
+
 authRouter.post('/refresh-token', sessionRefreshTokeMiddleware, cookieMiddleware,
     async (req: Request, res: Response) => {
         const oldtoken: any = req.cookies.refreshToken
@@ -77,7 +103,7 @@ authRouter.post('/refresh-token', sessionRefreshTokeMiddleware, cookieMiddleware
 
     })
 
-authRouter.post('/registration-confirmation', countMiddleware, userCodeValidation(),  async (req: Request, res: Response) => {
+authRouter.post('/registration-confirmation', countMiddleware, userCodeValidation(), async (req: Request, res: Response) => {
     const code = req.body.code
 
     const result: boolean = await authService.confirmEmail(code);
@@ -90,7 +116,7 @@ authRouter.post('/registration-confirmation', countMiddleware, userCodeValidatio
 })
 
 authRouter.post('/registration-email-resending',
-    countMiddleware, userEmailValidation(),async (req: Request, res: Response) => {
+    countMiddleware, userEmailValidation(), async (req: Request, res: Response) => {
         const userEmail = req.body.email
 
         await authService.sendNewCodeToEmail(userEmail);
@@ -115,7 +141,7 @@ authRouter.get('/me', authBearerMiddleware, async (req: Request, res: Response) 
     })
 })
 
-authRouter.post('/logout', sessionRefreshTokeMiddleware,  async (req: Request, res: Response) => {
+authRouter.post('/logout', sessionRefreshTokeMiddleware, async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
     await authService.logoutUser(refreshToken);
     return res.sendStatus(204);

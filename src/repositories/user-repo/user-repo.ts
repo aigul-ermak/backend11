@@ -1,14 +1,14 @@
 import {OutputUserItemType, OutputUsersType, UserDBType} from "../../types/user/output";
 import {ObjectId} from "mongodb";
 import {UserModel} from "../../models/user";
+import {SessionModel} from "../../models/security";
+import bcrypt from "bcrypt";
 
 export class UserRepo {
     //static async createUser(user: UserType) {
-    static async createUser(user: UserDBType) {
+    static async createUser(user: UserDBType): Promise<string> {
         const res = await UserModel.create(user)
         return res._id.toString();
-        // TODO delete
-        // return result.insertedId.toString();
     }
 
     static async deleteUser(userId: string) {
@@ -32,6 +32,6 @@ export class UserRepo {
             //.updateOne({"accountData.email": email}, {$set: {'emailConfirmation.confirmationCode': code}})
 
         return !!result.modifiedCount;
-
     }
+
 }

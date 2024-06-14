@@ -11,6 +11,7 @@ type CommentatorInfo = {
 }
 
 export type OutputItemCommentType = {
+    id: string,
     content: string,
     commentatorInfo: CommentatorInfo,
     createdAt: string
