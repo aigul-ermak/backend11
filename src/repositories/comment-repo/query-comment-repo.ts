@@ -24,23 +24,24 @@ export class QueryCommentRepo {
 
         let filter = {postId: postId}
 
-        // const comment: WithId<CommentType>[] = await commentCollection
-        //     .find(filter)
-        //     .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
-        //     .skip((pageNumber - 1) * +pageSize)
-        //     .limit(+pageSize)
-        //     .toArray();
-        //
-        // const totalCount: number = await commentCollection.countDocuments(filter);
-        //
-        // const pageCount: number = Math.ceil(totalCount / +pageSize);
+        const comment: WithId<CommentDBType>[] = await CommentModel
+            .find(filter)
+            .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
+            .skip((pageNumber - 1) * +pageSize)
+            .limit(+pageSize)
+            .exec();
+            //.toArray();
 
-        // return {
-        //     pagesCount: pageCount,
-        //     page: +pageNumber,
-        //     pageSize: +pageSize,
-        //     totalCount: totalCount,
-        //     items: comment.map(commentMapper)
-        // }
+        const totalCount: number = await CommentModel.countDocuments(filter);
+
+        const pageCount: number = Math.ceil(totalCount / +pageSize);
+
+        return {
+            pagesCount: pageCount,
+            page: +pageNumber,
+            pageSize: +pageSize,
+            totalCount: totalCount,
+            items: comment.map(commentMapper)
+        }
     }
 }
