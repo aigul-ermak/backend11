@@ -1,14 +1,13 @@
-import mongoose, {Schema, model, Document} from 'mongoose';
-import {BlogDBType} from "../types/blog/output";
-import {CommentDBType} from "../types/comment/output";
-import {UserDBType} from "../types/user/output";
+import mongoose from 'mongoose';
+import {SessionDBType} from "../types/token/output";
 
-//TODO type?
-const deviceSchema = new mongoose.Schema({
+const sessionSchema = new mongoose.Schema<SessionDBType>({
+    userId: { type: String, required: true },
+    deviceId: { type: String, required: true },
     ip: { type: String, required: true },
     title: { type: String, required: true },
-    lastActiveDate: { type: String, required: true },
-    deviceId: { type: String, required: true }
+    iatDate: { type: String, required: true },
+    expDate: { type: String, required: true }
 });
 
-export const SessionModel = mongoose.model('Device', deviceSchema);
+export const SessionModel = mongoose.model('Session', sessionSchema);

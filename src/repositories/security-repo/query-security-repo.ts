@@ -1,10 +1,10 @@
-import {SessionType} from "../../types/token/output";
+import {SessionDBType} from "../../types/token/output";
 import {SessionModel} from "../../models/security";
 import {BlogModel} from "../../models/blog";
 
 
 export class QuerySecurityRepo {
-    static async putSessionToList(session: SessionType) {
+    static async putSessionToList(session: SessionDBType) {
         const res = await SessionModel.create(session);
         return res._id.toString();
     }
@@ -34,12 +34,12 @@ export class QuerySecurityRepo {
     }
 
     static async checkRefreshTokenInList(id: string, deviceId: string) {
-        const token: SessionType | null = await SessionModel.findOne({userId: id, deviceId: deviceId})
+        const token: SessionDBType | null = await SessionModel.findOne({userId: id, deviceId: deviceId})
         return token;
     }
 
     static async findSessionByDeviceId(deviceId: string) {
-        const session: SessionType | null = await SessionModel.findOne({deviceId})
+        const session: SessionDBType | null = await SessionModel.findOne({deviceId})
         return session;
     }
 }

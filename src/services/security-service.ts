@@ -1,5 +1,5 @@
 import {jwtService} from "./jwt-sevice";
-import {RefreshedToken, RefreshToken, SessionType} from "../types/token/output";
+import {RefreshedToken, RefreshToken, SessionDBType} from "../types/token/output";
 import {SecurityRepo} from "../repositories/security-repo/security-repo";
 import {uuid} from "uuidv4";
 import {QuerySecurityRepo} from "../repositories/security-repo/query-security-repo";
@@ -48,7 +48,7 @@ export class SecurityService {
             return null
 
 
-        const sessionUser : SessionType = {
+        const sessionUser : SessionDBType = {
             userId: userId,
             deviceId: deviceId,
             ip: userIp,

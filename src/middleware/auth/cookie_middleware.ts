@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import {settings} from "../../services/settings";
 import {QuerySecurityRepo} from "../../repositories/security-repo/query-security-repo";
 import {jwtService} from "../../services/jwt-sevice";
-import {RefreshToken, SessionType} from "../../types/token/output";
+import {RefreshToken, SessionDBType} from "../../types/token/output";
 import {SecurityRepo} from "../../repositories/security-repo/security-repo";
 
 
@@ -46,7 +46,7 @@ export const sessionRefreshTokeMiddleware = async (req: Request, res: Response, 
         return;
     }
 
-    const sessionExists: SessionType | null = await QuerySecurityRepo.checkRefreshTokenInList(payload.userId, payload.deviceId);
+    const sessionExists: SessionDBType | null = await QuerySecurityRepo.checkRefreshTokenInList(payload.userId, payload.deviceId);
 
     if (!sessionExists) {
         res.sendStatus(401);

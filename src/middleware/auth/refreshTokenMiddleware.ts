@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from "express";
-import {RefreshToken, SessionType} from "../../types/token/output";
+import {RefreshToken, SessionDBType} from "../../types/token/output";
 import {jwtService} from "../../services/jwt-sevice";
 import {QuerySecurityRepo} from "../../repositories/security-repo/query-security-repo";
 
@@ -19,7 +19,7 @@ export const deviceCheckMiddleware = async (req: Request, res: Response, next: N
         return;
     }
 
-    const session: SessionType | null = await QuerySecurityRepo.findSessionByDeviceId(deviceId)
+    const session: SessionDBType | null = await QuerySecurityRepo.findSessionByDeviceId(deviceId)
     if(!session) {
         res.sendStatus(404);
         return;

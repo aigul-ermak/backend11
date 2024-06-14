@@ -37,7 +37,7 @@ export type RefreshTokenPayload ={
 }
 
 
-export type SessionType = {
+export type SessionDBType = {
     userId: string;
     deviceId: string;
     ip: string,
