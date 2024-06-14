@@ -31,10 +31,10 @@ export class SecurityService {
 
         const transformedDevices = activeDevices.map(device => {
             return {
-                // ip: device.ip,
-                // title: device.title,
-                // lastActiveDate: device.iatDate,
-                // deviceId: device.deviceId
+                ip: device.ip,
+                title: device.title,
+                lastActiveDate: device.iatDate,
+                deviceId: device.deviceId
             };
         });
 
