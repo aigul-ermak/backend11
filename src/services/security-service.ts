@@ -25,8 +25,6 @@ export class SecurityService {
 
         const activeDevices = await SessionModel.find({
             "userId": payload.userId
-            //TODO remove later
-        //}).toArray();
         });
 
         const transformedDevices = activeDevices.map(device => {
