@@ -1,7 +1,7 @@
 import {QueryCommentRepo} from "../repositories/comment-repo/query-comment-repo";
 import {CommentRepo} from "../repositories/comment-repo/comment-repo";
 import {OutputUserItemType} from "../types/user/output";
-import {CommentType, OutputItemCommentType} from "../types/comment/output";
+import {CommentDBType, OutputItemCommentType} from "../types/comment/output";
 
 export class CommentService {
     // static async updateComment(commentId: string, contentData: CommentType) {
@@ -15,7 +15,7 @@ export class CommentService {
     //     return null;
     // }
 
-    static async createComment(contentData: CommentType, user: OutputUserItemType, postId: string) {
+    static async createComment(contentData: CommentDBType, user: OutputUserItemType, postId: string) {
 
         const newComment = {
             id: postId,

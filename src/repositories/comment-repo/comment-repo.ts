@@ -1,6 +1,6 @@
 
 import {DeleteResult, InsertOneResult, ObjectId, UpdateResult} from "mongodb";
-import {CommentType, OutputItemCommentType} from "../../types/comment/output";
+import {CommentDBType, OutputItemCommentType} from "../../types/comment/output";
 
 
 export class CommentRepo {

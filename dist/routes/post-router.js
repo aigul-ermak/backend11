@@ -101,22 +101,23 @@ exports.postRouter.post('/', auth_middleware_1.authMiddleware, (0, post_validato
 //         const contentData = req.body;
 //         //TODO any type for user
 //         const user: any  = req.user
-// const commentId: string = await CommentService.createComment(contentData, user, postId);
 //
-// if (!commentId) {
-//     res.sendStatus(404);
-//     return;
-// }
+//         const commentId: string = await CommentService.createComment(contentData, user, postId);
 //
-// const newComment: OutputItemCommentType| null = await QueryCommentRepo.getCommentById(commentId);
+//         if (!commentId) {
+//             res.sendStatus(404);
+//             return;
+//         }
 //
-// if (newComment) {
-//     res.status(201).send(newComment);
-// } else {
-//     res.sendStatus(400);
-//     return
-// }
-// })
+//         const newComment: OutputItemCommentType| null = await QueryCommentRepo.getCommentById(commentId);
+//
+//         if (newComment) {
+//             res.status(201).send(newComment);
+//         } else {
+//             res.sendStatus(400);
+//             return
+//         }
+//     })
 exports.postRouter.put('/:id', auth_middleware_1.authMiddleware, (0, post_validator_1.postValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     const updateData = req.body;

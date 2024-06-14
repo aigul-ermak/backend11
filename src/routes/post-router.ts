@@ -114,23 +114,23 @@ postRouter.post('/',
 //         const contentData = req.body;
 //         //TODO any type for user
 //         const user: any  = req.user
-
-        // const commentId: string = await CommentService.createComment(contentData, user, postId);
-        //
-        // if (!commentId) {
-        //     res.sendStatus(404);
-        //     return;
-        // }
-        //
-        // const newComment: OutputItemCommentType| null = await QueryCommentRepo.getCommentById(commentId);
-        //
-        // if (newComment) {
-        //     res.status(201).send(newComment);
-        // } else {
-        //     res.sendStatus(400);
-        //     return
-        // }
-    // })
+//
+//         const commentId: string = await CommentService.createComment(contentData, user, postId);
+//
+//         if (!commentId) {
+//             res.sendStatus(404);
+//             return;
+//         }
+//
+//         const newComment: OutputItemCommentType| null = await QueryCommentRepo.getCommentById(commentId);
+//
+//         if (newComment) {
+//             res.status(201).send(newComment);
+//         } else {
+//             res.sendStatus(400);
+//             return
+//         }
+//     })
 
 postRouter.put('/:id',
     authMiddleware,

@@ -9,36 +9,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshTokenMiddleware = void 0;
+exports.refreshTokenMiddleware = exports.deviceCheckMiddleware = void 0;
 const jwt_sevice_1 = require("../../services/jwt-sevice");
-// export const deviceCheckMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-//     const refreshToken = req.cookies.refreshToken;
-//     const deviceId = req.params.deviceId
-//
-//     if (!refreshToken) {
-//         res.sendStatus(404);
-//         return;
-//     }
-//
-//     const payload: RefreshToken | null = jwtService.getPayloadFromToken(refreshToken);
-//
-//     if (!payload) {
-//         res.sendStatus(404);
-//         return;
-//     }
-//
-//     const session: SessionType | null = await QuerySecurityRepo.findSessionByDeviceId(deviceId)
-//     if(!session) {
-//         res.sendStatus(404);
-//         return;
-//     }
-//
-//     if(session.userId !== payload.userId){
-//         res.sendStatus(403);
-//         return;
-//     }
-//     next();
-// };
+const query_security_repo_1 = require("../../repositories/security-repo/query-security-repo");
+const deviceCheckMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const refreshToken = req.cookies.refreshToken;
+    const deviceId = req.params.deviceId;
+    if (!refreshToken) {
+        res.sendStatus(404);
+        return;
+    }
+    const payload = jwt_sevice_1.jwtService.getPayloadFromToken(refreshToken);
+    if (!payload) {
+        res.sendStatus(404);
+        return;
+    }
+    const session = yield query_security_repo_1.QuerySecurityRepo.findSessionByDeviceId(deviceId);
+    if (!session) {
+        res.sendStatus(404);
+        return;
+    }
+    if (session.userId !== payload.userId) {
+        res.sendStatus(403);
+        return;
+    }
+    next();
+});
+exports.deviceCheckMiddleware = deviceCheckMiddleware;
 const refreshTokenMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {

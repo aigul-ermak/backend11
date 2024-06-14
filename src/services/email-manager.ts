@@ -1,10 +1,10 @@
 import {emailAdapter} from "./email-adapter";
-import {OutputUserItemType, UserType} from "../types/user/output";
+import {OutputUserItemType, UserDBType} from "../types/user/output";
 import {v4 as uuid4} from "uuid";
 
 export const emailManager = {
 
-    async sendEmailConfirmationMessage(user: UserType) {
+    async sendEmailConfirmationMessage(user: UserDBType) {
         const code: string = user.emailConfirmation.confirmationCode
 
         const message: string = `

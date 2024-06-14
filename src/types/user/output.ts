@@ -21,7 +21,7 @@ export type OutputUsersType = {
     items: OutputUserItemType[]
 }
 
-export type UserType = {
+export type UserDBType = {
     accountData: {
         login: string,
         email: string,
@@ -35,7 +35,7 @@ export type UserType = {
     }
 }
 
-export type UserType1 = {
+export type UserType = {
     login: string,
     email: string,
     createdAt: string

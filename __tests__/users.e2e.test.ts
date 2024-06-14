@@ -4,13 +4,13 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import {client} from "../src/db";
-import {UserType} from "../src/types/user/output";
+import {UserDBType} from "../src/types/user/output";
 
 const dbName = 'userCollection'
 const clientTest = client ;
 
 describe('/users', () => {
-    let newUser: UserType | null = null
+    let newUser: UserDBType | null = null
 
     beforeAll(async () => {
         await clientTest.connect()

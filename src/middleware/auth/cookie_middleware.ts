@@ -33,55 +33,53 @@ export const cookieMiddleware = async (req: Request, res: Response, next: NextFu
 };
 
 
-// export const sessionRefreshTokeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-//
-//     const token = req.cookies?.refreshToken;
-//
-//     const payload: RefreshToken | null = await jwtService.getPayloadFromToken(token);
-//     console.log(payload)
-//
-//     if (!payload) {
-//
-//         res.sendStatus(401);
-//         return;
-//     }
-//
-//     const sessionExists: SessionType | null = await QuerySecurityRepo.checkRefreshTokenInList(payload.userId, payload.deviceId);
-//
-//     if (!sessionExists) {
-//         res.sendStatus(401);
-//         return;
-//     }
-//
-//     if (sessionExists.iatDate != payload.iatDate) {
-//         res.sendStatus(401);
-//         return;
-//     }
-//
-//     next();
-//
-// }
+export const sessionRefreshTokeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 
-// export const countMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-//     const ipUser: any = req.ip;
-//     const urlUser: string = req.originalUrl; // /login/regi
-//     const currentTime = new Date();
-//
-//
-//     await SecurityRepo.insertRequestFromUser({
-//         ip: ipUser,
-//         url: urlUser,
-//         date: currentTime,
-//     });
-//
-//     const tenSecondsAgo = new Date(currentTime.getTime() - 10000);
-//
-//     const count = await SecurityRepo.countRequests(ipUser, urlUser, tenSecondsAgo);
-//
-//     if (count > 5) {
-//         res.sendStatus(429);
-//         return
-//     }
-//
-//     next();
-// };
+    const token = req.cookies?.refreshToken;
+
+    const payload: RefreshToken | null = await jwtService.getPayloadFromToken(token);
+    console.log(payload)
+
+    if (!payload) {
+
+        res.sendStatus(401);
+        return;
+    }
+
+    const sessionExists: SessionType | null = await QuerySecurityRepo.checkRefreshTokenInList(payload.userId, payload.deviceId);
+
+    if (!sessionExists) {
+        res.sendStatus(401);
+        return;
+    }
+
+    if (sessionExists.iatDate != payload.iatDate) {
+        res.sendStatus(401);
+        return;
+    }
+    next();
+}
+
+export const countMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const ipUser: any = req.ip;
+    const urlUser: string = req.originalUrl; // /login/regi
+    const currentTime = new Date();
+
+
+    await SecurityRepo.insertRequestFromUser({
+        ip: ipUser,
+        url: urlUser,
+        date: currentTime,
+    });
+
+    const tenSecondsAgo = new Date(currentTime.getTime() - 10000);
+
+    const count = await SecurityRepo.countRequests(ipUser, urlUser, tenSecondsAgo);
+
+    if (count > 5) {
+        res.sendStatus(429);
+        return
+    }
+
+    next();
+};
