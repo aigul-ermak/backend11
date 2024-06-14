@@ -8,6 +8,7 @@ const commentatorInfoSchema = new mongoose.Schema({
 }, {_id: false});
 
 const commentSchema = new mongoose.Schema<CommentDBType>({
+    postId: {type: String, required: true},
     content: {type: String, required: true},
     commentatorInfo: {type: commentatorInfoSchema, required: true},
     createdAt: Date

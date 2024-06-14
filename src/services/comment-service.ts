@@ -11,14 +11,13 @@ export class CommentService {
         if (!comment) {
             return false
         }
-        // return await CommentRepo.updateComment(commentId, contentData)
-        return null;
+         return await CommentRepo.updateComment(commentId, contentData)
     }
 
     static async createComment(contentData: CommentDBType, user: OutputUserItemType, postId: string) {
 
         const newComment = {
-            id: postId,
+            postId: postId,
             content: contentData.content,
             commentatorInfo: {
                 userId: user.id,

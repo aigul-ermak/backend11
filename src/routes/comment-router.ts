@@ -13,9 +13,7 @@ import {OutputUserItemType} from "../types/user/output";
 
 export const commentRouter: Router = Router({})
 
-/**
- * hw 6 return comment by id
- */
+
 commentRouter.get('/:id', async (req: RequestWithParams<Params>, res: Response<OutputItemCommentType>) => {
     const id: string = req.params.id;
 
@@ -29,9 +27,7 @@ commentRouter.get('/:id', async (req: RequestWithParams<Params>, res: Response<O
     }
 
 })
-/**
- * hw 6 update existing comment by id with InputModel
- */
+
 commentRouter.put('/:id', authBearerMiddleware, mongoIdInParamValidation(), commentValidation(),
     async (req: Request, res: Response) => {
 

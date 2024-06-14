@@ -32,23 +32,24 @@ class QueryCommentRepo {
             const pageSize = (_c = sortData.pageSize) !== null && _c !== void 0 ? _c : 10;
             const pageNumber = (_d = sortData.pageNumber) !== null && _d !== void 0 ? _d : 1;
             let filter = { postId: postId };
-            // const comment: WithId<CommentType>[] = await commentCollection
-            //     .find(filter)
-            //     .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
-            //     .skip((pageNumber - 1) * +pageSize)
-            //     .limit(+pageSize)
-            //     .toArray();
-            //
-            // const totalCount: number = await commentCollection.countDocuments(filter);
-            //
-            // const pageCount: number = Math.ceil(totalCount / +pageSize);
-            // return {
-            //     pagesCount: pageCount,
-            //     page: +pageNumber,
-            //     pageSize: +pageSize,
-            //     totalCount: totalCount,
-            //     items: comment.map(commentMapper)
-            // }
+            //TODO type?
+            //const comment: WithId<CommentDBType>[] = await CommentModel
+            const comment = yield comment_1.CommentModel
+                .find(filter)
+                .sort({ [sortBy]: sortDirection === 'desc' ? -1 : 1 })
+                .skip((pageNumber - 1) * +pageSize)
+                .limit(+pageSize)
+                .exec();
+            //.toArray();
+            const totalCount = yield comment_1.CommentModel.countDocuments(filter);
+            const pageCount = Math.ceil(totalCount / +pageSize);
+            return {
+                pagesCount: pageCount,
+                page: +pageNumber,
+                pageSize: +pageSize,
+                totalCount: totalCount,
+                items: comment.map(mapper_1.commentMapper)
+            };
         });
     }
 }

@@ -23,8 +23,9 @@ export class QueryCommentRepo {
         const pageNumber = sortData.pageNumber ?? 1
 
         let filter = {postId: postId}
-
-        const comment: WithId<CommentDBType>[] = await CommentModel
+//TODO type?
+        //const comment: WithId<CommentDBType>[] = await CommentModel
+        const comment: any[] = await CommentModel
             .find(filter)
             .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
             .skip((pageNumber - 1) * +pageSize)

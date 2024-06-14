@@ -71,6 +71,7 @@ postRouter.get('/:id/comments', mongoIdInParamValidation(),
 
         const comments: OutputCommentType = await QueryCommentRepo.getCommentByPostId(postId, sortData)
 
+
         if (comments.items.length > 0) {
             res.status(200).send(comments)
         } else {

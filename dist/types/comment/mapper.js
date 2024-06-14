@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.commentMapper = void 0;
 const commentMapper = (comment) => {
-    let CommentatorInfo;
+    //let CommentatorInfo;
     return {
-        id: comment._id.toString(),
+        //id: comment._id.toString(),
         content: comment.content,
         commentatorInfo: comment.commentatorInfo,
         createdAt: comment.createdAt,

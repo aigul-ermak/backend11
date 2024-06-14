@@ -20,6 +20,8 @@ const blog_validator_1 = require("../validators/blog-validator");
 const query_comment_repo_1 = require("../repositories/comment-repo/query-comment-repo");
 const comment_service_1 = require("../services/comment-service");
 const comment_validator_1 = require("../validators/comment-validator");
+const auth_bearer_middleware_1 = require("../middleware/auth/auth-bearer-middleware");
+const post_middleware_1 = require("../middleware/comment/post-middleware");
 exports.postRouter = (0, express_1.Router)({});
 exports.postRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sortData = {
@@ -82,7 +84,7 @@ exports.postRouter.post('/', auth_middleware_1.authMiddleware, (0, post_validato
         return;
     }
 }));
-exports.postRouter.post('/:id/comments', authBearerMiddleware, (0, blog_validator_1.mongoIdInParamValidation)(), postExistsMiddleware, (0, comment_validator_1.commentValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postRouter.post('/:id/comments', auth_bearer_middleware_1.authBearerMiddleware, (0, blog_validator_1.mongoIdInParamValidation)(), post_middleware_1.postExistsMiddleware, (0, comment_validator_1.commentValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const postId = req.params.id;
     const contentData = req.body;
     //TODO any type for user

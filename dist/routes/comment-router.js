@@ -18,9 +18,6 @@ const query_comment_repo_1 = require("../repositories/comment-repo/query-comment
 const blog_validator_1 = require("../validators/blog-validator");
 const auth_bearer_middleware_1 = require("../middleware/auth/auth-bearer-middleware");
 exports.commentRouter = (0, express_1.Router)({});
-/**
- * hw 6 return comment by id
- */
 exports.commentRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     const comment = yield query_comment_repo_1.QueryCommentRepo.getCommentById(id);
@@ -32,9 +29,6 @@ exports.commentRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0
         return;
     }
 }));
-/**
- * hw 6 update existing comment by id with InputModel
- */
 exports.commentRouter.put('/:id', auth_bearer_middleware_1.authBearerMiddleware, (0, blog_validator_1.mongoIdInParamValidation)(), (0, comment_validator_1.commentValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const contentData = req.body;
     const id = req.params.id;

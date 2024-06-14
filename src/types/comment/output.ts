@@ -1,4 +1,5 @@
 export type CommentDBType = {
+    postId: string,
     content: string,
     commentatorInfo: CommentatorInfo,
     createdAt: string
@@ -10,7 +11,6 @@ type CommentatorInfo = {
 }
 
 export type OutputItemCommentType = {
-    id: string,
     content: string,
     commentatorInfo: CommentatorInfo,
     createdAt: string
