@@ -62,7 +62,8 @@ authRouter.post('/password-recovery', countMiddleware, userEmailValidation(), as
 
     const email = req.body;
 
-    const result = UserService.isEmailRegistered(email);
+    //const result = UserService.isEmailRegistered(email);
+    const result = UserService.passwordRecovery(email);
 
     if (!result)
         return res.sendStatus(400)

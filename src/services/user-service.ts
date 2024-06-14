@@ -18,6 +18,7 @@ export class UserService {
                 login,
                 email,
                 passwordHash,
+                passwordRecoveryCode: "",
                 createdAt: new Date().toISOString()
             },
             emailConfirmation: {
@@ -83,9 +84,17 @@ export class UserService {
 
     }
 
-    static async isEmailRegistered(email: string) {
-        return await QueryUserRepo.isEmailRegistered(email);
+    static async passwordRecovery(email: string) {
+
+        const isEmailRegistered =  await QueryUserRepo.checkUserExistByEmail(email);
+
+        if(isEmailRegistered) {
+
+        }
+
+
     }
+
 //TODO type??
     static async newPassword(data: { newPassword: string, recoveryCode: string }) {
         const user = await QueryUserRepo.findUserByRecoveryCode(data);

@@ -8,10 +8,10 @@ const userSchema = new mongoose.Schema<UserDBType>({
         login: { type: String, required: true, unique:true, sparse: true },
         email: { type: String, required: true},
         passwordHash: { type: String, required: true },
+        passwordRecoveryCode: { type: String, required: false},
         createdAt: { type: Date, required: true }
     },
     emailConfirmation: {
-        //TODO is it required?
         confirmationCode:  { type: String, required: false},
         expirationDate: { type: Date, required: true },
         isConfirmed: { type: Boolean, required: true }

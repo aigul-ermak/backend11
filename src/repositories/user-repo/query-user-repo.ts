@@ -99,12 +99,10 @@ export class QueryUserRepo {
         return userMapper(user)
     }
 
-
-    static async isEmailRegistered(email: string) {
+    static async checkUserExistByEmail(email: string) {
 
         const user: UserDBType | null = await SessionModel.findOne({'accountData.email': email});
-        return user !== null && user.emailConfirmation.isConfirmed;
-
+        return user !== null;
     }
 
     static async findUserByRecoveryCode(data: { recoveryCode: string }): Promise<UserDBType | null> {

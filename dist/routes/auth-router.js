@@ -55,7 +55,8 @@ exports.authRouter.post('/login', cookie_middleware_1.countMiddleware, (0, login
 }));
 exports.authRouter.post('/password-recovery', cookie_middleware_1.countMiddleware, (0, user_validator_1.userEmailValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body;
-    const result = user_service_1.UserService.isEmailRegistered(email);
+    //const result = UserService.isEmailRegistered(email);
+    const result = user_service_1.UserService.passwordRecovery(email);
     if (!result)
         return res.sendStatus(400);
     return res.sendStatus(204);

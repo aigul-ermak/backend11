@@ -5,8 +5,6 @@ import {QuerySecurityRepo} from "../repositories/security-repo/query-security-re
 import {SessionModel} from "../models/security";
 
 
-
-
 export class SecurityService {
     static async getUserIdFromToken(token: string) {
         const payload: RefreshToken | null = await jwtService.getPayloadFromToken(token)

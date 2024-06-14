@@ -90,10 +90,10 @@ class QueryUserRepo {
             return (0, mapper_1.userMapper)(user);
         });
     }
-    static isEmailRegistered(email) {
+    static checkUserExistByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield security_1.SessionModel.findOne({ 'accountData.email': email });
-            return user !== null && user.emailConfirmation.isConfirmed;
+            return user !== null;
         });
     }
     static findUserByRecoveryCode(data) {
