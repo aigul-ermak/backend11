@@ -105,15 +105,22 @@ class QueryUserRepo {
             return user !== null;
         });
     }
-    static findUserByRecoveryCode(data) {
+    static findUserByRecoveryCode(recoveryCode) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield security_1.SessionModel.findOne({ 'emailConfirmation.confirmationCode': data.recoveryCode });
+            const user = yield user_1.UserModel.findOne({ "accountData.passwordRecoveryCode": recoveryCode });
+            if (!user) {
+                return null;
+            }
+            return (0, mapper_1.userMapper)(user);
         });
     }
+    // static async findUserByRecoveryCode(recoveryCode: string): Promise<UserDBType | null> {
+    //     return await SessionModel.findOne({'emailConfirmation.confirmationCode': recoveryCode});
+    // }
     //TODO type??
-    static updatePassword(password) {
+    static updatePassword(userId, passwordHash) {
         return __awaiter(this, void 0, void 0, function* () {
-            return user_1.UserModel.updateOne(password);
+            return user_1.UserModel.updateOne({ _id: userId }, { $set: { 'accountData.passwordHash': passwordHash } });
         });
     }
 }

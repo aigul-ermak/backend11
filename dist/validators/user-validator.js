@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userCodeValidation = exports.userEmailValidation = exports.userValidation = exports.mongoIdValidation = void 0;
+exports.recoveryCodeValidation = exports.userCodeValidation = exports.userEmailValidation = exports.userValidation = exports.mongoIdValidation = void 0;
 const express_validator_1 = require("express-validator");
 const input_model_validation_1 = require("../middleware/inputModel/input-model-validation");
 const query_user_repo_1 = require("../repositories/user-repo/query-user-repo");
@@ -76,6 +76,19 @@ const codeValidation = (0, express_validator_1.body)('code')
     }
     return true;
 }));
+const recCodeValidation = (0, express_validator_1.body)('code')
+    .isString()
+    .custom((code) => __awaiter(void 0, void 0, void 0, function* () {
+    const userExists = yield query_user_repo_1.QueryUserRepo.findUserByRecoveryCode(code);
+    if (!userExists) {
+        throw new Error('Code not valid (User do not found)');
+    }
+    const currentDate = new Date();
+    if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate <= currentDate) {
+        throw new Error('Code not valid (Date problem)');
+    }
+    return true;
+}));
 const emailExistsValidation = (0, express_validator_1.body)('email')
     .isString()
     .trim()
@@ -98,6 +111,8 @@ const userEmailValidation = () => [emailExistsValidation, input_model_validation
 exports.userEmailValidation = userEmailValidation;
 const userCodeValidation = () => [codeValidation, input_model_validation_1.inputModelValidation];
 exports.userCodeValidation = userCodeValidation;
+const recoveryCodeValidation = () => [recCodeValidation, input_model_validation_1.inputModelValidation];
+exports.recoveryCodeValidation = recoveryCodeValidation;
 //export const userEmailValidation = () => [emailValidation, inputModelValidation];
 // export const usersValidation = param('email')
 //     .exists().withMessage('Email parameter is required.')

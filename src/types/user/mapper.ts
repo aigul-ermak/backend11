@@ -9,6 +9,7 @@ export const userMapper = (user: WithId<UserDBType>): OutputUserItemType => {
             email: user.accountData.email,
             passwordHash: user.accountData.passwordHash,
             passwordRecoveryCode: user.accountData.passwordRecoveryCode,
+            recoveryCodeExpirationDate: user.accountData.recoveryCodeExpirationDate,
             createdAt: user.accountData.createdAt
         },
         emailConfirmation: {
@@ -21,17 +22,13 @@ export const userMapper = (user: WithId<UserDBType>): OutputUserItemType => {
 
 export const userMapper1 = (user: WithId<UserDBType>): OutputUserItemType => {
     return {
-        // id: user._id.toString(),
-        // login: user.login,
-        // email: user.email,
-        // passwordHash: user.passwordHash,
-        // createdAt: user.createdAt
         id: user._id.toString(),
         accountData: {
             login: user.accountData.login,
             email: user.accountData.email,
             passwordHash: user.accountData.passwordHash,
             passwordRecoveryCode: user.accountData.passwordRecoveryCode,
+            recoveryCodeExpirationDate: user.accountData.recoveryCodeExpirationDate,
             createdAt: user.accountData.createdAt
         },
         emailConfirmation: {
@@ -39,9 +36,5 @@ export const userMapper1 = (user: WithId<UserDBType>): OutputUserItemType => {
             expirationDate: user.emailConfirmation.expirationDate,
             isConfirmed: user.emailConfirmation.isConfirmed
         }
-
-
-
-
     }
 }

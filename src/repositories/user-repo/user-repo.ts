@@ -37,7 +37,11 @@ export class UserRepo {
     static async updateUser(id: string , code: string): Promise<void> {
         await UserModel.updateOne(
             { _id: new ObjectId(id) },
-            { $set: { 'accountData.passwordRecoveryCode': code} }
+            {
+                $set: {
+                    'accountData.passwordRecoveryCode': code,
+                    'accountData.recoveryCodeExpirationDate': new Date(Date.now() + (1 * 60 + 3) * 60 * 1000)                 }
+            }
         );
     }
 

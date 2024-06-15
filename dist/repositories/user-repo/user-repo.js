@@ -46,7 +46,12 @@ class UserRepo {
     }
     static updateUser(id, code) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield user_1.UserModel.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: { 'accountData.passwordRecoveryCode': code } });
+            yield user_1.UserModel.updateOne({ _id: new mongodb_1.ObjectId(id) }, {
+                $set: {
+                    'accountData.passwordRecoveryCode': code,
+                    'accountData.recoveryCodeExpirationDate': new Date(Date.now() + (1 * 60 + 3) * 60 * 1000)
+                }
+            });
         });
     }
 }

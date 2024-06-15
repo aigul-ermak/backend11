@@ -5,6 +5,7 @@ export type OutputUserItemType = {
         email: string,
         passwordHash: string,
         passwordRecoveryCode: string,
+        recoveryCodeExpirationDate: Date | null,
         createdAt: string
     },
     emailConfirmation: {
@@ -28,6 +29,7 @@ export type UserDBType = {
         email: string,
         passwordHash: string,
         passwordRecoveryCode: string,
+        recoveryCodeExpirationDate: Date | null,
         createdAt: string
     },
     emailConfirmation: {

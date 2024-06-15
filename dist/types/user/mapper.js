@@ -9,6 +9,7 @@ const userMapper = (user) => {
             email: user.accountData.email,
             passwordHash: user.accountData.passwordHash,
             passwordRecoveryCode: user.accountData.passwordRecoveryCode,
+            recoveryCodeExpirationDate: user.accountData.recoveryCodeExpirationDate,
             createdAt: user.accountData.createdAt
         },
         emailConfirmation: {
@@ -21,17 +22,13 @@ const userMapper = (user) => {
 exports.userMapper = userMapper;
 const userMapper1 = (user) => {
     return {
-        // id: user._id.toString(),
-        // login: user.login,
-        // email: user.email,
-        // passwordHash: user.passwordHash,
-        // createdAt: user.createdAt
         id: user._id.toString(),
         accountData: {
             login: user.accountData.login,
             email: user.accountData.email,
             passwordHash: user.accountData.passwordHash,
             passwordRecoveryCode: user.accountData.passwordRecoveryCode,
+            recoveryCodeExpirationDate: user.accountData.recoveryCodeExpirationDate,
             createdAt: user.accountData.createdAt
         },
         emailConfirmation: {

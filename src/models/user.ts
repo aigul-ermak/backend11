@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema<UserDBType>({
         email: {type: String, required: true},
         passwordHash: {type: String, required: true},
         passwordRecoveryCode: {type: String, required: false},
+        recoveryCodeExpirationDate: {type: Date, required: false},
         createdAt: {type: Date, required: true}
     },
     emailConfirmation: {

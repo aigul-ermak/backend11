@@ -1,6 +1,7 @@
 import {body, param} from "express-validator";
 import {inputModelValidation} from "../middleware/inputModel/input-model-validation";
 import {QueryUserRepo} from "../repositories/user-repo/query-user-repo";
+import {OutputUserItemType} from "../types/user/output";
 
 const loginValidation = body('login')
     .exists()
@@ -60,21 +61,39 @@ const emailValidation = body('email')
 const codeValidation = body('code')
     .isString()
     .custom(async code => {
-        const userExists = await QueryUserRepo.findUserByConfirmationCode(code)
-        if(!userExists) {
+        const userExists: OutputUserItemType| null = await QueryUserRepo.findUserByConfirmationCode(code)
+        if (!userExists) {
             throw new Error('Code not valid (User do not found)')
         }
 
-        if(!(userExists.emailConfirmation.expirationDate > new Date())) {
+        if (!(userExists.emailConfirmation.expirationDate > new Date())) {
             throw new Error('Code not valid (Date problem)')
         }
 
-        if(userExists.emailConfirmation.isConfirmed) {
+        if (userExists.emailConfirmation.isConfirmed) {
             throw new Error('Code not valid (User already confirmed)')
         }
 
         return true
     })
+
+const recCodeValidation = body('code')
+    .isString()
+    .custom(async code => {
+        const userExists = await QueryUserRepo.findUserByRecoveryCode(code);
+
+        if (!userExists) {
+            throw new Error('Code not valid (User do not found)');
+        }
+
+        const currentDate = new Date();
+        if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate <= currentDate) {
+            throw new Error('Code not valid (Date problem)')
+        }
+
+        return true
+    })
+
 
 const emailExistsValidation = body('email')
     .isString()
@@ -84,11 +103,11 @@ const emailExistsValidation = body('email')
     .isEmail().withMessage('Invalid email!')
     .custom(async email => {
         const userExists = await QueryUserRepo.findByLoginOrEmail(email)
-        if(!userExists) {
+        if (!userExists) {
             throw new Error('Email is not valid (User do not found)')
         }
 
-        if(userExists.emailConfirmation.isConfirmed) {
+        if (userExists.emailConfirmation.isConfirmed) {
             throw new Error('Code not valid (User already confirmed)')
         }
 
@@ -99,8 +118,9 @@ const emailExistsValidation = body('email')
 export const userValidation = () =>
     [loginValidation, emailValidation, passwordValidation, inputModelValidation]
 
-export const userEmailValidation = () => [emailExistsValidation,inputModelValidation ]
+export const userEmailValidation = () => [emailExistsValidation, inputModelValidation]
 export const userCodeValidation = () => [codeValidation, inputModelValidation]
+export const recoveryCodeValidation = () => [recCodeValidation, inputModelValidation]
 
 //export const userEmailValidation = () => [emailValidation, inputModelValidation];
 

@@ -99,7 +99,7 @@ export class QueryUserRepo {
         return userMapper(user)
     }
 
-    static async findUserByConfirmationCode(code: string) {
+    static async findUserByConfirmationCode(code: string): Promise<OutputUserItemType | null> {
         const user: WithId<UserDBType> | null = await UserModel.findOne({"emailConfirmation.confirmationCode": code})
         if (!user) {
             return null
@@ -113,12 +113,20 @@ export class QueryUserRepo {
         return user !== null;
     }
 
-    static async findUserByRecoveryCode(data: { recoveryCode: string }): Promise<UserDBType | null> {
-        return await SessionModel.findOne({'emailConfirmation.confirmationCode': data.recoveryCode});
+    static async findUserByRecoveryCode(recoveryCode: string): Promise<UserDBType | null> {
+        const user: WithId<UserDBType> | null = await UserModel.findOne({"accountData.passwordRecoveryCode": recoveryCode})
+        if (!user) {
+            return null
+        }
+        return userMapper(user);
     }
 
+    // static async findUserByRecoveryCode(recoveryCode: string): Promise<UserDBType | null> {
+    //     return await SessionModel.findOne({'emailConfirmation.confirmationCode': recoveryCode});
+    // }
+
 //TODO type??
-    static async updatePassword(password: any) {
-        return UserModel.updateOne(password)
+    static async updatePassword(userId: string, passwordHash: string): Promise<any> {
+        return UserModel.updateOne({ _id: userId }, { $set: { 'accountData.passwordHash': passwordHash } });
     }
 }

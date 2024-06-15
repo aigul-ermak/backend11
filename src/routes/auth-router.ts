@@ -4,7 +4,12 @@ import {userAuthValidation} from "../validators/login-validator";
 import {QueryUserRepo} from "../repositories/user-repo/query-user-repo";
 import {OutputUserItemType} from "../types/user/output";
 import {authBearerMiddleware} from "../middleware/auth/auth-bearer-middleware";
-import {userCodeValidation, userEmailValidation, userValidation} from "../validators/user-validator";
+import {
+    recoveryCodeValidation,
+    userCodeValidation,
+    userEmailValidation,
+    userValidation
+} from "../validators/user-validator";
 import {authService} from "../services/auth-service";
 import {RefreshedToken} from "../types/token/output";
 import {uuid} from "uuidv4";
@@ -72,11 +77,14 @@ authRouter.post('/password-recovery', countMiddleware, userEmailValidation(), as
 
 })
 
-authRouter.post('/new-password', countMiddleware, userCodeValidation(), async (req: Request, res: Response) => {
+authRouter.post('/new-password',
+    countMiddleware,
+    //recoveryCodeValidation(),
+    async (req: Request, res: Response) => {
 
     const data = req.body;
 
-    const result = UserService.newPassword(data);
+    const result = UserService.newPassword(data.newPassword, data.recoveryCode);
 
     if (!result)
         return res.sendStatus(400)

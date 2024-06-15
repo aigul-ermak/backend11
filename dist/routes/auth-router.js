@@ -61,9 +61,11 @@ exports.authRouter.post('/password-recovery', cookie_middleware_1.countMiddlewar
         return res.sendStatus(400);
     return res.sendStatus(204);
 }));
-exports.authRouter.post('/new-password', cookie_middleware_1.countMiddleware, (0, user_validator_1.userCodeValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/new-password', cookie_middleware_1.countMiddleware, 
+//recoveryCodeValidation(),
+(req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
-    const result = user_service_1.UserService.newPassword(data);
+    const result = user_service_1.UserService.newPassword(data.newPassword, data.recoveryCode);
     if (!result)
         return res.sendStatus(400);
     return res.sendStatus(204);

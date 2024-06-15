@@ -20,6 +20,7 @@ export class UserService {
                 email,
                 passwordHash,
                 passwordRecoveryCode: "",
+                recoveryCodeExpirationDate: null,
                 createdAt: new Date().toISOString()
             },
             emailConfirmation: {
@@ -102,15 +103,14 @@ export class UserService {
     }
 
 //TODO type??
-    static async newPassword(data: { newPassword: string, recoveryCode: string }) {
-        const user = await QueryUserRepo.findUserByRecoveryCode(data);
+    static async newPassword(newPassword: string, recoveryCode: string) {
+        //TODO type??
+        const user: any = await QueryUserRepo.findUserByRecoveryCode(recoveryCode);
 
         if (user) {
-            if (user.emailConfirmation.expirationDate > new Date() && !user.emailConfirmation.isConfirmed) {
-                const hashedPassword = await bcrypt.hash(data.newPassword, 10);
-                user.accountData.passwordHash = hashedPassword;
-                user.emailConfirmation.isConfirmed = true;
-                await QueryUserRepo.updatePassword(user.accountData.passwordHash);
+            {
+                const hashedPassword: string = await bcrypt.hash(newPassword, 10);
+                await QueryUserRepo.updatePassword(user.id, hashedPassword);
                 return true;
             }
         }

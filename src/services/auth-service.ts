@@ -31,6 +31,7 @@ export class authService {
                 email: email,
                 passwordHash,
                 passwordRecoveryCode: "",
+                recoveryCodeExpirationDate: null,
                 createdAt: new Date().toISOString()
             },
             emailConfirmation: {
