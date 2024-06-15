@@ -76,15 +76,15 @@ const codeValidation = (0, express_validator_1.body)('code')
     }
     return true;
 }));
-const recCodeValidation = (0, express_validator_1.body)('code')
+const recCodeValidation = (0, express_validator_1.body)('recoveryCode')
     .isString()
-    .custom((code) => __awaiter(void 0, void 0, void 0, function* () {
-    const userExists = yield query_user_repo_1.QueryUserRepo.findUserByRecoveryCode(code);
+    .custom((recoveryCode) => __awaiter(void 0, void 0, void 0, function* () {
+    const userExists = yield query_user_repo_1.QueryUserRepo.findUserByRecoveryCode(recoveryCode);
     if (!userExists) {
         throw new Error('Code not valid (User do not found)');
     }
     const currentDate = new Date();
-    if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate <= currentDate) {
+    if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate > currentDate) {
         throw new Error('Code not valid (Date problem)');
     }
     return true;
@@ -113,16 +113,4 @@ const userCodeValidation = () => [codeValidation, input_model_validation_1.input
 exports.userCodeValidation = userCodeValidation;
 const recoveryCodeValidation = () => [recCodeValidation, input_model_validation_1.inputModelValidation];
 exports.recoveryCodeValidation = recoveryCodeValidation;
-//export const userEmailValidation = () => [emailValidation, inputModelValidation];
-// export const usersValidation = param('email')
-//     .exists().withMessage('Email parameter is required.')
-//     .isEmail().withMessage('Invalid email format.')
-//     .custom(async (email) => {
-//         const user = await QueryUserRepo.findByLoginOrEmail(email);
-//         if (user) {
-//             return Promise.reject('User already exists.');
-//         }
-//     })
-//export const usersExistsValidation = () => [usersValidation, inputModelValidation];
-//export const userValidation = () =>  [loginValidation, emailValidation, passwordValidation, inputModelValidation]
 //# sourceMappingURL=user-validator.js.map

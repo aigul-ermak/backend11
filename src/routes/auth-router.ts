@@ -79,7 +79,7 @@ authRouter.post('/password-recovery', countMiddleware, userEmailValidation(), as
 
 authRouter.post('/new-password',
     countMiddleware,
-    //recoveryCodeValidation(),
+    recoveryCodeValidation(),
     async (req: Request, res: Response) => {
 
     const data = req.body;

@@ -77,17 +77,17 @@ const codeValidation = body('code')
         return true
     })
 
-const recCodeValidation = body('code')
+const recCodeValidation = body('recoveryCode')
     .isString()
-    .custom(async code => {
-        const userExists = await QueryUserRepo.findUserByRecoveryCode(code);
+    .custom(async recoveryCode => {
+        const userExists = await QueryUserRepo.findUserByRecoveryCode(recoveryCode);
 
         if (!userExists) {
             throw new Error('Code not valid (User do not found)');
         }
 
         const currentDate = new Date();
-        if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate <= currentDate) {
+        if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate > currentDate) {
             throw new Error('Code not valid (Date problem)')
         }
 
@@ -114,7 +114,6 @@ const emailExistsValidation = body('email')
         return true
     })
 
-
 export const userValidation = () =>
     [loginValidation, emailValidation, passwordValidation, inputModelValidation]
 
@@ -122,20 +121,3 @@ export const userEmailValidation = () => [emailExistsValidation, inputModelValid
 export const userCodeValidation = () => [codeValidation, inputModelValidation]
 export const recoveryCodeValidation = () => [recCodeValidation, inputModelValidation]
 
-//export const userEmailValidation = () => [emailValidation, inputModelValidation];
-
-
-// export const usersValidation = param('email')
-//     .exists().withMessage('Email parameter is required.')
-//     .isEmail().withMessage('Invalid email format.')
-//     .custom(async (email) => {
-//         const user = await QueryUserRepo.findByLoginOrEmail(email);
-//         if (user) {
-//             return Promise.reject('User already exists.');
-//         }
-//     })
-
-
-//export const usersExistsValidation = () => [usersValidation, inputModelValidation];
-
-//export const userValidation = () =>  [loginValidation, emailValidation, passwordValidation, inputModelValidation]
