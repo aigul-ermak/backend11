@@ -5,16 +5,16 @@ import {UserDBType} from "../types/user/output";
 
 const userSchema = new mongoose.Schema<UserDBType>({
     accountData: {
-        login: { type: String, required: true, unique:true, sparse: true },
-        email: { type: String, required: true},
-        passwordHash: { type: String, required: true },
-        passwordRecoveryCode: { type: String, required: false},
-        createdAt: { type: Date, required: true }
+        login: {type: String, required: true},
+        email: {type: String, required: true},
+        passwordHash: {type: String, required: true},
+        passwordRecoveryCode: {type: String, required: false},
+        createdAt: {type: Date, required: true}
     },
     emailConfirmation: {
-        confirmationCode:  { type: String, required: false},
-        expirationDate: { type: Date, required: true },
-        isConfirmed: { type: Boolean, required: true }
+        confirmationCode: {type: String, required: false},
+        expirationDate: {type: Date, required: true},
+        isConfirmed: {type: Boolean, required: true}
     }
 });
 

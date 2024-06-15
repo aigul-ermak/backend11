@@ -32,5 +32,15 @@ export const emailManager = {
 
         await emailAdapter.sendEmail(user.accountData.email, "Email Confirmation", message)
 
+    },
+
+
+    sendRecoveryCodeMessage: async function (email: string, recoveryCode: string): Promise<void> {
+        const message: string = `
+            <h1>Password recovery</h1>
+            <p>To finish password recovery please follow the link below:
+                <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a>
+            </p>`;
+        await emailAdapter.sendEmail(email, "Password Recovery", message)
     }
 }

@@ -70,6 +70,15 @@ class QueryUserRepo {
             return (0, mapper_1.userMapper)(user);
         });
     }
+    static findUserByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield user_1.UserModel.findOne({ 'accountData.email': email });
+            if (!user) {
+                return null;
+            }
+            return (0, mapper_1.userMapper)(user);
+        });
+    }
     static findByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield user_1.UserModel.findOne({

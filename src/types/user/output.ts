@@ -4,6 +4,7 @@ export type OutputUserItemType = {
         login: string,
         email: string,
         passwordHash: string,
+        passwordRecoveryCode: string,
         createdAt: string
     },
     emailConfirmation: {

@@ -8,6 +8,7 @@ const userMapper = (user) => {
             login: user.accountData.login,
             email: user.accountData.email,
             passwordHash: user.accountData.passwordHash,
+            passwordRecoveryCode: user.accountData.passwordRecoveryCode,
             createdAt: user.accountData.createdAt
         },
         emailConfirmation: {
@@ -30,6 +31,7 @@ const userMapper1 = (user) => {
             login: user.accountData.login,
             email: user.accountData.email,
             passwordHash: user.accountData.passwordHash,
+            passwordRecoveryCode: user.accountData.passwordRecoveryCode,
             createdAt: user.accountData.createdAt
         },
         emailConfirmation: {

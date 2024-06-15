@@ -44,6 +44,11 @@ class UserRepo {
             return !!result.modifiedCount;
         });
     }
+    static updateUser(id, code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield user_1.UserModel.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: { 'accountData.passwordRecoveryCode': code } });
+        });
+    }
 }
 exports.UserRepo = UserRepo;
 //# sourceMappingURL=user-repo.js.map

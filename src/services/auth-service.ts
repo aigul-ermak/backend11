@@ -30,6 +30,7 @@ export class authService {
                 login: login,
                 email: email,
                 passwordHash,
+                passwordRecoveryCode: "",
                 createdAt: new Date().toISOString()
             },
             emailConfirmation: {

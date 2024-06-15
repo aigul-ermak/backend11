@@ -34,4 +34,11 @@ export class UserRepo {
         return !!result.modifiedCount;
     }
 
+    static async updateUser(id: string , code: string): Promise<void> {
+        await UserModel.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { 'accountData.passwordRecoveryCode': code} }
+        );
+    }
+
 }

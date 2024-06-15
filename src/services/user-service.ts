@@ -7,6 +7,7 @@ import {ObjectId} from "mongodb";
 import {UserModel} from "../models/user";
 import {QuerySecurityRepo} from "../repositories/security-repo/query-security-repo";
 import {uuid} from "uuidv4";
+import {emailManager} from "./email-manager";
 
 export class UserService {
     static async createUser(login: string, password: string, email: string) {
@@ -32,7 +33,7 @@ export class UserService {
         }
 
         const userId: string = await UserRepo.createUser(newUser)
-        const user: OutputUserItemType| null = await QueryUserRepo.findUserById(userId)
+        const user: OutputUserItemType | null = await QueryUserRepo.findUserById(userId)
 
         if (!user) {
             return null
@@ -54,7 +55,7 @@ export class UserService {
         }
 
         const isPasswordMatch = await bcrypt.compare(password, user.accountData.passwordHash);
-        if(isPasswordMatch)
+        if (isPasswordMatch)
             return user
         else
             return null
@@ -62,9 +63,9 @@ export class UserService {
 
     //TODO check type user
     static async findUserById(userId: any) {
-        const user : OutputUserItemType | null = await QueryUserRepo.findUserById(userId)
+        const user: OutputUserItemType | null = await QueryUserRepo.findUserById(userId)
 
-        if(!user) {
+        if (!user) {
             return null
         }
 
@@ -73,9 +74,9 @@ export class UserService {
 
     static async deleteUser(userId: string) {
 
-        const userExists: OutputUserItemType| null  = await QueryUserRepo.findUserById(userId)
+        const userExists: OutputUserItemType | null = await QueryUserRepo.findUserById(userId)
 
-        if(!userExists) {
+        if (!userExists) {
             return null;
         }
 
@@ -84,14 +85,19 @@ export class UserService {
 
     }
 
-    static async passwordRecovery(email: string) {
+    static async passwordRecovery(email: string): Promise<boolean> {
 
-        const isEmailRegistered =  await QueryUserRepo.checkUserExistByEmail(email);
+        const user = await QueryUserRepo.findUserByEmail(email);
 
-        if(isEmailRegistered) {
+        if (user) {
+            const passwordRecoveryCode: string = uuid();
 
+            await UserRepo.updateUser(user.id, passwordRecoveryCode);
+            await emailManager.sendRecoveryCodeMessage(user.accountData.email, user.accountData.passwordRecoveryCode);
+            return true;
         }
 
+        return false;
 
     }
 

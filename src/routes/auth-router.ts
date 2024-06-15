@@ -60,7 +60,7 @@ authRouter.post('/login', countMiddleware, userAuthValidation(), async (req: Req
 
 authRouter.post('/password-recovery', countMiddleware, userEmailValidation(), async (req: Request, res: Response) => {
 
-    const email = req.body;
+    const email = req.body.email;
 
     //const result = UserService.isEmailRegistered(email);
     const result = UserService.passwordRecovery(email);

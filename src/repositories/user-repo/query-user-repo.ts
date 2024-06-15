@@ -77,6 +77,16 @@ export class QueryUserRepo {
         return userMapper(user)
     }
 
+    static async findUserByEmail(email: string): Promise<OutputUserItemType | null> {
+        const user: WithId<UserDBType> | null = await UserModel.findOne({ 'accountData.email': email });
+
+        if (!user) {
+            return null;
+        }
+
+        return userMapper(user);
+    }
+
     static async findByLoginOrEmail(loginOrEmail: string): Promise<OutputUserItemType | null> {
         const user: WithId<UserDBType> | null = await UserModel.findOne({
             $or:
@@ -87,9 +97,7 @@ export class QueryUserRepo {
             return null
         }
         return userMapper(user)
-
     }
-
 
     static async findUserByConfirmationCode(code: string) {
         const user: WithId<UserDBType> | null = await UserModel.findOne({"emailConfirmation.confirmationCode": code})
