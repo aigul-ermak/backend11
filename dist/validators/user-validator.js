@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.recoveryCodeValidation = exports.newPasswordValidation = exports.userCodeValidation = exports.userEmailValidation = exports.userValidation = exports.mongoIdValidation = void 0;
+exports.recoveryCodeValidation = exports.newPasswordValidation = exports.userRecPassEmailValidation = exports.userCodeValidation = exports.userEmailValidation = exports.userValidation = exports.mongoIdValidation = void 0;
 const express_validator_1 = require("express-validator");
 const input_model_validation_1 = require("../middleware/inputModel/input-model-validation");
 const query_user_repo_1 = require("../repositories/user-repo/query-user-repo");
@@ -104,12 +104,31 @@ const emailExistsValidation = (0, express_validator_1.body)('email')
     }
     return true;
 }));
+const emailExistsRecoveryPasswordValidation = (0, express_validator_1.body)('email')
+    .isString()
+    .trim()
+    .normalizeEmail()
+    //.matches('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+    .isEmail().withMessage('Invalid email!')
+    .custom((email) => __awaiter(void 0, void 0, void 0, function* () {
+    const userExists = yield query_user_repo_1.QueryUserRepo.findByLoginOrEmail(email);
+    // if (!userExists) {
+    //     throw new Error('Email is not valid (User do not found)')
+    // }
+    //
+    // if (userExists.emailConfirmation.isConfirmed) {
+    //     throw new Error('Code not valid (User already confirmed)')
+    // }
+    return true;
+}));
 const userValidation = () => [loginValidation, emailValidation, passwordValidation, input_model_validation_1.inputModelValidation];
 exports.userValidation = userValidation;
 const userEmailValidation = () => [emailExistsValidation, input_model_validation_1.inputModelValidation];
 exports.userEmailValidation = userEmailValidation;
 const userCodeValidation = () => [codeValidation, input_model_validation_1.inputModelValidation];
 exports.userCodeValidation = userCodeValidation;
+const userRecPassEmailValidation = () => [emailExistsRecoveryPasswordValidation, input_model_validation_1.inputModelValidation];
+exports.userRecPassEmailValidation = userRecPassEmailValidation;
 const newPasswordValidation = () => [newPassValidation, input_model_validation_1.inputModelValidation];
 exports.newPasswordValidation = newPasswordValidation;
 const recoveryCodeValidation = () => [recCodeValidation, input_model_validation_1.inputModelValidation];

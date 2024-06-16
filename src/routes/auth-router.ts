@@ -8,7 +8,7 @@ import {
     newPasswordValidation,
     recoveryCodeValidation,
     userCodeValidation,
-    userEmailValidation,
+    userEmailValidation, userRecPassEmailValidation,
     userValidation
 } from "../validators/user-validator";
 import {authService} from "../services/auth-service";
@@ -64,14 +64,18 @@ authRouter.post('/login', countMiddleware, userAuthValidation(), async (req: Req
     }
 })
 
-authRouter.post('/password-recovery', countMiddleware, userEmailValidation(), async (req: Request, res: Response) => {
+authRouter.post('/password-recovery', countMiddleware,
+    //userRecPassEmailValidation(),
+    async (req: Request, res: Response) => {
 
     const email = req.body.email;
 
+
+
     const result = UserService.passwordRecovery(email);
 
-    if (!result)
-        return res.sendStatus(400)
+    // if (!result)
+    //     return res.sendStatus(400)
 
     return res.sendStatus(204);
 

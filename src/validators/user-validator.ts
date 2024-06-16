@@ -113,11 +113,33 @@ const emailExistsValidation = body('email')
         return true
     })
 
+const emailExistsRecoveryPasswordValidation = body('email')
+    .isString()
+    .trim()
+    .normalizeEmail()
+    //.matches('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+    .isEmail().withMessage('Invalid email!')
+    .custom(async email => {
+        const userExists = await QueryUserRepo.findByLoginOrEmail(email)
+        // if (!userExists) {
+        //     throw new Error('Email is not valid (User do not found)')
+        // }
+        //
+        // if (userExists.emailConfirmation.isConfirmed) {
+        //     throw new Error('Code not valid (User already confirmed)')
+        // }
+
+        return true
+    })
+
+
 export const userValidation = () =>
     [loginValidation, emailValidation, passwordValidation, inputModelValidation]
 
 export const userEmailValidation = () => [emailExistsValidation, inputModelValidation]
 export const userCodeValidation = () => [codeValidation, inputModelValidation]
+
+export const userRecPassEmailValidation = () => [emailExistsRecoveryPasswordValidation, inputModelValidation]
 
 export const newPasswordValidation = () => [newPassValidation, inputModelValidation]
 export const recoveryCodeValidation = () => [recCodeValidation, inputModelValidation]
