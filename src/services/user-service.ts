@@ -94,7 +94,7 @@ export class UserService {
             const passwordRecoveryCode: string = uuid();
 
             await UserRepo.updateUser(user.id, passwordRecoveryCode);
-            await emailManager.sendRecoveryCodeMessage(user.accountData.email, user.accountData.passwordRecoveryCode);
+            await emailManager.sendRecoveryCodeMessage(user.accountData.email, passwordRecoveryCode);
             return true;
         }
 
@@ -115,7 +115,6 @@ export class UserService {
             }
         }
         return false;
-
     }
 
     private static async _generateHash(password: string, salt: string) {

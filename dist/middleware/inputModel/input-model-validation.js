@@ -18,10 +18,8 @@ const inputModelValidation = (req, res, next) => {
         }
     });
     if (!errors.isEmpty()) {
-        const err = errors.array({ onlyFirstError: true });
-        return res.status(400).send({
-            errorsMessages: err,
-        });
+        //const err = errors.array({onlyFirstError: true})
+        return res.status(400).json({ errorsMessages: errors.array() });
     }
     return next();
 };

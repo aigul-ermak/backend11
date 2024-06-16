@@ -3,6 +3,7 @@ import {Result, ValidationError, validationResult} from "express-validator";
 import {ErrorMessageType} from "../../types/common";
 
 export const inputModelValidation = (req: Request, res: Response, next: NextFunction) => {
+
     const errors = validationResult(req).formatWith((error: ValidationError) => {
         switch (error.type) {
             case "field":
@@ -18,12 +19,10 @@ export const inputModelValidation = (req: Request, res: Response, next: NextFunc
         }
     })
 
-    if(!errors.isEmpty()) {
-        const err = errors.array({onlyFirstError : true})
+    if (!errors.isEmpty()) {
+        //const err = errors.array({onlyFirstError: true})
 
-        return res.status(400).send({
-            errorsMessages: err,
-        })
+        return res.status(400).json({ errorsMessages: errors.array() });
     }
 
     return next()

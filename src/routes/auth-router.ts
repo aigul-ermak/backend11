@@ -5,6 +5,7 @@ import {QueryUserRepo} from "../repositories/user-repo/query-user-repo";
 import {OutputUserItemType} from "../types/user/output";
 import {authBearerMiddleware} from "../middleware/auth/auth-bearer-middleware";
 import {
+    newPasswordValidation,
     recoveryCodeValidation,
     userCodeValidation,
     userEmailValidation,
@@ -67,7 +68,6 @@ authRouter.post('/password-recovery', countMiddleware, userEmailValidation(), as
 
     const email = req.body.email;
 
-    //const result = UserService.isEmailRegistered(email);
     const result = UserService.passwordRecovery(email);
 
     if (!result)
@@ -79,12 +79,13 @@ authRouter.post('/password-recovery', countMiddleware, userEmailValidation(), as
 
 authRouter.post('/new-password',
     countMiddleware,
+    newPasswordValidation(),
     recoveryCodeValidation(),
     async (req: Request, res: Response) => {
 
-    const data = req.body;
+    const { newPassword, recoveryCode } = req.body;
 
-    const result = UserService.newPassword(data.newPassword, data.recoveryCode);
+    const result: boolean = await UserService.newPassword(newPassword, recoveryCode);
 
     if (!result)
         return res.sendStatus(400)

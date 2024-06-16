@@ -30,8 +30,7 @@ export const emailManager = {
       <a href="https://somesite.com/confirm-email?code=${code}">complete registration</a>
     </p>`;
 
-        await emailAdapter.sendEmail(user.accountData.email, "Email Confirmation", message)
-
+        await emailAdapter.sendEmail(user.accountData.email, "Email Confirmation", message);
     },
 
 
@@ -39,7 +38,7 @@ export const emailManager = {
         const message: string = `
             <h1>Password recovery</h1>
             <p>To finish password recovery please follow the link below:
-                <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a>
+                <a href='https://somesite.com/password-recovery?recoveryCode=${encodeURIComponent(recoveryCode)}'>Recover Password</a>
             </p>`;
         await emailAdapter.sendEmail(email, "Password Recovery", message)
     }

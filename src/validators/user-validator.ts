@@ -1,7 +1,7 @@
 import {body, param} from "express-validator";
 import {inputModelValidation} from "../middleware/inputModel/input-model-validation";
 import {QueryUserRepo} from "../repositories/user-repo/query-user-repo";
-import {OutputUserItemType} from "../types/user/output";
+import {OutputUserItemType, UserDBType} from "../types/user/output";
 
 const loginValidation = body('login')
     .exists()
@@ -20,20 +20,20 @@ const loginValidation = body('login')
     })
     .withMessage('User already exists.')
 
-// const emailValidation = body('email')
-//     .isString()
-//     .trim()
-//     .notEmpty().withMessage('Email is required')
-//     .normalizeEmail()
-//     .matches('^[a-zA-Z0-9_-]*$').withMessage('Email contains invalid characters')
-//     .isEmail().withMessage('Invalid email!');
-
 const passwordValidation = body('password')
     .exists()
     .isString()
     .trim()
     .isLength({min: 6, max: 20})
     .withMessage('Invalid password!')
+
+const newPassValidation = body('newPassword')
+    .exists()
+    .isString()
+    .trim()
+    .isLength({min: 6, max: 20})
+    .withMessage('Invalid password!')
+
 
 export const mongoIdValidation = param('id')
     .isMongoId()
@@ -79,19 +79,18 @@ const codeValidation = body('code')
 
 const recCodeValidation = body('recoveryCode')
     .isString()
-    .custom(async recoveryCode => {
-        const userExists = await QueryUserRepo.findUserByRecoveryCode(recoveryCode);
+    .custom(async (recoveryCode) => {
+        const userExists: UserDBType|null = await QueryUserRepo.findUserByRecoveryCode(recoveryCode);
 
         if (!userExists) {
             throw new Error('Code not valid (User do not found)');
         }
 
         const currentDate = new Date();
-        if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate > currentDate) {
+        if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate < currentDate) {
             throw new Error('Code not valid (Date problem)')
         }
-
-        return true
+        return true;
     })
 
 
@@ -119,5 +118,7 @@ export const userValidation = () =>
 
 export const userEmailValidation = () => [emailExistsValidation, inputModelValidation]
 export const userCodeValidation = () => [codeValidation, inputModelValidation]
+
+export const newPasswordValidation = () => [newPassValidation, inputModelValidation]
 export const recoveryCodeValidation = () => [recCodeValidation, inputModelValidation]
 

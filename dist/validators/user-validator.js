@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.recoveryCodeValidation = exports.userCodeValidation = exports.userEmailValidation = exports.userValidation = exports.mongoIdValidation = void 0;
+exports.recoveryCodeValidation = exports.newPasswordValidation = exports.userCodeValidation = exports.userEmailValidation = exports.userValidation = exports.mongoIdValidation = void 0;
 const express_validator_1 = require("express-validator");
 const input_model_validation_1 = require("../middleware/inputModel/input-model-validation");
 const query_user_repo_1 = require("../repositories/user-repo/query-user-repo");
@@ -29,14 +29,13 @@ const loginValidation = (0, express_validator_1.body)('login')
     return true;
 }))
     .withMessage('User already exists.');
-// const emailValidation = body('email')
-//     .isString()
-//     .trim()
-//     .notEmpty().withMessage('Email is required')
-//     .normalizeEmail()
-//     .matches('^[a-zA-Z0-9_-]*$').withMessage('Email contains invalid characters')
-//     .isEmail().withMessage('Invalid email!');
 const passwordValidation = (0, express_validator_1.body)('password')
+    .exists()
+    .isString()
+    .trim()
+    .isLength({ min: 6, max: 20 })
+    .withMessage('Invalid password!');
+const newPassValidation = (0, express_validator_1.body)('newPassword')
     .exists()
     .isString()
     .trim()
@@ -84,7 +83,7 @@ const recCodeValidation = (0, express_validator_1.body)('recoveryCode')
         throw new Error('Code not valid (User do not found)');
     }
     const currentDate = new Date();
-    if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate > currentDate) {
+    if (!userExists.accountData.recoveryCodeExpirationDate || userExists.accountData.recoveryCodeExpirationDate < currentDate) {
         throw new Error('Code not valid (Date problem)');
     }
     return true;
@@ -111,6 +110,8 @@ const userEmailValidation = () => [emailExistsValidation, input_model_validation
 exports.userEmailValidation = userEmailValidation;
 const userCodeValidation = () => [codeValidation, input_model_validation_1.inputModelValidation];
 exports.userCodeValidation = userCodeValidation;
+const newPasswordValidation = () => [newPassValidation, input_model_validation_1.inputModelValidation];
+exports.newPasswordValidation = newPasswordValidation;
 const recoveryCodeValidation = () => [recCodeValidation, input_model_validation_1.inputModelValidation];
 exports.recoveryCodeValidation = recoveryCodeValidation;
 //# sourceMappingURL=user-validator.js.map

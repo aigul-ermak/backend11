@@ -108,10 +108,7 @@ class QueryUserRepo {
     static findUserByRecoveryCode(recoveryCode) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield user_1.UserModel.findOne({ "accountData.passwordRecoveryCode": recoveryCode });
-            if (!user) {
-                return null;
-            }
-            return (0, mapper_1.userMapper)(user);
+            return user ? (0, mapper_1.userMapper)(user) : null;
         });
     }
     // static async findUserByRecoveryCode(recoveryCode: string): Promise<UserDBType | null> {

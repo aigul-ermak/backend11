@@ -114,11 +114,8 @@ export class QueryUserRepo {
     }
 
     static async findUserByRecoveryCode(recoveryCode: string): Promise<UserDBType | null> {
-        const user: WithId<UserDBType> | null = await UserModel.findOne({"accountData.passwordRecoveryCode": recoveryCode})
-        if (!user) {
-            return null
-        }
-        return userMapper(user);
+        const user: any = await UserModel.findOne({"accountData.passwordRecoveryCode": recoveryCode});
+        return user ? userMapper(user) : null;
     }
 
     // static async findUserByRecoveryCode(recoveryCode: string): Promise<UserDBType | null> {
