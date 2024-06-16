@@ -53,9 +53,7 @@ exports.authRouter.post('/login', cookie_middleware_1.countMiddleware, (0, login
         return res.sendStatus(401);
     }
 }));
-exports.authRouter.post('/password-recovery', cookie_middleware_1.countMiddleware, 
-//userRecPassEmailValidation(),
-(req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/password-recovery', cookie_middleware_1.countMiddleware, (0, user_validator_1.userRecPassEmailValidation)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const result = user_service_1.UserService.passwordRecovery(email);
     // if (!result)

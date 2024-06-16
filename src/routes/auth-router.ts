@@ -65,7 +65,7 @@ authRouter.post('/login', countMiddleware, userAuthValidation(), async (req: Req
 })
 
 authRouter.post('/password-recovery', countMiddleware,
-    //userRecPassEmailValidation(),
+    userRecPassEmailValidation(),
     async (req: Request, res: Response) => {
 
     const email = req.body.email;
