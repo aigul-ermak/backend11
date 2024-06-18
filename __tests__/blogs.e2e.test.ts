@@ -1,5 +1,6 @@
 import request from 'supertest'
-import {app} from "../src";
+import mongoose from 'mongoose'
+import {app} from "../src/app";
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -10,56 +11,55 @@ import {response} from "express";
 import exp = require("constants");
 
 
-const dbName = 'blogCollection'
-const clientTest = client;
-
-describe('/blogs', () => {
-    let newBlog: BlogDBType | null = null
+describe('Mongoose integration', () => {
+    //const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
+    const mongoURI = 'mongodb+srv://aigulermak:drDgghecmurZEzXL@cluster0.uhmxqxv.mongodb.net';
+    let newBlog: BlogDBType | null = null;
 
     beforeAll(async () => {
-        await clientTest.connect()
-        await request(app).delete('/testing/all-data').expect(204)
+        console.log("start connect")
+        await mongoose.connect(mongoURI)
+        await request(app).delete('/testing/all-data').expect(204);
+        console.log("finish connect")
     })
 
     afterAll(async () => {
-        await clientTest.close()
+        await mongoose.disconnect()
     })
 
-    it('GET blogs = []', async () => {
-        await request(app)
-            .get('/blogs/')
-            .expect(200)
-            .then(response => {
-                expect(response.body.items).toEqual([])
-                expect(response.body.totalCount).toEqual(0)
+    describe('GET blogs', () => {
+        it('+ GET blogs', async () => {
+            const res_ = await request(app)
+                .get('/blogs')
+                .expect(200)
 
-                console.log(response.body.items)
-            })
-    });
+            expect(res_.body.items.length).toBe(0)
+        });
 
-    it('Should not create blog because unauth', async () => {
-        await request(app)
-            .post('/blogs/')
-            .auth('admin', 'qwert')
-            .send({
-                "name": "string",
-                "description": "string",
-                "websiteUrl": "https://I8yeiUym1_SU2ZButDFOH50rlAZY-J7D7ue3RDIuYbpqVzwI821rP28tyhsM5phRN1mqD5fC6BTf.AzvgZi56tYP93G2"
-            })
-            .expect(401)
-    });
+        it('POST blog: can\'t create blog if user unauthorized', async () => {
+            const res_ = await request(app)
+                .post('/blogs')
+                .auth('admin', 'qwert')
+                .send({
+                        "name": "string",
+                        "description": "string",
+                        "websiteUrl": "https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v"
+                    }
+                )
+                .expect(401)
+        });
 
-    it('Should not create blog because unauth', async () => {
-        await request(app)
-            .post('/blogs/')
-            .auth('admin', 'qwerty')
-            .send({
-                "name": "",
-                "description": "",
-                "websiteUrl": ""
-            })
-            .expect(400,
-                {
+        it('POST blog: can\'t create blog incorrect value', async (): Promise<void> => {
+            const res_ = await request(app)
+                .post('/blogs')
+                .auth('admin', 'qwerty')
+                .send({
+                        "name": "",
+                        "description": "",
+                        "websiteUrl": ""
+                    }
+                )
+                .expect(400, {
                     "errorsMessages": [
                         {
                             "message": "Incorrect name!",
@@ -72,210 +72,223 @@ describe('/blogs', () => {
                         {
                             "message": "Invalid value",
                             "field": "websiteUrl"
+                        },
+                        {
+                            "message": "Incorrect websiteUrl!",
+                            "field": "websiteUrl"
                         }
                     ]
                 })
-    });
+        });
 
-    let blog1;
-    let blog2;
+        let blog1;
+        let blog2;
 
-    it('Should create blog', async () => {
-        await request(app)
-            .post('/blogs/')
-            .auth('admin', 'qwerty')
-            .send({
-                "name": "testname",
-                "description": "test test",
-                "websiteUrl": "https://3ad80d0f45fa0bbc25057d041e54f82e.serveo.net"
-            })
-            .expect(201)
-            .then(response => {
-                expect(response.body).toEqual(
-                    {
-                        id: expect.any(String),
-                        name: 'testname',
-                        description: 'test test',
-                        websiteUrl: 'https://3ad80d0f45fa0bbc25057d041e54f82e.serveo.net',
-                        createdAt: expect.any(String),
-                        isMembership: false
-
-                    })
-
-                blog1 = response.body;
-            })
-    });
-
-    // get all blogs
-
-    it('GET blogs =', async () => {
-        await request(app)
-            .get('/blogs/')
-            .expect(200)
-            .then(response => {
-                expect(response.body.items).toEqual([blog1!])
-            })
-    });
-
-
-    it('Should create blog', async () => {
-        await request(app)
-            .post('/blogs/')
-            .auth('admin', 'qwerty')
-            .send({
-                "name": "testname1",
-                "description": "test test",
-                "websiteUrl": "https://3ad80d0f45fa0bbc25057d041e54f82e.serveo.net"
-            })
-            .expect(201)
-            .then(response => {
-                expect(response.body).toEqual(
-                    {
-                        id: expect.any(String),
-                        name: 'testname1',
-                        description: 'test test',
-                        websiteUrl: 'https://3ad80d0f45fa0bbc25057d041e54f82e.serveo.net',
-                        createdAt: expect.any(String),
-                        isMembership: false
-                    })
-                blog2 = response.body;
-            })
-    });
-
-
-    it('GET blogs =', async () => {
-        await request(app)
-            .get('/blogs/')
-            .expect(200)
-            .then(response => {
-                expect(response.body.items).toEqual([blog2!, blog1!])
-            })
-    });
-
-
-    it('GET blog1 by id', async () => {
-        await request(app)
-            .get(`/blogs/${blog1!.id}`)
-            .expect(200)
-            .then(response => {
-                expect(response.body).toEqual(blog1!)
-            })
-    });
-
-    it('GET blog2 by id', async () => {
-        await request(app)
-            .get(`/blogs/${blog2!.id}`)
-            .expect(200)
-            .then(response => {
-                expect(response.body).toEqual(blog2!)
-            })
-    });
-
-    it('Should not get blog by wrong id', async () => {
-        await request(app)
-            .get(`/blogs/65aebd256640e4d9af9c7d9c`)
-            .expect(404)
-    });
-
-
-    // put
-
-    it('Should not update blog because not authorized', async () => {
-        await request(app)
-            .put(`/blogs/65aebd256640e4d9af9c7d9c`)
-            .expect(401)
-    });
-
-    it('Should not update blog because not found', async () => {
-        await request(app)
-            .put(`/blogs/65aebd256640e4d9af9c7d9c`)
-            .auth('admin', 'qwerty')
-            .send({
-                "name": "testname5",
-                "description": "test test test",
-                "websiteUrl": "https://3a680d0f45fa0bbc25057d041e54f82e.serveo.com"
-            })
-            .expect(404)
-    });
-
-    it('Should not update blog because req is not valid', async () => {
-        await request(app)
-            .put(`/blogs/${blog2!.id}`)
-            .auth('admin', 'qwerty')
-            .send({
-                "name": "",
-                "description": "",
-                "websiteUrl": ""
-            })
-            .expect(400, {
-                "errorsMessages": [
-                    {
-                        "message": "Incorrect name!",
-                        "field": "name"
-                    },
-                    {
-                        "message": "Incorrect description!",
-                        "field": "description"
-                    },
-                    {
-                        "message": "Invalid value",
-                        "field": "websiteUrl"
+        it('POST blog: create blog ', async () => {
+            const res_ = await request(app)
+                .post('/blogs')
+                .auth('admin', 'qwerty')
+                .send({
+                        "name": "test name 1",
+                        "description": "test description 1",
+                        "websiteUrl": "https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v"
                     }
-                ]
-            })
-    });
+                )
+                .expect(201);
 
-    it('Should update blog', async () => {
-        await request(app)
-            .put(`/blogs/${blog2!.id}`)
-            .auth('admin', 'qwerty')
-            .send({
-                "name": "updated name",
-                "description": "updated desc",
-                "websiteUrl": "https://3a680d0f45fa0bbc25057d041e54f82e.serveo.com"
-            })
-            .expect(204)
-    });
+            expect(res_.body).toEqual({
+                id: expect.any(String),
+                name: 'test name 1',
+                description: 'test description 1',
+                websiteUrl: 'https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v',
+                createdAt: expect.any(String),
+                isMembership: false
+            });
 
-    it('Should check update blog2', async () => {
-        await request(app)
-            .get(`/blogs/${blog2!.id}`)
-            .auth('admin', 'qwerty')
-            .expect(200)
-            .then(response => {
-                expect(response.body).not.toEqual(blog2!)
-            })
-    });
+            blog1 = res_.body;
+        });
 
+// get all blogs
 
-    it('Should not delete blog2', async () => {
-        await request(app)
-            .delete(`/blogs/65aebd256640e4d9af9c7d9c`)
-            .auth('admin', 'qwerty')
-            .expect(404)
-    });
+        it('GET blogs all blogs after creating new blog', async () => {
+            const res_ = await request(app)
+                .get('/blogs')
+                .expect(200)
 
-    it('Should not delete blog2', async () => {
-        await request(app)
-            .delete(`/blogs/65aebd256640e4d9af9c7d9c`)
-            .auth('admi', 'qwerty')
-            .expect(401)
-    });
+            expect(res_.body.items).toEqual([blog1!])
 
-    it('Should check delete blog2', async () => {
-        await request(app)
-            .delete(`/blogs/${blog2!.id}`)
-            .auth('admin', 'qwerty')
-            .expect(204)
-    });
+        });
 
-    it('Should check update blog2', async () => {
-        await request(app)
-            .get(`/blogs/${blog2!.id}`)
-            .auth('admin', 'qwerty')
-            .expect(404)
-    });
+        it('POST blog: create blog ', async () => {
+            const res_ = await request(app)
+                .post('/blogs')
+                .auth('admin', 'qwerty')
+                .send({
+                        "name": "test name 2",
+                        "description": "test description 1",
+                        "websiteUrl": "https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v"
+                    }
+                )
+                .expect(201);
 
-});
+            expect(res_.body).toEqual({
+                id: expect.any(String),
+                name: 'test name 2',
+                description: 'test description 1',
+                websiteUrl: 'https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v',
+                createdAt: expect.any(String),
+                isMembership: false
+            });
 
+            blog2 = res_.body;
+
+        });
+
+        it('GET blogs all blogs after creating new blog', async () => {
+            const res_ = await request(app)
+                .get('/blogs')
+                .expect(200)
+
+            expect(res_.body.items).toEqual([blog2!, blog1!])
+
+        });
+
+        // get blog by id
+
+        it('GET blogs by id', async () => {
+            const res_ = await request(app)
+                .get(`/blogs/${blog1!.id}`)
+                .expect(200)
+        });
+
+//TODO ??? why blog is not found - new blog created
+        it('GET blogs by id: not found, wrong blog id', async () => {
+            const res_ = await request(app)
+                .get('/blogs/6671a3a1712b7846f31e667b')
+                .expect(404)
+        });
+
+// put
+
+        it('PUT blog: can\'t update blog if user unauthorized', async () => {
+            const res_ = await request(app)
+                .put(`/blogs/${blog1!.id}`)
+                .auth('admin', 'qwert')
+                .send({
+                        "name": "string",
+                        "description": "string",
+                        "websiteUrl": "https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v"
+                    }
+                )
+                .expect(401)
+        });
+
+        it('PUT blog: can\'t update blog wrong id', async () => {
+            const res_ = await request(app)
+                .put(`/blogs/6671a3a1712b7846f31e667b`)
+                .auth('admin', 'qwerty')
+                .send({
+                        "name": "string",
+                        "description": "string",
+                        "websiteUrl": "https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v"
+                    }
+                )
+                .expect(404)
+        });
+
+        it('PUT blog', async (): Promise<void> => {
+            const res_ = await request(app)
+                .put(`/blogs/${blog1!.id}`)
+                .auth('admin', 'qwerty')
+                .send({
+                        "name": "",
+                        "description": "",
+                        "websiteUrl": ""
+                    }
+                )
+                .expect(400, {
+                    "errorsMessages": [
+                        {
+                            "message": "Incorrect name!",
+                            "field": "name"
+                        },
+                        {
+                            "message": "Incorrect description!",
+                            "field": "description"
+                        },
+                        {
+                            "message": "Invalid value",
+                            "field": "websiteUrl"
+                        },
+                        {
+                            "message": "Incorrect websiteUrl!",
+                            "field": "websiteUrl"
+                        }
+                    ]
+                })
+        });
+
+        it('PUT blog: update blog ', async () => {
+            const res_ = await request(app)
+                .put(`/blogs/${blog1!.id}`)
+                .auth('admin', 'qwerty')
+                .send({
+                        "name": "test name 1 + 1",
+                        "description": "test description 1",
+                        "websiteUrl": "https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v"
+                    }
+                )
+                .expect(204);
+        });
+
+        it('GET blog after uodate', async () => {
+            const res_ = await request(app)
+                .get(`/blogs/${blog1!.id}`)
+                .expect(200)
+
+            expect(res_.body).toEqual({
+                id: expect.any(String),
+                name: 'test name 1 + 1',
+                description: 'test description 1',
+                websiteUrl: 'https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v',
+                createdAt: expect.any(String),
+                isMembership: false
+            });
+        });
+
+        //delete
+
+        it('DELETE blog: can\'t delete blog if user unauthorized', async () => {
+            const res_ = await request(app)
+                .delete(`/blogs/${blog1!.id}`)
+                .auth('admin', 'qwert')
+                .expect(401)
+        });
+
+        it('DELETE blog: can\'t delete blog wrong id', async () => {
+            const res_ = await request(app)
+                .delete(`/blogs/6671a3a1712b7846f31e667b`)
+                .auth('admin', 'qwerty')
+                .expect(404)
+        });
+
+        it('DELETE blog', async () => {
+            const res_ = await request(app)
+                .delete(`/blogs/${blog1!.id}`)
+                .auth('admin', 'qwerty')
+                .expect(204)
+        });
+
+// check after delete blog 2
+        it('GET blogs all blogs after creating new blog', async () => {
+            const res_ = await request(app)
+                .get('/blogs')
+                .expect(200)
+
+            expect(res_.body.items).toEqual([blog2!])
+
+        });
+
+    })
+})
 

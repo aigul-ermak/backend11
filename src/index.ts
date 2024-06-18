@@ -1,10 +1,10 @@
 import {configApp} from "./config/settings";
 import {runDb} from "./config/db";
+import {app} from "./app";
 
 const port = 3000;
 
-export const app = configApp()
-console.log("index.ts")
+
 
 
 const startApp = async (): Promise<void> => {
