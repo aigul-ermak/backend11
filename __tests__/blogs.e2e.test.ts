@@ -124,9 +124,9 @@ describe('Mongoose integration', () => {
                 .post('/blogs')
                 .auth('admin', 'qwerty')
                 .send({
-                        "name": "test name 2",
-                        "description": "test description 1",
-                        "websiteUrl": "https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v"
+                        'name': 'test name 2',
+                        'description': 'test description 1',
+                        'websiteUrl': 'https://LimBr082_uipzjm8dF.HNo-1AvOJGJUGKwWlPwd7mE55JcWy2wq_puT2fVSI3cUsTao-xl.iGpAAlxdAe3LguxpFjc5v'
                     }
                 )
                 .expect(201);
