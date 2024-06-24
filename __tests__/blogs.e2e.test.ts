@@ -6,11 +6,6 @@ import dotenv from 'dotenv'
 dotenv.config()
 import {BlogDBType} from "../src/types/blog/output";
 
-// import {client} from "../src/config";
-import {response} from "express";
-import exp = require("constants");
-
-
 describe('Mongoose integration', () => {
     //const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
     const mongoURI = 'mongodb+srv://aigulermak:drDgghecmurZEzXL@cluster0.uhmxqxv.mongodb.net';
@@ -108,6 +103,7 @@ describe('Mongoose integration', () => {
             blog1 = res_.body;
         });
 
+
 // get all blogs
 
         it('GET blogs all blogs after creating new blog', async () => {
@@ -153,6 +149,98 @@ describe('Mongoose integration', () => {
 
         });
 
+        // create new post for specific blog
+        it('POST blog: create post for specific blog', async () => {
+            const res_ = await request(app)
+                .post(`/blogs/${blog1!.id}/posts`)
+                .auth('admin', 'qwerty')
+                .send({
+                        'title': 'post 1 for blog 1',
+                        'shortDescription': 'description for post 1',
+                        'content': 'content for post 1 for blog 1'
+                    }
+                )
+                .expect(201);
+
+            expect(res_.body).toEqual({
+                id: expect.any(String),
+                title: 'post 1 for blog 1',
+                shortDescription: 'description for post 1',
+                content: 'content for post 1 for blog 1',
+                blogId: blog1!.id,
+                blogName: blog1!.name,
+                createdAt: expect.any(String),
+            });
+
+        });
+
+        it('POST blog: create post for specific blog: incorrect values', async () => {
+            const res_ = await request(app)
+                .post(`/blogs/${blog1!.id}/posts`)
+                .auth('admin', 'qwerty')
+                .send({
+                        'title': '',
+                        'shortDescription': '',
+                        'content': ''
+                    }
+                )
+                .expect(400, {
+                    "errorsMessages": [
+                        {
+                            "message": "Incorrect short description",
+                            "field": "shortDescription"
+                        },
+                        {
+                            "message": "Incorrect title",
+                            "field": "title"
+                        },
+                        {
+                            "message": "Incorrect content",
+                            "field": "content"
+                        }
+
+                    ]
+                });
+        });
+
+        it('POST blog: create post for specific blog: unauthorized', async () => {
+            const res_ = await request(app)
+                .post(`/blogs/${blog1!.id}/posts`)
+                .auth('admin', 'qwert')
+                .send({
+                        'title': '',
+                        'shortDescription': '',
+                        'content': ''
+                    }
+                )
+                .expect(401)
+        })
+
+        it('POST blog: create post for specific blog: wrong blogId ', async () => {
+            const res_ = await request(app)
+                .post('/blogs/6671a3a1712b7846f31e667b/posts')
+                .auth('admin', 'qwerty')
+                .send({
+                        'title': 'post 1 for blog 1',
+                        'shortDescription': 'description for post 1',
+                        'content': 'content for post 1 for blog 1'
+                    }
+                )
+                .expect(404)
+        })
+//TODO body?
+        it('GET blog: posts for specific blog', async () => {
+            const res_ = await request(app)
+                .get(`/blogs/${blog1!.id}/posts`)
+                .expect(200)
+        });
+
+        it('GET blog: posts for specific blog: wrong blogId', async () => {
+            const res_ = await request(app)
+                .get(`/blogs/6671a3a1712b7846f31e667b/posts`)
+                .expect(404)
+        })
+
         // get blog by id
 
         it('GET blogs by id', async () => {
@@ -169,7 +257,6 @@ describe('Mongoose integration', () => {
         });
 
 // put
-
         it('PUT blog: can\'t update blog if user unauthorized', async () => {
             const res_ = await request(app)
                 .put(`/blogs/${blog1!.id}`)
@@ -241,7 +328,7 @@ describe('Mongoose integration', () => {
                 .expect(204);
         });
 
-        it('GET blog after uodate', async () => {
+        it('GET blog after update', async () => {
             const res_ = await request(app)
                 .get(`/blogs/${blog1!.id}`)
                 .expect(200)
