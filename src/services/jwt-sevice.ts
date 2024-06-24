@@ -1,5 +1,5 @@
 import {settings} from "./settings";
-import jwt from 'jsonwebtoken';
+import jwt, {JwtPayload} from 'jsonwebtoken';
 import {RefreshToken} from "../types/token/output";
 
 
@@ -8,9 +8,8 @@ export const jwtService = {
     async getUserIdByToken(token: string) {
         try {
             // TODO type?
-            const result: any = jwt.verify(token, settings.JWT_SECRET)
-            const userId = result.userId;
-            return userId;
+            const result: any  = jwt.verify(token, settings.JWT_SECRET)
+            return result.userId;
         } catch (error) {
             return null
         }

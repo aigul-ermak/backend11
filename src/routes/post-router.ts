@@ -31,24 +31,24 @@ postRouter.get('/', async (req: RequestTypeWithQuery<SortPostType>, res: Respons
         pageSize: req.query.pageSize
     }
 
+    postRouter.get('/:id', mongoIdInParamValidation(),
+        async (req: RequestWithParams<Params>, res: Response<PostDBType>) => {
+            const id: string = req.params.id
+
+            const post: PostDBType | null = await QueryPostRepo.getPostById(id)
+
+            if (post) {
+                res.status(200).send(post)
+            } else {
+                res.sendStatus(404)
+                return
+            }
+        })
     const posts: OutputPostType = await QueryPostRepo.getAllPosts(sortData)
     res.status(200).send(posts)
 
 })
 
-// postRouter.get('/:id', mongoIdInParamValidation(),
-//     async (req: RequestWithParams<Params>, res: Response<PostType>) => {
-//         const id: string = req.params.id
-//
-//         const post: PostType | null = await QueryPostRepo.getPostById(id)
-//
-//         if (post) {
-//             res.status(200).send(post)
-//         } else {
-//             res.sendStatus(404)
-//             return
-//         }
-//     })
 
 postRouter.get('/:id/comments', mongoIdInParamValidation(),
     async (req: RequestTypeWithQueryAndParams<{ id: string }, SortCommentType>, res: Response<OutputCommentType>) => {
