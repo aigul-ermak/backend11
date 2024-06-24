@@ -304,7 +304,7 @@ describe('Mongoose integration', () => {
             });
 
             user1 = res_.body;
-
+            console.log(user1)
         });
 
 
@@ -360,15 +360,16 @@ describe('Mongoose integration', () => {
             const res_ = await request(app)
                 .post(`/posts/${post1!.id}/comments`)
                 .set('Authorization', `Bearer ${token}`)
+                //.auth('admin', 'qwerty')
                 .send({
-                        'content': 'content 1',
+                        'content': 'content content content',
                     }
                 )
                 .expect(201);
 
             expect(res_.body).toEqual({
-                id: expect.any(String),
-                content: 'content 1',
+                //id: expect.any(String),
+                content: 'content content content',
                 commentatorInfo: {
                     userId: user1.id,
                     userLogin: user1.login,

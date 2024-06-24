@@ -124,10 +124,11 @@ postRouter.post('/:id/comments', authBearerMiddleware,
 
         if (newComment) {
             res.status(201).send(newComment);
-        } else {
-            res.sendStatus(400);
-            return
         }
+        // else {
+        //     res.sendStatus(400);
+        //     return
+        // }
     })
 
 postRouter.put('/:id',

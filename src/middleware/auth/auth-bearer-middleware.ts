@@ -8,7 +8,7 @@ import {OutputUserItemType} from "../../types/user/output";
 export const authBearerMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 
     if (!req.headers.authorization) {
-        res.send(401)
+        res.sendStatus(401)
         return
     }
 
