@@ -11,7 +11,7 @@ type CommentatorInfo = {
 }
 
 export type OutputItemCommentType = {
-    //postId: string,
+    id: string,
     content: string,
     commentatorInfo: CommentatorInfo,
     createdAt: string
