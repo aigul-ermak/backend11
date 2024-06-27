@@ -31,6 +31,7 @@ userRouter.post('/', authMiddleware,
     userValidation(),
     //usersExistsValidation(),
     async (req: RequestWithBody<CreateUserData>, res: Response<OutputUserItemType>) => {
+    //TODO type??
     const newUser: any | null = await UserService.createUser(req.body.login, req.body.password, req.body.email)
     if (newUser) {
         res.status(201).send(newUser)
