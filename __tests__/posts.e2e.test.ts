@@ -309,9 +309,13 @@ describe('Mongoose integration', () => {
 
 
         it('POST post: create comment: incorrect values', async () => {
+            let userId = user1.id;
+            const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
+
             const res_ = await request(app)
                 .post(`/posts/${post1!.id}/comments`)
-                .auth('admin', 'qwerty')
+                .set('Authorization', `Bearer ${token}`)
+                //.auth('admin', 'qwerty')
                 .send({
                         'content': '',
                     }
@@ -319,7 +323,7 @@ describe('Mongoose integration', () => {
                 .expect(400, {
                     "errorsMessages": [
                         {
-                            "message": "Incorrect content",
+                            "message": "Incorrect comment",
                             "field": "content"
                         },
                     ]
@@ -339,9 +343,13 @@ describe('Mongoose integration', () => {
         });
 
         it('POST post: create comment: wrong postId', async () => {
+            let userId = user1.id;
+            const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
+
             const res_ = await request(app)
                 .post(`/posts/66798b7a906543743847e066/comments`)
-                .auth('admin', 'qwerty')
+                .set('Authorization', `Bearer ${token}`)
+                //.auth('admin', 'qwerty')
                 .send({
                         'content': 'content 1',
                     }
@@ -355,7 +363,6 @@ describe('Mongoose integration', () => {
         it('POST post: create comment', async () => {
             let userId = user1.id;
             const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
-            console.log('Generated Token:', token);
 
             const res_ = await request(app)
                 .post(`/posts/${post1!.id}/comments`)
@@ -368,7 +375,7 @@ describe('Mongoose integration', () => {
                 .expect(201);
 
             expect(res_.body).toEqual({
-                //id: expect.any(String),
+                commentId: expect.any(String),
                 content: 'content content content',
                 commentatorInfo: {
                     userId: user1.id,
@@ -382,8 +389,9 @@ describe('Mongoose integration', () => {
 
 
         it('DELETE post', async () => {
+            console.log(post1)
             const res_ = await request(app)
-                .delete(`/blogs/${post1!.id}`)
+                .delete(`/posts/${post1!.id}`)
                 .auth('admin', 'qwerty')
                 .expect(204)
         });

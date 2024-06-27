@@ -5,7 +5,7 @@ import {CommentModel} from "../../models/comment";
 
 export class CommentRepo {
 
-    static async createComment( newComment: OutputItemCommentType) {
+    static async createComment( newComment: any ) {
         //TODO type??
         const res : any = await CommentModel.create(newComment)
         return res._id.toString();
