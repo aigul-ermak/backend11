@@ -1,14 +1,22 @@
 export type CommentDBType = {
+    id: string,
     postId: string,
     content: string,
     commentatorInfo: CommentatorInfo,
-    createdAt: string
+    createdAt: string,
+    likes: LikeDBModel
 }
 
 type CommentatorInfo = {
     userId: string,
     userLogin: string
 }
+
+type LikeDBModel = {
+    userId: string,
+    status: string
+}
+
 
 export type OutputItemCommentType = {
     commentId: string,
