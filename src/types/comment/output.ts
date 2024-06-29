@@ -12,7 +12,7 @@ type CommentatorInfo = {
     userLogin: string
 }
 
-type LikeDBModel = {
+export type LikeDBModel = {
     userId: string,
     status: string
 }

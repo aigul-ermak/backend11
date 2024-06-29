@@ -1,6 +1,12 @@
 import mongoose, {Schema, model, Document} from 'mongoose';
 import {BlogDBType} from "../types/blog/output";
-import {CommentDBType} from "../types/comment/output";
+import {CommentDBType, LikeDBModel} from "../types/comment/output";
+
+enum LIKE_STATUS {
+    LIKE = 'like',
+    DISLIKE = 'dislike',
+    NONE = 'none'
+}
 
 const likesSchema = new mongoose.Schema<LikeDBModel>({
     userId: {type: String, required: true},
