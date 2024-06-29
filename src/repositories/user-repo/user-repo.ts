@@ -6,17 +6,17 @@ import bcrypt from "bcrypt";
 
 export class UserRepo {
     //static async createUser(user: UserType) {
-    static async createUser(user: UserDBType): Promise<string> {
+    async createUser(user: UserDBType): Promise<string> {
         const res = await UserModel.create(user)
         return res._id.toString();
     }
 
-    static async deleteUser(userId: string) {
+    async deleteUser(userId: string) {
         const result = await UserModel.deleteOne({_id: new ObjectId(userId)})
         return !!result.deletedCount;
     }
 
-    static async updateConfirmation(id: string) {
+    async updateConfirmation(id: string) {
         let result = await UserModel
             .updateOne({_id: new ObjectId(id)}, {$set: {'emailConfirmation.isConfirmed': true}})
 
@@ -26,23 +26,23 @@ export class UserRepo {
     }
 
     //static async updateCode(email: string , code: string) {
-    static async updateCode(id: string | undefined, code: string) {
+    async updateCode(id: string | undefined, code: string) {
         let result = await UserModel
             .updateOne({_id: new ObjectId(id)}, {$set: {'emailConfirmation.confirmationCode': code}})
-            //.updateOne({"accountData.email": email}, {$set: {'emailConfirmation.confirmationCode': code}})
+        //.updateOne({"accountData.email": email}, {$set: {'emailConfirmation.confirmationCode': code}})
 
         return !!result.modifiedCount;
     }
 
-    static async updateUser(id: string , code: string): Promise<void> {
+    async updateUser(id: string, code: string): Promise<void> {
         await UserModel.updateOne(
-            { _id: new ObjectId(id) },
+            {_id: new ObjectId(id)},
             {
                 $set: {
                     'accountData.passwordRecoveryCode': code,
-                    'accountData.recoveryCodeExpirationDate': new Date(Date.now() + (1 * 60 + 3) * 60 * 1000)                 }
+                    'accountData.recoveryCodeExpirationDate': new Date(Date.now() + (1 * 60 + 3) * 60 * 1000)
+                }
             }
         );
     }
-
 }

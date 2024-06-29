@@ -5,17 +5,15 @@ import {UserRepo} from "../repositories/user-repo/user-repo";
 import {emailManager} from "./email-manager";
 import {v4 as uuid4} from 'uuid';
 import {add} from "date-fns/add";
-import jwt from "jsonwebtoken";
-import {settings} from "./settings";
-import {UserService} from "./user-service";
 import {jwtService} from "./jwt-sevice";
 import {RefreshToken} from "../types/token/output";
 
 import {QuerySecurityRepo} from "../repositories/security-repo/query-security-repo";
 
 
-export class authService {
-    static async createUser(login: string, password: string, email: string) {
+export class AuthService {
+    constructor(protected userRepo: UserRepo) {}
+    async createUser(login: string, password: string, email: string) {
 
         const existsUser: OutputUserItemType | null = await QueryUserRepo.findByLoginOrEmail(email);
 
@@ -44,15 +42,15 @@ export class authService {
             }
         }
 
-        const result: string = await UserRepo.createUser(newUser)
+        const result: string = await this.userRepo.createUser(newUser)
         // HW 7
         await emailManager.sendEmailConfirmationMessage(newUser)
         return result;
 
     }
 
-    static async createAccessRefreshTokens(user: OutputUserItemType, deviceId: string,
-                                           userIP: string, userAgent: string) {
+    async createAccessRefreshTokens(user: OutputUserItemType, deviceId: string,
+                                    userIP: string, userAgent: string) {
         const accessToken: string = await jwtService.createAccessToken(user.id)
 
         const refreshToken: string = await jwtService.createRefreshToken(
@@ -62,7 +60,7 @@ export class authService {
 
     }
 
-    static async refreshTokens(token: string) {
+    async refreshTokens(token: string) {
 
         const payload: RefreshToken | null = jwtService.getPayloadFromToken(token)
 
@@ -74,11 +72,11 @@ export class authService {
 
         if (!refreshToken) return null;
 
-        const newPayload =  jwtService.getPayloadFromToken(refreshToken)
+        const newPayload = jwtService.getPayloadFromToken(refreshToken)
 
-        if(!newPayload) return null
+        if (!newPayload) return null
 
-        const iatDate : string  = newPayload.iatDate
+        const iatDate: string = newPayload.iatDate
         const expDate: string = newPayload.expDate
 
         let result = await QuerySecurityRepo.updateSessionToList(
@@ -88,7 +86,7 @@ export class authService {
     }
 
 
-    static async checkCredentials(loginOrEmail: string, password: string) {
+    async checkCredentials(loginOrEmail: string, password: string) {
 
         const user: OutputUserItemType | null = await QueryUserRepo.findByLoginOrEmail(loginOrEmail)
 
@@ -103,7 +101,7 @@ export class authService {
             return null
     }
 
-    static async findUserById(userId: string) {
+    async findUserById(userId: string) {
         const user = await QueryUserRepo.findUserById(userId)
 
         if (!user) {
@@ -113,7 +111,7 @@ export class authService {
         return user;
     }
 
-    static async deleteUser(userId: string) {
+    async deleteUser(userId: string) {
 
         const userExists = await QueryUserRepo.findUserById(userId)
 
@@ -122,41 +120,40 @@ export class authService {
             return null;
         }
 
-        await UserRepo.deleteUser(userId)
+        await this.userRepo.deleteUser(userId)
         return true
 
     }
 
-    static async checkAndFindUserByToken(token: string) {
-        try {
-            const result: any = jwt.verify(token, settings.JWT_SECRET)
-            //const user :OutputUserItemType | null  = await UserService.findUserById(new ObjectId(result.userId))
-            const user: OutputUserItemType | null = await UserService.findUserById(result.userId)
-            return user
-        } catch (e) {
-            return null
-        }
-    }
+    // async checkAndFindUserByToken(token: string) {
+    //     try {
+    //         const result: any = jwt.verify(token, settings.JWT_SECRET)
+    //         const user: OutputUserItemType | null = await UserService.findUserById(result.userId)
+    //         return user
+    //     } catch (e) {
+    //         return null
+    //     }
+    // }
 
-    static async confirmEmail(code: string): Promise<boolean> {
+    async confirmEmail(code: string): Promise<boolean> {
 
         const user: OutputUserItemType | null = await QueryUserRepo.findUserByConfirmationCode(code)
 
         if (!user) return false
 
         if (user.emailConfirmation.confirmationCode === code) {
-            let result: boolean = await UserRepo.updateConfirmation(user.id)
+            let result: boolean = await this.userRepo.updateConfirmation(user.id)
             return result
         }
         return false
     }
 
-    static async sendNewCodeToEmail(email: string): Promise<boolean> {
+    async sendNewCodeToEmail(email: string): Promise<boolean> {
         const newCode: string = uuid4();
 
         let user: OutputUserItemType | null = await QueryUserRepo.findByLoginOrEmail(email)
 
-        await UserRepo.updateCode(user?.id, newCode)
+        await this.userRepo.updateCode(user?.id, newCode)
 
         let userWithNewCode: OutputUserItemType | null = await QueryUserRepo.findByLoginOrEmail(email)
 
@@ -165,10 +162,10 @@ export class authService {
         return true
     }
 
-    static async logoutUser(refreshToken: string) {
-        const payload: RefreshToken|null = await jwtService.getPayloadFromToken(refreshToken)
+    async logoutUser(refreshToken: string) {
+        const payload: RefreshToken | null = await jwtService.getPayloadFromToken(refreshToken)
 
-        if(!payload)
+        if (!payload)
             return null
 
         const userId: string = payload?.userId
@@ -176,10 +173,9 @@ export class authService {
 
         const result = await QuerySecurityRepo.deleteSessionFromList(userId, deviceId);
 
-        if(!result)
+        if (!result)
             return null
 
         return true
-
     }
 }

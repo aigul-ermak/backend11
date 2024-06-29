@@ -3,14 +3,12 @@ import bcrypt from 'bcrypt';
 import {QueryUserRepo} from "../repositories/user-repo/query-user-repo";
 import {UserRepo} from "../repositories/user-repo/user-repo";
 import {add} from "date-fns/add";
-import {ObjectId} from "mongodb";
-import {UserModel} from "../models/user";
-import {QuerySecurityRepo} from "../repositories/security-repo/query-security-repo";
 import {uuid} from "uuidv4";
 import {emailManager} from "./email-manager";
 
 export class UserService {
-    static async createUser(login: string, password: string, email: string) {
+    constructor(protected userRepo: UserRepo) {}
+    async createUser(login: string, password: string, email: string) {
 
         const passwordHash = await bcrypt.hash(password, 10)
 
@@ -33,7 +31,7 @@ export class UserService {
             }
         }
 
-        const userId: string = await UserRepo.createUser(newUser)
+        const userId: string = await this.userRepo.createUser(newUser)
         const user: OutputUserItemType | null = await QueryUserRepo.findUserById(userId)
 
         if (!user) {
@@ -47,7 +45,7 @@ export class UserService {
         };
     }
 
-    static async checkCredentials(loginOrEmail: string, password: string) {
+    async checkCredentials(loginOrEmail: string, password: string) {
 
         const user: OutputUserItemType | null = await QueryUserRepo.findByLoginOrEmail(loginOrEmail)
 
@@ -63,7 +61,7 @@ export class UserService {
     }
 
     //TODO check type user
-    static async findUserById(userId: any) {
+    async findUserById(userId: any) {
         const user: OutputUserItemType | null = await QueryUserRepo.findUserById(userId)
 
         if (!user) {
@@ -73,7 +71,7 @@ export class UserService {
         return user;
     }
 
-    static async deleteUser(userId: string) {
+    async deleteUser(userId: string) {
 
         const userExists: OutputUserItemType | null = await QueryUserRepo.findUserById(userId)
 
@@ -81,19 +79,19 @@ export class UserService {
             return null;
         }
 
-        await UserRepo.deleteUser(userId)
+        await this.userRepo.deleteUser(userId)
         return true
 
     }
 
-    static async passwordRecovery(email: string): Promise<boolean> {
+    async passwordRecovery(email: string): Promise<boolean> {
 
         const user = await QueryUserRepo.findUserByEmail(email);
 
         if (user) {
             const passwordRecoveryCode: string = uuid();
 
-            await UserRepo.updateUser(user.id, passwordRecoveryCode);
+            await this.userRepo.updateUser(user.id, passwordRecoveryCode);
             await emailManager.sendRecoveryCodeMessage(user.accountData.email, passwordRecoveryCode);
             return true;
         }
@@ -103,7 +101,7 @@ export class UserService {
     }
 
 //TODO type??
-    static async newPassword(newPassword: string, recoveryCode: string) {
+    async newPassword(newPassword: string, recoveryCode: string) {
         //TODO type??
         const user: any = await QueryUserRepo.findUserByRecoveryCode(recoveryCode);
 
@@ -116,9 +114,6 @@ export class UserService {
         }
         return false;
     }
-
-    private static async _generateHash(password: string, salt: string) {
-        const hash = await bcrypt.hash(password, salt)
-        return hash
-    }
 }
+
+// export const userService = new UserService()
