@@ -21,13 +21,13 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
         return
     }
 
-    const user: OutputUserItemType | null = await UserService.findUserById(userId)
+    // const user: OutputUserItemType | null = await UserService.findUserById(userId)
+    //
+    // if (!user) {
+    //     res.sendStatus(401)
+    //     return
+    // }
 
-    if (!user) {
-        res.sendStatus(401)
-        return
-    }
-
-    req.user = user
+    // req.user = user
     next()
 }
