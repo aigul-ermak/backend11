@@ -1,17 +1,18 @@
-import {DeleteResult, InsertOneResult, ObjectId, UpdateResult} from "mongodb";
-import {CommentDBType, OutputItemCommentType} from "../../types/comment/output";
+import {DeleteResult, InsertOneResult, ObjectId, UpdateResult, WithId} from "mongodb";
+import {CommentDBType, OutputItemCommentType, SortCommentType} from "../../types/comment/output";
 import {CommentModel} from "../../models/comment";
+import {commentMapper} from "../../types/comment/mapper";
 
 
 export class CommentRepo {
 
-    static async createComment( newComment: any ) {
+    async createComment(newComment: any) {
         //TODO type??
-        const res : any = await CommentModel.create(newComment)
+        const res  = await CommentModel.create(newComment)
         return res._id.toString();
     }
 
-    static async updateComment(id: string, contentData: CommentDBType) : Promise<boolean> {
+    async updateComment(id: string, contentData: CommentDBType): Promise<boolean> {
         const res: UpdateResult<CommentDBType> = await CommentModel.updateOne({_id: new ObjectId(id)},
             {
                 $set: {
@@ -22,8 +23,48 @@ export class CommentRepo {
         return !!res.matchedCount
     }
 
-    static async deleteComment(id: string): Promise<boolean> {
+    async deleteComment(id: string): Promise<boolean> {
         const result: DeleteResult = await CommentModel.deleteOne({_id: new ObjectId(id)})
         return !!result.deletedCount;
+    }
+
+    async getCommentById(id: string): Promise<OutputItemCommentType | null> {
+//TODO type
+        const comment: any | null = await CommentModel.findOne({_id: new ObjectId(id)})
+
+        if (!comment) {
+            return null
+        }
+        return commentMapper(comment)
+    }
+
+    async getCommentByPostId(postId: string, sortData: SortCommentType) {
+
+        const sortDirection = sortData.sortDirection ?? 'desc'
+        const sortBy = sortData.sortBy ?? 'createdAt'
+        const pageSize = sortData.pageSize ?? 10
+        const pageNumber = sortData.pageNumber ?? 1
+
+        let filter = {postId: postId}
+
+        const comment: WithId<CommentDBType>[] = await CommentModel
+            .find(filter)
+            .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
+            .skip((pageNumber - 1) * +pageSize)
+            .limit(+pageSize)
+            .exec();
+        //.toArray();
+
+        const totalCount: number = await CommentModel.countDocuments(filter);
+
+        const pageCount: number = Math.ceil(totalCount / +pageSize);
+
+        return {
+            pagesCount: pageCount,
+            page: +pageNumber,
+            pageSize: +pageSize,
+            totalCount: totalCount,
+            items: comment.map(commentMapper)
+        }
     }
 }
