@@ -3,6 +3,7 @@ import {jwtService} from "../../services/jwt-sevice";
 import {ObjectId} from "mongodb";
 import {UserService} from "../../services/user-service";
 import {OutputUserItemType} from "../../types/user/output";
+import {userService} from "../../composition-root";
 
 
 export const authBearerMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -21,13 +22,13 @@ export const authBearerMiddleware = async (req: Request, res: Response, next: Ne
         return
     }
 
-    // const user: OutputUserItemType | null = await UserService.findUserById(userId)
-    //
-    // if (!user) {
-    //     res.sendStatus(401)
-    //     return
-    // }
+    const user: OutputUserItemType | null = await userService.findUserById(userId)
 
-    // req.user = user
+    if (!user) {
+        res.sendStatus(401)
+        return
+    }
+
+    req.user = user
     next()
 }
