@@ -10,6 +10,7 @@ export class UserController {
     }
 
     async createUser(req: RequestWithBody<CreateUserData>, res: Response<OutputUserItemType>) {
+        //TODO type ??
         const newUser: any = await this.userService.createUser(req.body.login, req.body.password, req.body.email)
         if (newUser) {
             res.status(201).send(newUser)
