@@ -1,20 +1,18 @@
 import {UserService} from "../services/user-service";
-import {RequestWithBody} from "../types/common";
-import {CreateUserData} from "../types/user/input";
 import {Request, Response} from "express";
 import {OutputUserItemType} from "../types/user/output";
 import {AuthService} from "../services/auth-service";
 import {RefreshedToken} from "../types/token/output";
 import {uuid} from "uuidv4";
+import {SecurityService} from "../services/security-service";
 
 export class AuthController {
-    constructor(protected authService: AuthService) {
+    constructor(protected authService: AuthService, protected userService: UserService) {
     }
 
     async createUser(req: Request, res: Response) {
 
         const newUser = await this.authService.createUser(req.body.login, req.body.password, req.body.email)
-
         if (newUser === null) {
             res.sendStatus(400)
             return
@@ -23,8 +21,7 @@ export class AuthController {
     }
 
     async loginUser(req: Request, res: Response) {
-        //TODO service??
-        const user: OutputUserItemType | null = await UserService.checkCredentials(req.body.loginOrEmail, req.body.password)
+        const user: OutputUserItemType | null = await this.userService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
         const userIP: string = req.ip!;
         const deviceId: string = uuid();
@@ -58,7 +55,7 @@ export class AuthController {
     async passwordRecovery(req: Request, res: Response) {
         const email = req.body.email;
 // TODO user service??
-        const result = UserService.passwordRecovery(email);
+        const result = await this.userService.passwordRecovery(email);
 
         // if (!result)
         //     return res.sendStatus(400)
@@ -69,7 +66,7 @@ export class AuthController {
     async newPassword(req: Request, res: Response) {
         const {newPassword, recoveryCode} = req.body;
 // userService?
-        const result: boolean = await UserService.newPassword(newPassword, recoveryCode);
+        const result: boolean = await this.userService.newPassword(newPassword, recoveryCode);
 
         if (!result)
             return res.sendStatus(400)
@@ -119,8 +116,7 @@ export class AuthController {
     async findUserById(req: Request, res: Response) {
 
         const userId = req.user!.id
-        //  another service
-        const user: OutputUserItemType | null = await this.QueryUserRepo.findUserById(userId)
+        const user: OutputUserItemType | null = await this.authService.findUserById(userId)
 
         if (!user) {
             res.sendStatus(401)
@@ -132,7 +128,6 @@ export class AuthController {
             "login": user.accountData.login,
             "userId": user.id
         })
-
     }
 
     async logoutUser(req: Request, res: Response) {

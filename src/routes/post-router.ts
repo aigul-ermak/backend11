@@ -15,6 +15,7 @@ import {commentValidation} from "../validators/comment-validator";
 import {OutputCommentType, OutputItemCommentType, SortCommentType} from "../types/comment/output";
 import {authBearerMiddleware} from "../middleware/auth/auth-bearer-middleware";
 import {postExistsMiddleware} from "../middleware/comment/post-middleware";
+import {postController} from "../composition-root";
 
 
 export const postRouter = Router({})
@@ -22,140 +23,16 @@ export const postRouter = Router({})
 //TODO - replace type
 type RequestTypeWithQuery<Q> = Request<{}, {}, {}, Q>;
 
-postRouter.get('/', async (req: RequestTypeWithQuery<SortPostType>, res: Response) => {
+postRouter.get('/', postController.getAllPosts.bind(postController));
 
-    const sortData = {
-        sortBy: req.query.sortBy,
-        sortDirection: req.query.sortDirection,
-        pageNumber: req.query.pageNumber,
-        pageSize: req.query.pageSize
-    }
+postRouter.get('/:id', mongoIdInParamValidation(), postController.getPostById.bind(postController));
 
-    postRouter.get('/:id', mongoIdInParamValidation(),
-        async (req: RequestWithParams<Params>, res: Response<PostDBType>) => {
-            const id: string = req.params.id
+postRouter.get('/:id/comments', mongoIdInParamValidation(), postController.getCommentByPostId.bind(postController));
 
-            const post: PostDBType | null = await QueryPostRepo.getPostById(id)
+postRouter.post('/', authMiddleware, postValidation(), postController.createPost.bind(postController));
 
-            if (post) {
-                res.status(200).send(post)
-            } else {
-                res.sendStatus(404)
-                return
-            }
-        })
-    const posts: OutputPostType = await QueryPostRepo.getAllPosts(sortData)
-    res.status(200).send(posts)
+postRouter.post('/:id/comments', authBearerMiddleware, mongoIdInParamValidation(), postExistsMiddleware, commentValidation(), postController.createComment.bind(postController))
 
-})
+postRouter.put('/:id', authMiddleware, postValidation(), postController.updatePost.bind(postController));
 
-
-postRouter.get('/:id/comments', mongoIdInParamValidation(),
-    async (req: RequestTypeWithQueryAndParams<{ id: string }, SortCommentType>, res: Response<OutputCommentType>) => {
-
-        const postId: string = req.params.id
-
-        const sortData: SortCommentType = {
-            sortBy: req.query.sortBy,
-            sortDirection: req.query.sortDirection,
-            pageNumber: req.query.pageNumber,
-            pageSize: req.query.pageSize
-        }
-
-        const post: PostDBType | null = await QueryPostRepo.getPostById(postId)
-
-        if (!post) {
-            res.sendStatus(404)
-            return
-        }
-
-        const comments: OutputCommentType = await QueryCommentRepo.getCommentByPostId(postId, sortData)
-
-
-        if (comments.items.length > 0) {
-            res.status(200).send(comments)
-        } else {
-            res.sendStatus(404)
-            return
-        }
-    })
-
-postRouter.post('/',
-    authMiddleware,
-    postValidation(),
-    async (req: RequestWithBody<PostDBType>, res: Response) => {
-
-        const newData: PostDBType = req.body;
-
-        const postId: string | null = await PostService.createPost(newData);
-
-        if (!postId) {
-            res.sendStatus(404);
-            return;
-        }
-
-        const newPost: PostDBType | null = await QueryPostRepo.getPostById(postId);
-        if (newPost) {
-            res.status(201).send(newPost);
-        } else {
-            res.sendStatus(404);
-            return
-        }
-    });
-
-
-postRouter.post('/:id/comments', authBearerMiddleware,
-    mongoIdInParamValidation(), postExistsMiddleware, commentValidation(),
-    async (req: Request, res: Response) => {
-
-        const postId: string = req.params.id;
-        const contentData = req.body;
-        //TODO any type for user
-        const user: any  = req.user
-
-        const commentId: string = await CommentService.createComment(contentData, user, postId);
-
-        if (!commentId) {
-            res.sendStatus(404);
-            return;
-        }
-
-        const newComment: OutputItemCommentType| null = await QueryCommentRepo.getCommentById(commentId);
-
-        if (newComment) {
-            res.status(201).send(newComment);
-        }
-        // else {
-        //     res.sendStatus(400);
-        //     return
-        // }
-    })
-
-postRouter.put('/:id',
-    authMiddleware,
-    postValidation(),
-    async (req: RequestBodyAndParams<Params, PostDBType>, res: Response) => {
-        const id: string = req.params.id;
-        const updateData: PostDBType = req.body;
-        const isUpdated: boolean = await PostService.updatePost(id, updateData);
-
-        if (isUpdated) {
-            res.sendStatus(204);
-            return
-        }
-        res.sendStatus(404);
-    });
-
-postRouter.delete('/:id',
-    authMiddleware,
-    mongoIdInParamValidation(),
-    async (req: RequestWithParams<Params>, res: Response) => {
-        const id: string = req.params.id;
-        const isPostDeleted: boolean = await PostRepo.deletePost(id);
-
-        if (!isPostDeleted) {
-            res.sendStatus(404);
-            return;
-        }
-        res.sendStatus(204);
-    })
+postRouter.delete('/:id', authMiddleware, mongoIdInParamValidation(), postController.deletePost.bind(postController));
