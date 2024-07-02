@@ -96,7 +96,7 @@ export class PostController {
         const contentData = req.body;
         //TODO any type for user
         const user: any = req.user
-        // TODO how to call new comment service
+
         const commentId: string = await this.commentService.createComment(contentData, user, postId);
 
         if (!commentId) {
