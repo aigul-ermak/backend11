@@ -4,7 +4,8 @@ export type CommentDBType = {
     content: string,
     commentatorInfo: CommentatorInfo,
     createdAt: string,
-    likes: LikeDBModel
+    likesCount: number,
+    dislikesCount: number,
 }
 
 type CommentatorInfo = {
@@ -12,20 +13,18 @@ type CommentatorInfo = {
     userLogin: string
 }
 
-export type LikeDBModel = {
-    userId: string,
-    status: string
-}
-
-
 export type OutputItemCommentType = {
     commentId: string,
-    postId: string,
+    // postId: string,
     content: string,
     commentatorInfo: CommentatorInfo,
-    createdAt: string
+    createdAt: string,
+    likesInfo: {
+        likesCount: number;
+        dislikesCount: number;
+        myStatus: string;
+    };
 }
-
 
 export type OutputCommentType = {
     pagesCount: number,

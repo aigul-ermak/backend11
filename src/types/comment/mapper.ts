@@ -1,13 +1,20 @@
 import {WithId} from "mongodb";
 import {CommentDBType, OutputItemCommentType} from "./output";
 
-//TODO type??
-export const commentMapper = (comment: WithId<CommentDBType>): any => {
-    //let CommentatorInfo;
+
+export const commentMapper = (comment: WithId<CommentDBType>): OutputItemCommentType => {
     return {
         commentId: comment._id.toString(),
         content: comment.content,
-        commentatorInfo: comment.commentatorInfo,
+        commentatorInfo: {
+            userId: comment.commentatorInfo.userId,
+            userLogin: comment.commentatorInfo.userLogin
+        },
         createdAt: comment.createdAt,
+        likesInfo: {
+            likesCount: comment.likesCount,
+            dislikesCount:  comment.dislikesCount,
+            myStatus: 'None'
+        }
     }
 }

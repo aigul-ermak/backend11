@@ -6,15 +6,16 @@ import {OutputItemCommentType} from "../types/comment/output";
 import {QueryCommentRepo} from "../repositories/comment-repo/query-comment-repo";
 import {RequestWithParams} from "../types/common";
 import {Params} from "../routes/videos-router";
+import {LikeCommentService} from "../services/like-comment-service";
 
 export class CommentController {
-    constructor(protected commentService: CommentService) {
+    constructor(protected commentService: CommentService, protected likeService: LikeCommentService) {
     }
 
     async getCommentById(req: RequestWithParams<Params>, res: Response<OutputItemCommentType>) {
         const id: string = req.params.id;
 
-        const comment: OutputItemCommentType | null = await QueryCommentRepo.getCommentById(id)
+        const comment: OutputItemCommentType | null = await this.commentService.getCommentById(id)
 
         if (comment) {
             res.status(200).send(comment)
@@ -30,7 +31,7 @@ export class CommentController {
         const id: string = req.params.id;
         const user: OutputUserItemType | null = req.user
 
-        const comment: OutputItemCommentType |null = await QueryCommentRepo.getCommentById(id)
+        const comment: OutputItemCommentType |null = await this.commentService.getCommentById(id)
 
         if(!comment) {
             res.sendStatus(404)
@@ -48,6 +49,26 @@ export class CommentController {
             res.sendStatus(404);
             return
         }
+
+        res.sendStatus(204);
+    }
+
+    async makeLike(req: Request, res: Response) {
+
+        const likeStatus = req.body
+        const id: string = req.params.id;
+        const user: OutputUserItemType | null = req.user
+
+        const comment: OutputItemCommentType |null = await this.commentService.getCommentById(id)
+
+        if(!comment) {
+            res.sendStatus(404)
+            return
+        }
+
+        //let isCommentStatusUpdated = await this.commentService.updateComment(id, contentData)
+        let isCommentStatusUpdated = await this.likeService.makeStatus(id, likeStatus, comment.commentId)
+
 
         res.sendStatus(204);
     }
