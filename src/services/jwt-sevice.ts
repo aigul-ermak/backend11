@@ -8,7 +8,7 @@ export const jwtService = {
     async getUserIdByToken(token: string) {
         try {
             // TODO type?
-            const result: any  = jwt.verify(token, settings.JWT_SECRET)
+            const result: any = jwt.verify(token, settings.JWT_SECRET)
             return result.userId;
         } catch (error) {
             return null
@@ -17,7 +17,12 @@ export const jwtService = {
 
 
     async createAccessToken(userId: string) {
-        return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
+        const currentTime = Math.floor(Date.now() / 1000); // current time in seconds
+        const tenMinutesInSeconds = 10 * 60;
+        const expiryTime = currentTime - tenMinutesInSeconds;
+
+
+        return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: expiryTime});
     },
     /**
      * HW 8
