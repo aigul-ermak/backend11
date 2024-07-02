@@ -9,6 +9,12 @@ const contentValidation = body('content')
     .isLength({min: 20, max: 300})
     .withMessage('Incorrect comment')
 
+const statusValidation = body('status')
+    .exists()
+    .isString()
+    .trim()
+    .withMessage('Status is required')
+
 const commentatorInfoValidation = [
     body('userId')
         .exists()
@@ -24,4 +30,7 @@ const commentatorInfoValidation = [
 
 
 export const commentValidation = () => [contentValidation, inputModelValidation]
+export const commentStatusValidation = () => [statusValidation, inputModelValidation]
+
+
 
