@@ -9,7 +9,12 @@ export class LikeCommentService {
 
     async makeStatus(userId: string, likeStatus: LIKE_STATUS, parentId: string) {
 
+
+
+
         const like = {status: likeStatus, userId, parentId};
+
+
         return await this.likeCommentRepo.makeStatus(like);
     }
 }
