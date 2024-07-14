@@ -11,3 +11,9 @@ export type LikeDBModel = {
     userId: string,
     parentId: string
 }
+
+export type LikeType = {
+    status: LIKE_STATUS,
+    userId: string,
+    parentId: string
+}
