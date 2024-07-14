@@ -8,27 +8,31 @@ export class LikeCommentService {
     }
 
     async makeStatus(userId: string, likeStatus: LIKE_STATUS, parentId: string) {
-        // check is status == Like or Dislike
+        console.log('makeStatus called with:', { userId, likeStatus, parentId });
+
+        if (!Object.values(LIKE_STATUS).includes(likeStatus)) {
+            throw new Error(`Invalid like status: ${likeStatus}`);
+        }
+
         const isLikeExist = await this.likeCommentRepo.checkLike(parentId, userId);
         let like;
 
         if (!isLikeExist) {
-            if (!likeStatus) {
-                throw new Error('Like status is required');
-            }
             like = {status: likeStatus, userId, parentId};
             const res = await this.likeCommentRepo.createLike(like);
+
+            if(likeStatus == LIKE_STATUS.LIKE) {
+                await this.commentRepo.incrementLikeCount(parentId);
+            } else if(like!.status === LIKE_STATUS.DISLIKE) {
+                await this.commentRepo.incrementDislikeCount(parentId);
+            }
             return res;
         } else {
             like = await this.likeCommentRepo.getLike(parentId, userId);
-            if (!like) {
-                throw new Error('Like not found after checkLike indicated existence');
-            }
-
-            if (like.status !== likeStatus) {
-                if (like.status === LIKE_STATUS.LIKE) {
+            if (like!.status !== likeStatus) {
+                if (like!.status === LIKE_STATUS.LIKE) {
                     await this.commentRepo.decrementLikeCount(parentId);
-                } else if (like.status === LIKE_STATUS.DISLIKE) {
+                } else if (like!.status === LIKE_STATUS.DISLIKE) {
                     await this.commentRepo.decrementDislikeCount(parentId);
                 }
 
@@ -38,10 +42,10 @@ export class LikeCommentService {
                     await this.commentRepo.incrementDislikeCount(parentId);
                 }
             }
-            like.status = likeStatus;
+            like!.status = likeStatus;
 
 
-            return await this.likeCommentRepo.updateLike(like._id.toString(), like);
+            return await this.likeCommentRepo.updateLike(like!._id.toString(), like);
         }
         //return await this.likeCommentRepo.makeStatus(like);
     }

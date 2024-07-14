@@ -3,21 +3,26 @@ import {LikeCommentModel} from "../../models/like";
 import {ObjectId} from "mongodb";
 import {commentMapper} from "../../types/comment/mapper";
 import {BlogModel} from "../../models/blog";
+import {LIKE_STATUS, LikeDBModel, LikeType} from "../../types/like/output";
 
 
 export class LikeCommentRepo {
 
-    async createLike(data: any) {
+    async createLike(data: LikeType) {
+
         if (!data.status) {
             throw new Error('Status is required to create a like');
+        }
+        if (!Object.values(LIKE_STATUS).includes(data.status)) {
+            throw new Error(`Not valid like status: ${data.status}`);
         }
         const res = await LikeCommentModel.create(data);
         return res._id.toString();
     }
 
     async updateLike(id: string, updateData: any) {
-        if (!updateData.status) {
-            throw new Error('Status is required to update a like');
+        if (!updateData.status || !Object.values(LIKE_STATUS).includes(updateData.status)) {
+            throw new Error('Not valid like status');
         }
         const res = await LikeCommentModel.updateOne({_id: new ObjectId(id)}, {
             $set: {

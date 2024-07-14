@@ -57,6 +57,7 @@ export class CommentController {
     async makeLike(req: Request, res: Response) {
 
         const likeStatus: LIKE_STATUS = req.body.likeStatus
+        console.log(likeStatus)
         const commentId: string = req.params.id;
 
         const comment: OutputItemCommentType | null = await this.commentService.getCommentById(commentId);

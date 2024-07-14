@@ -31,7 +31,8 @@ export class CommentService {
             },
             createdAt: new Date().toISOString(),
             likesCount: 0,
-            dislikesCount: 0
+            dislikesCount: 0,
+            myStatus: 'None',
         }
 
         const commentId = await this.commentRepo.createComment(newComment)
