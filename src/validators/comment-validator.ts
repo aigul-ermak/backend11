@@ -15,6 +15,7 @@ const statusValidation = body('status')
     .trim()
     .withMessage('Status is required')
 
+
 const commentatorInfoValidation = [
     body('userId')
         .exists()

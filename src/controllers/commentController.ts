@@ -59,27 +59,43 @@ export class CommentController {
         const likeStatus: LIKE_STATUS = req.body.likeStatus
         const commentId: string = req.params.id;
 
-        const accessToken = req.headers.authorization?.split(' ')[1];
-        if (!accessToken) {
-            res.status(401).send({error: 'Access token missing'});
+        const comment: OutputItemCommentType | null = await this.commentService.getCommentById(commentId);
+
+        if (!comment) {
+            res.sendStatus(404);
             return;
         }
 
+        const accessToken = req.headers.authorization?.split(' ')[1];
+        if (!accessToken) {
+            //res.status(401).send({error: 'Access token missing'});
+            comment.likesInfo.myStatus = 'None';
+            res.status(204).send(comment);
+            return;
+        }
+
+        // if (!req.headers.authorization) {
+            //const comment: OutputItemCommentType | null = await this.commentService.getCommentById(commentId);
+
+        //
+        //     comment.likesInfo.myStatus = 'None';
+        //     res.status(204).send(comment);
+        //     return;
+        // }
+
+
         const userId: any | null = await jwtService.getUserIdByToken(accessToken);
-
-        const comment: OutputItemCommentType | null = await this.commentService.getCommentById(commentId)
-
-        if (!comment) {
-            res.sendStatus(404)
-            return
+        if (!userId) {
+            res.status(401).send({ error: 'Invalid access token' });
+            return;
         }
 
         //let isCommentStatusUpdated = await this.commentService.updateComment(id, contentData)
-        let isCommentStatusUpdated = await this.likeService.makeStatus(userId, likeStatus, comment.id)
+        let isCommentStatusUpdated = await this.likeService.makeStatus(userId, likeStatus, comment.id);
 
         if (!isCommentStatusUpdated) {
-            res.sendStatus(404)
-            return
+            res.sendStatus(404);
+            return;
         }
 
         res.sendStatus(204);

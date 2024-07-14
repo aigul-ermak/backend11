@@ -67,4 +67,29 @@ export class CommentRepo {
             items: comment.map(commentMapper)
         }
     }
+
+    async incrementLikeCount(id: string) {
+        await CommentModel.updateOne({ _id: new ObjectId(id) }, {
+            $inc: { likesCount: 1 }
+        });
+    }
+
+
+    async decrementLikeCount(id: string) {
+        await CommentModel.updateOne({ _id: new ObjectId(id) }, {
+            $inc: { likesCount: -1 }
+        });
+    }
+
+    async incrementDislikeCount(id: string) {
+        await CommentModel.updateOne({ _id: new ObjectId(id) }, {
+            $inc: { dislikesCount: 1 }
+        });
+    }
+
+    async decrementDislikeCount(id: string){
+        await CommentModel.updateOne({ _id: new ObjectId(id) }, {
+            $inc: { dislikesCount: -1 }
+        });
+    }
 }
