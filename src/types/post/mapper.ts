@@ -1,7 +1,6 @@
 import {WithId} from "mongodb";
-import {BlogDBType, OutputItemBlogType} from "../blog/output";
 import {OutputItemPostType, PostDBType} from "./output";
-import {shortDescriptionValidation} from "../../validators/post-validator";
+
 
 export const postMapper = (post: WithId<PostDBType>): OutputItemPostType => {
     return {
