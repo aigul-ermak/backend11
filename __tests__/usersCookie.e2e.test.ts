@@ -1,5 +1,3 @@
-import request from 'supertest'
-import {app} from "../src";
 import dotenv from 'dotenv'
 dotenv.config()
 

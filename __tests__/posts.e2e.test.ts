@@ -17,7 +17,7 @@ let user1: any;
 
 describe('Mongoose integration', () => {
     //const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
-    const mongoURI = 'mongodb+srv://aigulermak:2024best!@cluster0.vjysdj6.mongodb.net';
+    const mongoURI = `${process.env.MONGO_URI}/${process.env.MONGO_DB_NAME}?retryWrites=true&w=majority`;
 
 
     beforeAll(async () => {
