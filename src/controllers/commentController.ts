@@ -57,7 +57,7 @@ export class CommentController {
     async makeLike(req: Request, res: Response) {
 
         const likeStatus: LIKE_STATUS = req.body.likeStatus
-        console.log(likeStatus)
+
         const commentId: string = req.params.id;
 
         const comment: OutputItemCommentType | null = await this.commentService.getCommentById(commentId);
@@ -76,7 +76,7 @@ export class CommentController {
         }
 
         // if (!req.headers.authorization) {
-            //const comment: OutputItemCommentType | null = await this.commentService.getCommentById(commentId);
+        //const comment: OutputItemCommentType | null = await this.commentService.getCommentById(commentId);
 
         //
         //     comment.likesInfo.myStatus = 'None';
@@ -87,7 +87,7 @@ export class CommentController {
 
         const userId: any | null = await jwtService.getUserIdByToken(accessToken);
         if (!userId) {
-            res.status(401).send({ error: 'Invalid access token' });
+            res.status(401).send({error: 'Invalid access token'});
             return;
         }
 

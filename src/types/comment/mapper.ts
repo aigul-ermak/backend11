@@ -13,7 +13,7 @@ export const commentMapper = (comment: WithId<CommentDBType>): OutputItemComment
         createdAt: comment.createdAt,
         likesInfo: {
             likesCount: comment.likesCount,
-            dislikesCount:  comment.dislikesCount,
+            dislikesCount: comment.dislikesCount,
             myStatus: 'None'
         }
     }

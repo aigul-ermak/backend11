@@ -2,7 +2,6 @@ import {QueryCommentRepo} from "../repositories/comment-repo/query-comment-repo"
 import {OutputUserItemType} from "../types/user/output";
 import {CommentDBType, OutputItemCommentType, SortCommentType} from "../types/comment/output";
 import {CommentRepo} from "../repositories/comment-repo/comment-repo";
-import {UserRepo} from "../repositories/user-repo/user-repo";
 import {LikeCommentRepo} from "../repositories/like-repo/like-comment-repo";
 
 export class CommentService {
@@ -31,8 +30,7 @@ export class CommentService {
             },
             createdAt: new Date().toISOString(),
             likesCount: 0,
-            dislikesCount: 0,
-            myStatus: 'None',
+            dislikesCount: 0
         }
 
         const commentId = await this.commentRepo.createComment(newComment)
@@ -40,12 +38,12 @@ export class CommentService {
         return commentId;
     }
 
-    async getCommentByPostId(id: string, sortData: SortCommentType){
+    async getCommentByPostId(id: string, sortData: SortCommentType) {
         return await this.commentRepo.getCommentByPostId(id, sortData);
     }
 
-    async getCommentById(id: string){
-        return   await this.commentRepo.getCommentById(id);
+    async getCommentById(id: string) {
+        return await this.commentRepo.getCommentById(id);
     }
 
     async deleteComment(id: string): Promise<boolean> {

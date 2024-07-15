@@ -2,11 +2,11 @@ import request from 'supertest'
 import mongoose from 'mongoose'
 import {app} from "../src/app";
 import dotenv from 'dotenv'
-import {BlogDBType, OutputItemBlogType} from "../src/types/blog/output";
+import {OutputItemBlogType} from "../src/types/blog/output";
 import {OutputItemPostType, PostDBType} from "../src/types/post/output";
-import {OutputUserItemType} from "../src/types/user/output";
 import jwt from "jsonwebtoken";
 import {settings} from "../src/services/settings";
+
 
 dotenv.config();
 
@@ -17,7 +17,7 @@ let user1: any;
 
 describe('Mongoose integration', () => {
     //const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
-    const mongoURI = 'mongodb+srv://aigulermak:drDgghecmurZEzXL@cluster0.uhmxqxv.mongodb.net';
+    const mongoURI = 'mongodb+srv://aigulermak:2024best!@cluster0.vjysdj6.mongodb.net';
 
 
     beforeAll(async () => {
@@ -289,9 +289,9 @@ describe('Mongoose integration', () => {
                 .post(`/users`)
                 .auth('admin', 'qwerty')
                 .send({
-                    "login": "aig555",
-                    "password": "password",
-                    "email": "example@example.com"
+                        "login": "aig555",
+                        "password": "password",
+                        "email": "example@example.com"
                     }
                 )
                 .expect(201);
@@ -362,7 +362,8 @@ describe('Mongoose integration', () => {
 
         it('POST post: create comment', async () => {
             let userId = user1.id;
-            const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
+            const token = jwt.sign({userId}, settings.JWT_SECRET,
+                {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
 
             const res_ = await request(app)
                 .post(`/posts/${post1!.id}/comments`)
@@ -375,17 +376,21 @@ describe('Mongoose integration', () => {
                 .expect(201);
 
             expect(res_.body).toEqual({
-                commentId: expect.any(String),
+                id: expect.any(String),
                 content: 'content content content',
                 commentatorInfo: {
                     userId: user1.id,
                     userLogin: user1.login,
                 },
                 createdAt: expect.any(String),
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: 'None'
+                }
             });
 
         });
-
 
 
         it('DELETE post', async () => {

@@ -1,4 +1,4 @@
-import {DeleteResult, InsertOneResult, ObjectId, UpdateResult, WithId} from "mongodb";
+import {DeleteResult, ObjectId, UpdateResult, WithId} from "mongodb";
 import {CommentDBType, OutputItemCommentType, SortCommentType} from "../../types/comment/output";
 import {CommentModel} from "../../models/comment";
 import {commentMapper} from "../../types/comment/mapper";
@@ -8,7 +8,7 @@ export class CommentRepo {
 
     async createComment(newComment: any) {
         //TODO type??
-        const res  = await CommentModel.create(newComment)
+        const res = await CommentModel.create(newComment)
         return res._id.toString();
     }
 
@@ -69,27 +69,27 @@ export class CommentRepo {
     }
 
     async incrementLikeCount(id: string) {
-        await CommentModel.updateOne({ _id: new ObjectId(id) }, {
-            $inc: { likesCount: 1 }
+        await CommentModel.updateOne({_id: new ObjectId(id)}, {
+            $inc: {likesCount: 1}
         });
     }
 
 
     async decrementLikeCount(id: string) {
-        await CommentModel.updateOne({ _id: new ObjectId(id) }, {
-            $inc: { likesCount: -1 }
+        await CommentModel.updateOne({_id: new ObjectId(id)}, {
+            $inc: {likesCount: -1}
         });
     }
 
     async incrementDislikeCount(id: string) {
-        await CommentModel.updateOne({ _id: new ObjectId(id) }, {
-            $inc: { dislikesCount: 1 }
+        await CommentModel.updateOne({_id: new ObjectId(id)}, {
+            $inc: {dislikesCount: 1}
         });
     }
 
-    async decrementDislikeCount(id: string){
-        await CommentModel.updateOne({ _id: new ObjectId(id) }, {
-            $inc: { dislikesCount: -1 }
+    async decrementDislikeCount(id: string) {
+        await CommentModel.updateOne({_id: new ObjectId(id)}, {
+            $inc: {dislikesCount: -1}
         });
     }
 }
