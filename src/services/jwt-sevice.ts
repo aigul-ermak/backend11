@@ -1,5 +1,5 @@
 import {settings} from "./settings";
-import jwt, {JwtPayload} from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import {RefreshToken} from "../types/token/output";
 
 
@@ -24,16 +24,7 @@ export const jwtService = {
 
         return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: expiryTime});
     },
-    /**
-     * HW 8
-     */
-    // async createRefreshToken(userId: string, expiresIn: string = '20s') {
-    //     return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn});
-    // },
-    /**
-     * NW9
-     * @param refreshToToken
-     */
+
     async createRefreshToken(id: string, deviceId: string) {
         const refreshToken: string = jwt.sign(
             {
