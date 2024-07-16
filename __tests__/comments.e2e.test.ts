@@ -164,11 +164,11 @@ describe('Mongoose integration', () => {
 
         it('GET comments: not found', async () => {
             const res_ = await request(app)
-                .get(`/comments/6679b8c54240cb29866db2a9`)
-                .expect(404)
+                .get(`/comments/6696894a120b37db0d917817`)
+                .expect(404);
         });
 
-// get comment by id
+        // get comment by id
         it('GET comments', async () => {
             const res_ = await request(app)
                 .get(`/comments/${comment1!.id}`)
@@ -191,7 +191,7 @@ describe('Mongoose integration', () => {
 
         });
 
-      // put comment
+        // put comment
         it('PUT comments: unauthorized', async () => {
             const res_ = await request(app)
                 .put(`/comments/${comment1!.commentId}`)
@@ -249,6 +249,104 @@ describe('Mongoose integration', () => {
                 )
                 .expect(204);
         });
+
+        // put like unauthorized
+        it('PUT like to comments: unauthorized', async () => {
+            const res_ = await request(app)
+                .put(`/comments/${comment1!.id}/like-status`)
+                .auth('admin', 'qwert')
+                .send({
+                        'likeStatus': 'None'
+                    }
+                )
+                .expect(401)
+
+        });
+
+        // put like wrong comment id
+        it('PUT comments: not found', async () => {
+
+            let userId = user1!.id;
+            const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
+
+            const res_ = await request(app)
+                .put(`/comments/666c7d3a7cb61ded043586cd/like-status`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                        'likeStatus': 'None'
+                    }
+                )
+                .expect(404)
+
+        });
+
+        // put like error messages
+        it('PUT like in comment: incorrect values', async () => {
+            let userId = user1!.id;
+            const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
+
+            const res_ = await request(app)
+                .put(`/comments/${comment1!.id}/like-status`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                        'likeStatus': ''
+                    }
+                )
+                .expect(400, {
+                    "errorsMessages": [
+                        {"message": "Like status is required", "field": "likeStatus"},
+                        {"message": "Invalid like status", "field": "likeStatus"}
+                    ]
+                });
+
+        });
+
+
+        // create like - status none
+        it('PUT like to comment', async () => {
+            let userId = user1!.id;
+            const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
+
+            const res_ = await request(app)
+                .put(`/comments/${comment1!.id}/like-status`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                        'likeStatus': 'None'
+                    }
+                )
+                .expect(204);
+        });
+
+        // create like - status like
+        it('PUT like to comment', async () => {
+            let userId = user1!.id;
+            const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
+
+            const res_ = await request(app)
+                .put(`/comments/${comment1!.id}/like-status`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                        'likeStatus': 'Like'
+                    }
+                )
+                .expect(204);
+        });
+
+        // create like
+        it('PUT like to comment', async () => {
+            let userId = user1!.id;
+            const token = jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: settings.ACCESS_TOKEN_EXPIRY});
+
+            const res_ = await request(app)
+                .put(`/comments/${comment1!.id}/like-status`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                        'likeStatus': 'Like'
+                    }
+                )
+                .expect(204);
+        });
+
 
         it('PUT comment: incorrect values', async () => {
             let userId = user1!.id;
