@@ -1,5 +1,6 @@
-import {body, param} from "express-validator";
+import {body} from "express-validator";
 import {inputModelValidation} from "../middleware/inputModel/input-model-validation";
+import {LIKE_STATUS} from "../types/like/output";
 
 
 const contentValidation = body('content')
@@ -14,6 +15,12 @@ const statusValidation = body('status')
     .isString()
     .trim()
     .withMessage('Status is required')
+
+const likeValidation = body('likeStatus')
+    .exists({ checkFalsy: true }).withMessage('Like status is required')
+    .isString().withMessage('Like status must be a string')
+    .trim()
+    .isIn(Object.values(LIKE_STATUS)).withMessage('Invalid like status');
 
 
 const commentatorInfoValidation = [
@@ -32,6 +39,8 @@ const commentatorInfoValidation = [
 
 export const commentValidation = () => [contentValidation, inputModelValidation]
 export const commentStatusValidation = () => [statusValidation, inputModelValidation]
+export const likeStatusValidation = () => [likeValidation, inputModelValidation]
+
 
 
 

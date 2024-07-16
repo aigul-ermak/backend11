@@ -2,6 +2,7 @@ import {ObjectId, WithId} from "mongodb";
 import {commentMapper} from "../../types/comment/mapper";
 import {CommentDBType, OutputItemCommentType, SortCommentType} from "../../types/comment/output";
 import {CommentModel} from "../../models/comment";
+import {LikeCommentModel} from "../../models/like";
 
 
 export class QueryCommentRepo {
@@ -24,13 +25,33 @@ export class QueryCommentRepo {
 
         let filter = {postId: postId}
 
-        const comment:  WithId<CommentDBType>[] = await CommentModel
+        const comments:  WithId<CommentDBType>[] = await CommentModel
             .find(filter)
             .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
             .skip((pageNumber - 1) * +pageSize)
             .limit(+pageSize)
             .exec();
             //.toArray();
+
+        const items: OutputItemCommentType[] = await Promise.all(comments.map(async (comment) => {
+            const likeComment = await LikeCommentModel.findOne({ parentId: comment._id });
+            const status = likeComment ? likeComment.status : 'None';
+
+            return {
+                id: comment._id.toString(),
+                content: comment.content,
+                commentatorInfo: {
+                    userId: comment.commentatorInfo.userId,
+                    userLogin: comment.commentatorInfo.userLogin,
+                },
+                createdAt: comment.createdAt,
+                likesInfo: {
+                    likesCount: comment.likesCount,
+                    dislikesCount: comment.dislikesCount,
+                    myStatus: status,
+                },
+            };
+        }));
 
         const totalCount: number = await CommentModel.countDocuments(filter);
 
@@ -41,7 +62,7 @@ export class QueryCommentRepo {
             page: +pageNumber,
             pageSize: +pageSize,
             totalCount: totalCount,
-            items: comment.map(commentMapper)
+            items:  items
         }
     }
 }

@@ -6,24 +6,57 @@ import {QueryCommentRepo} from "../repositories/comment-repo/query-comment-repo"
 import {RequestWithParams} from "../types/common";
 import {Params} from "../routes/videos-router";
 import {LikeCommentService} from "../services/like-comment-service";
-import {LIKE_STATUS} from "../types/like/output";
+import {LIKE_STATUS, LikeDBModel} from "../types/like/output";
 import {jwtService} from "../services/jwt-sevice";
+import {ObjectId} from "mongodb";
+
 
 export class CommentController {
     constructor(protected commentService: CommentService, protected likeService: LikeCommentService) {
     }
 
+    // async getCommentById(req: RequestWithParams<Params>, res: Response<OutputItemCommentType>) {
+    //     const id: string = req.params.id;
+    //
+    //     const comment: OutputItemCommentType | null = await this.commentService.getCommentById(id);
+    //
+    //     if (!comment) {
+    //         res.sendStatus(404);
+    //         return;
+    //     }
+    //
+    //     res.status(200).send(comment)
+    // }
+
     async getCommentById(req: RequestWithParams<Params>, res: Response<OutputItemCommentType>) {
+
         const id: string = req.params.id;
 
-        const comment: OutputItemCommentType | null = await this.commentService.getCommentById(id)
+        let userId: string | undefined;
 
-        if (comment) {
-            res.status(200).send(comment)
-        } else {
-            res.sendStatus(404)
-            return
+        if (req.headers.authorization) {
+            const accessToken = req.headers.authorization.split(' ')[1];
+            userId = await jwtService.getUserIdByToken(accessToken);
         }
+
+        const comment: OutputItemCommentType | null = await this.commentService.getCommentById(id);
+
+        if (!comment) {
+            return res.sendStatus(404);
+        }
+
+        // if (userId) {
+        //     const like: any = await this.likeService.getLike(comment.id, userId);
+        //     if(like ) {
+        //         comment.likesInfo.myStatus  = like.status;
+        //     }
+        //     comment.likesInfo.myStatus = 'None';
+        //
+        // } else {
+        //     comment.likesInfo.myStatus = 'None';
+        // }
+
+        return res.status(200).send(comment)
     }
 
     async updateComment(req: Request, res: Response) {
@@ -67,31 +100,15 @@ export class CommentController {
             return;
         }
 
-        const accessToken = req.headers.authorization?.split(' ')[1];
-        if (!accessToken) {
-            //res.status(401).send({error: 'Access token missing'});
-            comment.likesInfo.myStatus = 'None';
-            res.status(204).send(comment);
-            return;
-        }
+        const accessToken = req.headers.authorization!.split(' ')[1];
 
-        // if (!req.headers.authorization) {
-        //const comment: OutputItemCommentType | null = await this.commentService.getCommentById(commentId);
-
-        //
+        const userId = await jwtService.getUserIdByToken(accessToken);
+        // if (!userId) {
         //     comment.likesInfo.myStatus = 'None';
         //     res.status(204).send(comment);
         //     return;
         // }
 
-
-        const userId: any | null = await jwtService.getUserIdByToken(accessToken);
-        if (!userId) {
-            res.status(401).send({error: 'Invalid access token'});
-            return;
-        }
-
-        //let isCommentStatusUpdated = await this.commentService.updateComment(id, contentData)
         let isCommentStatusUpdated = await this.likeService.makeStatus(userId, likeStatus, comment.id);
 
         if (!isCommentStatusUpdated) {

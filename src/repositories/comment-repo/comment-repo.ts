@@ -2,6 +2,7 @@ import {DeleteResult, ObjectId, UpdateResult, WithId} from "mongodb";
 import {CommentDBType, OutputItemCommentType, SortCommentType} from "../../types/comment/output";
 import {CommentModel} from "../../models/comment";
 import {commentMapper} from "../../types/comment/mapper";
+import {LikeCommentModel} from "../../models/like";
 
 
 export class CommentRepo {
@@ -28,14 +29,64 @@ export class CommentRepo {
         return !!result.deletedCount;
     }
 
-    async getCommentById(id: string): Promise<OutputItemCommentType | null> {
+    //async getCommentById(id: string, userId: string): Promise<OutputItemCommentType | null> {
+    async getCommentByIdUserId(id: string, userId: string): Promise<OutputItemCommentType | null> {
 //TODO type
         const comment: any | null = await CommentModel.findOne({_id: new ObjectId(id)})
 
         if (!comment) {
             return null
         }
-        return commentMapper(comment)
+
+        const likeComment = await LikeCommentModel.findOne({userId: userId, parentId: comment._id});
+        const status = likeComment ? likeComment.status : 'None';
+
+        return {
+            id: comment._id.toString(),
+            content: comment.content,
+            commentatorInfo: {
+                userId: comment.commentatorInfo.userId,
+                userLogin: comment.commentatorInfo.userLogin
+            },
+            createdAt: comment.createdAt,
+            likesInfo: {
+                likesCount: comment.likesCount,
+                dislikesCount: comment.dislikesCount,
+                myStatus: status
+            }
+
+        }
+        //return commentMapper(comment)
+    }
+
+    async getCommentById(id: string): Promise<OutputItemCommentType | null> {
+//TODO type
+        const comment: any | null = await CommentModel.findOne({_id: new ObjectId(id)})
+
+        if (!comment) {
+            return null;
+        }
+
+        const likeComment = await LikeCommentModel.findOne({parentId: comment._id});
+        const status = likeComment ? likeComment.status : 'None';
+
+        //const likeComment = await LikeCommentModel.findOne({parentId: comment._id});
+        //const status = 'None';
+
+        return {
+            id: comment._id.toString(),
+            content: comment.content,
+            commentatorInfo: {
+                userId: comment.commentatorInfo.userId,
+                userLogin: comment.commentatorInfo.userLogin
+            },
+            createdAt: comment.createdAt,
+            likesInfo: {
+                likesCount: comment.likesCount,
+                dislikesCount: comment.dislikesCount,
+                myStatus: status
+            }
+        }
     }
 
     async getCommentByPostId(postId: string, sortData: SortCommentType) {
@@ -47,13 +98,34 @@ export class CommentRepo {
 
         let filter = {postId: postId}
 
-        const comment: WithId<CommentDBType>[] = await CommentModel
+        const comments: WithId<CommentDBType>[] = await CommentModel
             .find(filter)
             .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
             .skip((pageNumber - 1) * +pageSize)
             .limit(+pageSize)
             .exec();
         //.toArray();
+
+        const items: OutputItemCommentType[] = await Promise.all(comments.map(async (comment) => {
+            const likeComment = await LikeCommentModel.findOne({parentId: comment._id});
+            //const status = likeComment ? likeComment.status : 'None';
+            const status = likeComment!.status;
+
+            return {
+                id: comment._id.toString(),
+                content: comment.content,
+                commentatorInfo: {
+                    userId: comment.commentatorInfo.userId,
+                    userLogin: comment.commentatorInfo.userLogin,
+                },
+                createdAt: comment.createdAt,
+                likesInfo: {
+                    likesCount: comment.likesCount,
+                    dislikesCount: comment.dislikesCount,
+                    myStatus: status,
+                },
+            };
+        }));
 
         const totalCount: number = await CommentModel.countDocuments(filter);
 
@@ -64,7 +136,7 @@ export class CommentRepo {
             page: +pageNumber,
             pageSize: +pageSize,
             totalCount: totalCount,
-            items: comment.map(commentMapper)
+            items: items,
         }
     }
 

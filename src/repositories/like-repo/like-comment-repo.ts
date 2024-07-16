@@ -9,21 +9,11 @@ import {LIKE_STATUS, LikeDBModel, LikeType} from "../../types/like/output";
 export class LikeCommentRepo {
 
     async createLike(data: LikeType) {
-
-        if (!data.status) {
-            throw new Error('Status is required to create a like');
-        }
-        if (!Object.values(LIKE_STATUS).includes(data.status)) {
-            throw new Error(`Not valid like status: ${data.status}`);
-        }
         const res = await LikeCommentModel.create(data);
         return res._id.toString();
     }
 
     async updateLike(id: string, updateData: any) {
-        if (!updateData.status || !Object.values(LIKE_STATUS).includes(updateData.status)) {
-            throw new Error('Not valid like status');
-        }
         const res = await LikeCommentModel.updateOne({_id: new ObjectId(id)}, {
             $set: {
                 status: updateData.status,

@@ -3,6 +3,7 @@ import {OutputUserItemType} from "../types/user/output";
 import {CommentDBType, OutputItemCommentType, SortCommentType} from "../types/comment/output";
 import {CommentRepo} from "../repositories/comment-repo/comment-repo";
 import {LikeCommentRepo} from "../repositories/like-repo/like-comment-repo";
+import {ObjectId} from "mongodb";
 
 export class CommentService {
 
@@ -42,8 +43,20 @@ export class CommentService {
         return await this.commentRepo.getCommentByPostId(id, sortData);
     }
 
+    async getCommentByIdUserId(id: string, userId: string) {
+        //return await this.commentRepo.getCommentById(id);
+        return await this.commentRepo.getCommentByIdUserId(id, userId);
+    }
+
+
+    // temp
     async getCommentById(id: string) {
+        if (!ObjectId.isValid(id)) {
+            return null;
+        }
+
         return await this.commentRepo.getCommentById(id);
+        // return await this.commentRepo.getCommentByIdUserId(id);
     }
 
     async deleteComment(id: string): Promise<boolean> {

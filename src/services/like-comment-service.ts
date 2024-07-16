@@ -8,11 +8,6 @@ export class LikeCommentService {
     }
 
     async makeStatus(userId: string, likeStatus: LIKE_STATUS, parentId: string) {
-        console.log('makeStatus called with:', { userId, likeStatus, parentId });
-
-        if (!Object.values(LIKE_STATUS).includes(likeStatus)) {
-            throw new Error(`Invalid like status: ${likeStatus}`);
-        }
 
         const isLikeExist = await this.likeCommentRepo.checkLike(parentId, userId);
         let like;
@@ -21,9 +16,9 @@ export class LikeCommentService {
             like = {status: likeStatus, userId, parentId};
             const res = await this.likeCommentRepo.createLike(like);
 
-            if(likeStatus == LIKE_STATUS.LIKE) {
+            if (likeStatus == LIKE_STATUS.LIKE) {
                 await this.commentRepo.incrementLikeCount(parentId);
-            } else if(like!.status === LIKE_STATUS.DISLIKE) {
+            } else if (like!.status === LIKE_STATUS.DISLIKE) {
                 await this.commentRepo.incrementDislikeCount(parentId);
             }
             return res;
@@ -48,5 +43,9 @@ export class LikeCommentService {
             return await this.likeCommentRepo.updateLike(like!._id.toString(), like);
         }
         //return await this.likeCommentRepo.makeStatus(like);
+    }
+
+    async getLike(parentId: string, userId: string,) {
+        await this.likeCommentRepo.getLike(parentId, userId)
     }
 }
