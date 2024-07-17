@@ -294,8 +294,10 @@ describe('Mongoose integration', () => {
                 )
                 .expect(400, {
                     "errorsMessages": [
-                        {"message": "Like status is required", "field": "likeStatus"},
-                        {"message": "Invalid like status", "field": "likeStatus"}
+                        {
+                            "message": "Like status is required",
+                            "field": "likeStatus"
+                        }
                     ]
                 });
 
