@@ -14,6 +14,7 @@ import {QueryCommentRepo} from "../repositories/comment-repo/query-comment-repo"
 import {CommentService} from "../services/comment-service";
 import {QueryPostRepo} from "../repositories/post-repo/query-post-repo";
 import {SortPostType} from "../types/post/input";
+import {jwtService} from "../services/jwt-sevice";
 
 export class PostController {
     constructor(protected postService: PostService, protected commentService: CommentService) {
@@ -56,12 +57,20 @@ export class PostController {
 
         const post: PostDBType | null = await this.postService.getPostById(postId)
 
+        let userId;
+        let myStatus = 'None';
+
+        if (req.headers.authorization) {
+            const accessToken = req.headers.authorization.split(' ')[1];
+            userId = await jwtService.getUserIdByToken(accessToken);
+        }
+
         if (!post) {
             res.sendStatus(404)
             return
         }
 
-        const comments: OutputCommentType = await this.commentService.getCommentByPostId(postId, sortData)
+        const comments: OutputCommentType = await this.commentService.getCommentByPostId(postId, userId, sortData);
 
 
         if (comments.items.length > 0) {
@@ -109,10 +118,6 @@ export class PostController {
         if (newComment) {
             res.status(201).send(newComment);
         }
-        // else {
-        //     res.sendStatus(400);
-        //     return
-        // }
     }
 
     async updatePost(req: RequestBodyAndParams<Params, PostDBType>, res: Response) {

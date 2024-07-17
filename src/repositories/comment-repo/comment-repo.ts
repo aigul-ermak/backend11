@@ -89,7 +89,7 @@ export class CommentRepo {
         }
     }
 
-    async getCommentByPostId(postId: string, sortData: SortCommentType) {
+    async getCommentByPostId(postId: string, userId: string, sortData: SortCommentType) {
 
         const sortDirection = sortData.sortDirection ?? 'desc'
         const sortBy = sortData.sortBy ?? 'createdAt'
@@ -104,12 +104,12 @@ export class CommentRepo {
             .skip((pageNumber - 1) * +pageSize)
             .limit(+pageSize)
             .exec();
-        //.toArray();
 
         const items: OutputItemCommentType[] = await Promise.all(comments.map(async (comment) => {
-            const likeComment = await LikeCommentModel.findOne({parentId: comment._id});
-            //const status = likeComment ? likeComment.status : 'None';
-            const status = likeComment!.status;
+            const likeComment = await LikeCommentModel.findOne({parentId: comment._id, userId: userId});
+            const status = likeComment ? likeComment.status : 'None';
+
+            //const status = likeComment!.status;
 
             return {
                 id: comment._id.toString(),

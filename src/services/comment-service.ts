@@ -39,12 +39,12 @@ export class CommentService {
         return commentId;
     }
 
-    async getCommentByPostId(id: string, sortData: SortCommentType) {
-        return await this.commentRepo.getCommentByPostId(id, sortData);
+    async getCommentByPostId(id: string, userId: string, sortData: SortCommentType) {
+        return await this.commentRepo.getCommentByPostId(id, userId, sortData);
     }
 
     async getCommentByIdUserId(id: string, userId: string) {
-        //return await this.commentRepo.getCommentById(id);
+
         return await this.commentRepo.getCommentByIdUserId(id, userId);
     }
 

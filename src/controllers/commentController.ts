@@ -8,7 +8,7 @@ import {Params} from "../routes/videos-router";
 import {LikeCommentService} from "../services/like-comment-service";
 import {LIKE_STATUS, LikeDBModel} from "../types/like/output";
 import {jwtService} from "../services/jwt-sevice";
-import {ObjectId} from "mongodb";
+
 
 
 export class CommentController {
@@ -34,6 +34,8 @@ export class CommentController {
 
         let userId;
 
+        let myStatus = 'None';
+
         if (req.headers.authorization) {
             const accessToken = req.headers.authorization.split(' ')[1];
             userId = await jwtService.getUserIdByToken(accessToken);
@@ -46,7 +48,8 @@ export class CommentController {
             return res.sendStatus(404);
         }
 
-        let myStatus = 'None';
+
+
         if (userId) {
             const like: LikeDBModel | null = await this.likeService.getLike(comment.id, userId);
             if (like) {
