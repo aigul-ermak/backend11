@@ -20,7 +20,8 @@ const likeValidation = body('likeStatus')
     .exists({ checkFalsy: true }).withMessage('Like status is required')
     // .isString().withMessage('Like status must be a string')
     .trim()
-    .isIn(Object.values(LIKE_STATUS)).withMessage('Invalid like status');
+    .isIn(Object.values(LIKE_STATUS))
+
 
 
 const commentatorInfoValidation = [
