@@ -32,7 +32,7 @@ export class CommentController {
 
         const id: string = req.params.id;
 
-        let userId: string | undefined;
+        let userId;
 
         if (req.headers.authorization) {
             const accessToken = req.headers.authorization.split(' ')[1];
@@ -40,21 +40,21 @@ export class CommentController {
         }
 
         const comment: OutputItemCommentType | null = await this.commentService.getCommentById(id);
+        //const comment: OutputItemCommentType | null = await this.commentService.getCommentByIdUserId(id);
 
         if (!comment) {
             return res.sendStatus(404);
         }
 
-        // if (userId) {
-        //     const like: any = await this.likeService.getLike(comment.id, userId);
-        //     if(like ) {
-        //         comment.likesInfo.myStatus  = like.status;
-        //     }
-        //     comment.likesInfo.myStatus = 'None';
-        //
-        // } else {
-        //     comment.likesInfo.myStatus = 'None';
-        // }
+        let myStatus = 'None';
+        if (userId) {
+            const like: LikeDBModel | null = await this.likeService.getLike(comment.id, userId);
+            if (like) {
+                myStatus = like.status;
+            }
+        }
+
+        comment.likesInfo.myStatus = myStatus;
 
         return res.status(200).send(comment)
     }

@@ -1,5 +1,5 @@
 import {LikeCommentRepo} from "../repositories/like-repo/like-comment-repo";
-import {LIKE_STATUS} from "../types/like/output";
+import {LIKE_STATUS, LikeDBModel} from "../types/like/output";
 import {CommentRepo} from "../repositories/comment-repo/comment-repo";
 
 
@@ -39,13 +39,11 @@ export class LikeCommentService {
             }
             like!.status = likeStatus;
 
-
             return await this.likeCommentRepo.updateLike(like!._id.toString(), like);
         }
-        //return await this.likeCommentRepo.makeStatus(like);
     }
 
-    async getLike(parentId: string, userId: string,) {
-        await this.likeCommentRepo.getLike(parentId, userId)
+    async getLike(parentId: string, userId: string,): Promise<LikeDBModel | null> {
+        return await this.likeCommentRepo.getLike(parentId, userId)
     }
 }

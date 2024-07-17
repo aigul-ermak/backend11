@@ -67,11 +67,11 @@ export class CommentRepo {
             return null;
         }
 
-        const likeComment = await LikeCommentModel.findOne({parentId: comment._id});
-        const status = likeComment ? likeComment.status : 'None';
+        //const likeComment = await LikeCommentModel.findOne({parentId: comment._id});
+        //const status = likeComment ? likeComment.status : 'None';
 
         //const likeComment = await LikeCommentModel.findOne({parentId: comment._id});
-        //const status = 'None';
+        const status = 'None';
 
         return {
             id: comment._id.toString(),

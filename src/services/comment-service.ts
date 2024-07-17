@@ -51,9 +51,9 @@ export class CommentService {
 
     // temp
     async getCommentById(id: string) {
-        if (!ObjectId.isValid(id)) {
-            return null;
-        }
+        // if (!ObjectId.isValid(id)) {
+        //     return null;
+        // }
 
         return await this.commentRepo.getCommentById(id);
         // return await this.commentRepo.getCommentByIdUserId(id);
