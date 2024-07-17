@@ -17,8 +17,7 @@ const statusValidation = body('status')
     .withMessage('Status is required')
 
 const likeValidation = body('likeStatus')
-    .exists({ checkFalsy: true }).withMessage('Like status is required')
-    // .isString().withMessage('Like status must be a string')
+    .exists().withMessage('Like status is required')
     .trim()
     .isIn(Object.values(LIKE_STATUS))
 
