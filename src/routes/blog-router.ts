@@ -6,11 +6,12 @@ import {
     mongoIdInParamValidation
 } from "../validators/blog-validator";
 import {blogController} from "../composition-root";
+import {authBearerMiddleware} from "../middleware/auth/auth-bearer-middleware";
 
 
 export const blogRouter: Router = Router({})
 
-blogRouter.get('/', blogController.getAllBlogs.bind(blogController));
+blogRouter.get('/', authBearerMiddleware, blogController.getAllBlogs.bind(blogController));
 
 blogRouter.get('/:id', mongoIdInParamValidation(), blogController.getBlogById.bind(blogController));
 
