@@ -90,7 +90,7 @@ export class CommentController {
         res.sendStatus(204);
     }
 
-    async makeLike(req: Request, res: Response) {
+    async makeLikeToComment(req: Request, res: Response) {
 
         const likeStatus: LIKE_STATUS = req.body.likeStatus
 
