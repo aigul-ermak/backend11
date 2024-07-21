@@ -90,7 +90,7 @@ export class CommentController {
         res.sendStatus(204);
     }
 
-    async makeLikeToComment(req: Request, res: Response) {
+    async createLikeToComment(req: Request, res: Response) {
 
         const likeStatus: LIKE_STATUS = req.body.likeStatus
 
@@ -112,7 +112,7 @@ export class CommentController {
         //     return;
         // }
 
-        let isCommentStatusUpdated = await this.likeService.makeStatus(userId, likeStatus, comment.id);
+        let isCommentStatusUpdated = await this.likeService.createStatus(userId, likeStatus, comment.id);
 
         if (!isCommentStatusUpdated) {
             res.sendStatus(404);
