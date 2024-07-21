@@ -7,14 +7,21 @@ export class LikeCommentService {
     constructor(protected likeCommentRepo: LikeCommentRepo, protected commentRepo: CommentRepo) {
     }
 
-    async makeStatus(userId: string, likeStatus: LIKE_STATUS, parentId: string) {
+    async createStatus(userId: string, likeStatus: LIKE_STATUS, parentId: string) {
 
         const isLikeExist = await this.likeCommentRepo.checkLike(parentId, userId);
         let like;
 
         if (!isLikeExist) {
-            like = {status: likeStatus, userId, parentId};
-            const res = await this.likeCommentRepo.createLike(like);
+            const newLike = {
+                status: likeStatus,
+                userId,
+                parentId,
+                createdAt: Date.now(),
+            };
+
+
+            const res = await this.likeCommentRepo.createLike(newLike);
 
             if (likeStatus == LIKE_STATUS.LIKE) {
                 await this.commentRepo.incrementLikeCount(parentId);
