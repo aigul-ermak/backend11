@@ -30,6 +30,12 @@ export class LikeCommentRepo {
         return res;
     }
 
+    async getNewestLikes(parentId: string) {
+        return await LikeModel.find({ parentId: parentId })
+            .sort({ createdAt: -1 })
+            .limit(3);
+    }
+
     async checkLike(parentId: string, userId: string) {
         const res = await LikeModel.findOne({parentId: parentId, userId: userId}).lean();
         return !!res;

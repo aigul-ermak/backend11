@@ -23,7 +23,7 @@ export const postRouter = Router({})
 //TODO - replace type
 type RequestTypeWithQuery<Q> = Request<{}, {}, {}, Q>;
 
-postRouter.get('/', authBearerMiddleware, postController.getAllPosts.bind(postController));
+postRouter.get('/', postController.getAllPosts.bind(postController));
 
 postRouter.get('/:id', mongoIdInParamValidation(), postController.getPostById.bind(postController));
 
@@ -35,6 +35,6 @@ postRouter.post('/:id/comments', authBearerMiddleware, mongoIdInParamValidation(
 
 postRouter.put('/:id', authMiddleware, postValidation(), postController.updatePost.bind(postController));
 
-postRouter.put('/:id/like-status', authBearerMiddleware, mongoIdInParamValidation(), likeStatusValidation(), postController.createLikeToPost.bind(postController));
+postRouter.put('/:id/like-status', postController.createLikeToPost.bind(postController));
 
 postRouter.delete('/:id', authMiddleware, mongoIdInParamValidation(), postController.deletePost.bind(postController));

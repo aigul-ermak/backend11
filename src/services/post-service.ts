@@ -1,6 +1,6 @@
 import {CreatePostData, SortPostType, UpdatePostData} from "../types/post/input";
 import {PostRepo} from "../repositories/post-repo/post-repo";
-import {OutputCreatePostType, PostDBType} from "../types/post/output";
+import {NewsLike, OutputCreatePostType, PostDBType} from "../types/post/output";
 import {BlogRepo} from "../repositories/blog-repo/blog-repo";
 
 export class PostService {
@@ -24,13 +24,7 @@ export class PostService {
                 likesCount: 0,
                 dislikesCount: 0,
                 myStatus: "None",
-                newestLikes: [
-                    {
-                        addedAt: "",
-                        userId: "",
-                        login: ""
-                    }
-                ]
+                newestLikes: [] as NewsLike[],
             }
         }
 

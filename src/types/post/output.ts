@@ -40,6 +40,10 @@ export type PostDBType = {
     dislikesCount: number,
 }
 
+export type NewsLike = { addedAt: string,
+    userId: string,
+    login: string,}
+
 export type OutputCreatePostType = {
     title: string,
     shortDescription: string,
@@ -51,12 +55,6 @@ export type OutputCreatePostType = {
         likesCount: Number,
         dislikesCount: Number,
         myStatus: string,
-        newestLikes: [
-            {
-                addedAt: string,
-                userId: string,
-                login: string,
-            }
-        ]
+        newestLikes:NewsLike[]
     }
 }

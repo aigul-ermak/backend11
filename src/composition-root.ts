@@ -26,7 +26,7 @@ const authService = new AuthService(userRepo);
 const commentService = new CommentService(commentRepo, likeCommentRepo);
 const blogService = new BlogService(blogRepo, postRepo);
 const postService = new PostService(postRepo, blogRepo);
-const likeService = new LikeCommentService(likeCommentRepo, commentRepo);
+const likeService = new LikeCommentService(likeCommentRepo, commentRepo, userRepo);
 
 
 export const userController = new UserController(userService);

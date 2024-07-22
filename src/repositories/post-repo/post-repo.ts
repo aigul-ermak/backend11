@@ -62,8 +62,8 @@ export class PostRepo {
         const pageCount = Math.ceil(totalCount / +pageSize);
 
         const items: any[] = await Promise.all(posts.map(async (post) => {
-            const postComment = await LikeModel.findOne({parentId: post._id, userId: userId});
-            const status = postComment ? postComment.status : 'None';
+            const postLike = await LikeModel.findOne({parentId: post._id, userId: userId});
+            const status = postLike ? postLike.status : 'None';
 
             return {
                 id: post._id.toString(),
@@ -116,8 +116,8 @@ export class PostRepo {
             blogName: post.blogName,
             createdAt: post.createdAt,
             extendedLikesInfo: {
-                likesCount: 0,
-                dislikesCount: 0,
+                likesCount: post.likesCount,
+                dislikesCount: post.dislikesCount,
                 myStatus: "None",
                 newestLikes: [
                     {

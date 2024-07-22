@@ -42,13 +42,10 @@ export class CommentController {
         }
 
         const comment: OutputItemCommentType | null = await this.commentService.getCommentById(id);
-        //const comment: OutputItemCommentType | null = await this.commentService.getCommentByIdUserId(id);
 
         if (!comment) {
             return res.sendStatus(404);
         }
-
-
 
         if (userId) {
             const like: LikeDBModel | null = await this.likeService.getLike(comment.id, userId);
